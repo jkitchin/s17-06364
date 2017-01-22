@@ -1,0 +1,37 @@
+* DONE <2017-01-16 Mon> *NO CLASS* MLK
+  CLOSED: [2017-01-22 Sun 12:31]
+* DONE <2017-02-01 Wed> *NO CLASS* 
+  CLOSED: [2017-01-22 Sun 12:31]
+* <2017-01-23 Mon> Introduction [[./lectures/lecture-00.org]], [[./lectures/lecture-01.org]]
+* <2017-01-25 Wed> [[./lectures/lecture-02.org]]
+* <2017-01-30 Mon>
+* <2017-02-01 Wed>
+* <2017-02-06 Mon> *NO CLASS*
+* <2017-02-08 Wed> *NO CLASS*
+* <2017-02-13 Mon>
+* <2017-02-15 Wed>
+* <2017-02-20 Mon>
+* <2017-02-22 Wed>
+* <2017-02-27 Mon>
+* <2017-03-01 Wed>
+* <2017-03-06 Mon>
+* <2017-03-08 Wed>
+* <2017-03-13 Mon> *SPRING BREAK*
+* <2017-03-15 Wed> *SPRING BREAK*
+* <2017-03-20 Mon>
+* <2017-03-22 Wed>
+* <2017-03-27 Mon>
+* <2017-03-29 Wed>
+* <2017-04-03 Mon> *NO CLASS*
+* <2017-04-05 Wed>
+* <2017-04-10 Mon>
+* <2017-04-12 Wed>
+* <2017-04-17 Mon>
+* <2017-04-19 Wed>
+* <2017-04-24 Mon>
+* <2017-04-26 Wed> *NO CLASS*
+* <2017-05-01 Mon>
+* <2017-05-03 Wed>
+* <2017-05-08 Mon>
+* <2017-05-10 Wed>
+* Final exam - Date and time to be determined
