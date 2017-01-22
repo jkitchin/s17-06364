@@ -1,0 +1,201 @@
+* Lecture 2 (Ch. 1.4-1.5)
+** The continuously stirred tank reactor (CSTR) 
+
+This is a reactor like a tank that is well-stirred so that the concentration in the volume is uniform. There is flow of reactants into the reactor, and flow of products, and unreacted reactants out of the reactor.
+
+[[./images/constant-volume-cstr.png]]
+
+The mole balance on this reactor is:
+$\frac{dN_A}{dt} = F_{A0} - F_A + r_A V$
+
+Let's focus on the steady state behavior first, where $\frac{dN_A}{dt} = 0$ so that we have this *algebraic* equation:
+
+$0 = F_{A0} - F_A + r_A V$
+
+This expression means that the number of moles of A in the reactor is a constant, and it is a balance of how many moles of A flow into the reactor, how many flow out of the reactor and how many are consumed in the reactor. It is helpful to remember that:
+
+$F_A = C_A \nu$ where $\nu$ is the volumetric flow with units of volume / time. 
+
+Consider a CSTR with a volume of 10L, where the reaction $A \rightarrow B$ occurs at a rate of $-r_A = k C_A$ with $k=0.1 1/min$, with an inlet volumetric flow of 2 L/min that is 1.5M in A. What is the exit concentration of A?
+
+We have to solve this equation:
+$0 = \nu (C_{A0} - C_A) + V (-k C_A)$ 
+
+for $C_A$. One way to do it is some algebra and evaluation:
+
+$0 = \nu / V C_{A0} - \nu / V C_A -k C_A$ 
+
+then
+
+$0 = \nu / V C_{A0} - C_A(\nu / V + k)$
+
+and finally,
+
+$C_A = \frac{\nu / V C_{A0}}{\nu / V + k}$
+
+#+BEGIN_SRC ipython :session
+k = 0.11 # 1/min
+nu = 2  # L/min
+V = 10  # L
+Ca0 = 1.5 # M
+
+Ca = (nu / V * Ca0) / (nu / V + k)
+print('The exit concentration is {0:1.2f} M'.format(Ca))
+#+END_SRC
+
+#+RESULTS:
+: The exit concentration is 0.97 M
+
+Let's double check this answer.
+
+#+BEGIN_SRC ipython :session :results value
+# Let's double check out answer. The result here should be zero.
+Fa0 = nu * Ca0
+Fa = nu * Ca
+ra = - k * Ca
+Fa0 - Fa + ra * V
+#+END_SRC
+
+#+RESULTS:
+: -4.440892098500626e-16
+
+That number is so small,  we can consider it zero.
+
+The algebraic approach with evaluation is fine, but it is easy to make sign errors, and algebraic mistakes, which lead to wrong answers. Let's look at an approach to solve the equation more directly. Let's use fsolve on:
+
+$0 = F_{A0} - F_A + r_A V$
+
+Remember we need to define an objective function that takes Ca as an argument, and is equal to zero at the solution. Our equation is already written that way!
+
+#+BEGIN_SRC ipython :session
+def objective(Ca):
+    Fa0 = nu * Ca0
+    Fa = nu * Ca
+    ra = -k * Ca
+    return Fa0 - Fa + ra * V
+
+from scipy.optimize import fsolve
+
+ans, = fsolve(objective, 1)
+print('The exit concentration is {0:1.2f} M.'.format(ans))
+#+END_SRC
+
+#+RESULTS:
+: The exit concentration is 0.97 M.
+
+There are basically five variables in a CSTR that determine its performance: The volume, the volumetric flow, the inlet concentration, the outlet concentration and the rate constant. They are not independent. You can fix any four and calculate the fifth.
+
+For example, what volume is required to get an exit concentration of 0.5M if everything else above is the same? We solve the same equation:
+
+$0 = F_{A0} - F_A + r_A V$
+
+but we use a different function, this time a function of V. We need a guess too. The volume has to be larger than the previous reactor because the only way to get a lower concentration if everything else is the same is if we have a larger reactor which gives the reactants more time to react.
+
+#+BEGIN_SRC ipython :session
+def objective(V):
+    Fa0 = nu * Ca0
+    Ca = 0.5
+    Fa = nu * Ca
+    ra = -k * Ca
+    return Fa0 - Fa + ra * V
+
+ans, = fsolve(objective, 10)
+print('A volume of {0:1.2f} L has an exit concentration of 0.5 M.'.format(ans))
+#+END_SRC
+
+#+RESULTS:
+: A volume of 36.36 L has an exit concentration of 0.5 M.
+
+** The plug flow reactor (PFR)
+
+In a plug flow reactor, reactants flow into the reactor, and react as they flow down the length of the reactor. So the concentration is *not* uniform in the reactor. That means we need a differential equation to define the molar flow of species as a function of reactor volume.
+
+[[./images/pfr-schematic.png]]
+
+ $\frac{dF_A}{dV} = r_A$
+
+And we need the initial condition of what the molar flow at the entrance of the reactor $V=0$ is.
+
+Let's consider the same reaction we looked at before in the CSTR, but now in the PFR with a volume of 10L. Determine the exit concentration.
+
+Note our differential equation is based on molar flow, so it is easy to calculate the exit molar flow. Since we know that $F_A = \nu C_A$, we just compute it.
+
+#+BEGIN_SRC ipython :session
+def ode(Fa, V):
+    'dFa/dV = ra'
+    Ca = Fa / nu
+    ra = -k * Ca
+    dFadV = ra
+    return dFadV
+
+from scipy.integrate import odeint
+import numpy as np
+
+Vspan = np.linspace(0, 10)
+sol = odeint(ode, Fa0, Vspan)
+Ca = sol / nu
+print('The exit concentration is {}M'.format(Ca[-1, 0]))
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+plt.plot(Vspan, Ca)
+plt.xlabel('Volume (L)')
+plt.ylabel('$C_A$ (M)')
+#+END_SRC
+
+#+RESULTS:
+: The exit concentration is 0.8654247328878477M
+
+Note the exit concentration in the PFR is a little lower than in the CSTR. That is because the average rate in the reactor is higher since the concentration is higher at the front of the reactor than at the end of the reactor.
+
+A more difficult question to answer is what volume is required to reach an exit concentration of 0.5M?
+
+A qualitative approach is to integrate to large volume and find the solution graphically.
+
+#+BEGIN_SRC ipython :session
+Vspan = np.linspace(0, 30)
+sol = odeint(ode, Fa0, Vspan)
+Ca = sol / nu
+print('The exit concentration is {}M'.format(Ca[-1, 0]))
+
+plt.plot(Vspan, Ca)
+plt.xlabel('Volume (L)')
+plt.ylabel('$C_A$ (M)')
+#+END_SRC
+
+You can see the answer must be near 20 L. Alternatively, we can rearrange the equation a little.
+
+$dV = \frac{dF_A}{r_A}$
+
+then integrate to get:
+
+$V = \int_{F_{A0}}^{F_A} \frac{dF_A}{r_A}$
+
+Which we can evaluate like we did last time with the quad function.
+
+#+BEGIN_SRC ipython :session
+def integrand(Fa):
+    Ca = Fa / nu
+    return 1 / (-k * Ca)
+
+from scipy.integrate import quad
+
+Fa = nu * 0.5
+ans, err = quad(integrand, Fa0, Fa)
+print('It takes a volume of {0:1.2f} L to get an exit concentration of 0.5M'.format(ans))
+#+END_SRC
+
+#+RESULTS:
+: It takes a volume of 19.97 L to get an exit concentration of 0.5M
+
+* Things you should review
+
+1. [[https://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.linspace.html][numpy.linspace]]
+2. [[https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.optimize.fsolve.html][scipy.optimize.fsolve]]
+3. [[https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.integrate.quad.html][scipy.integrate.quad]]
+4. [[https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.integrate.odeint.html][scipy.integrate.odeint]]
+5. matplotlib.pyplot.plot
+6. matplotlib.pyplot.xlabel
+7. matplotlib.pyplot.ylabel
+
+See this [[http://matplotlib.org/users/pyplot_tutorial.html][plotting tutorial]].

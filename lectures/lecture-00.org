@@ -1,0 +1,57 @@
+* Welcome to 06-364 Spring 2017
+
+I am Prof. Kitchin. My office is in Doherty Hall A207F.
+
+We have three TAs:
+
+1. Elif Erdinc
+2. Daniel Lee
+3. David Molina Thierry
+
+* Slack and Email
+
+I will use Slack for class announcements. You should use it to ask questions outside of class. It would be a good way for me to get to know you.
+
+You can access Slack via website, desktop app, and phone app. Let's make it work!
+
+* The course website
+
+This is currently evolving. At the moment, you can access it at http://bit.ly/s17-06-364 via Google Drive. I may move it to Github soon though. I will announce it on Slack when that happens.
+
+* Assignments
+
+All assignments must be turned in to the Box email address. Please do not send them to me directly.
+
+All assignments must either be a Jupyter notebook or a PDF.
+
+Every assignment will have a label, and it must be named by this scheme: andrewid-label.ipynb or andrewid-label.pdf in all lower-case letters. Failure to follow those /simple/ instructions will mean your assignment will not be graded.
+
+Assignments are due by 11:59:59pm on the due date. Assignments submitted after we have collected it may not get graded.
+
+Graded homeworks will be returned to you by email.
+
+Your homeworks should be neat, and organized. You must put narrative text describing what you are doing, and what your results mean. *I do not want to see homeworks containing only code!*
+
+* Python 
+
+I will use Python exclusively in class, every day. Python is free, and better than anything else for what we will do in this class. I have used it in research for more than a decade.
+
+See http://kitchingroup.cheme.cmu.edu/pycse/ 
+
+It is not hard. You will see it a lot.
+
+If you do not like it, you can use Matlab. You have to publish your work to a PDF to turn it in though.
+
+* The Jupyter notebook
+
+The Jupyter notebook is a browser based tool to write and run Python code. You can integrate narrative text, equations, and images with your code.
+
+#+BEGIN_SRC ipython :session
+print('Hello class')
+#+END_SRC
+
+#+RESULTS:
+: Hello class
+
+
+[[./lecture-01.ipynb]]
