@@ -5,7 +5,7 @@ Engineering Topics: 100%, with 25% Design
 
 Instructor: John Kitchin                           Program: Chemical Engineering
 
-Web-site: http://bit.ly/s17-06-364 
+Web-site: http://bit.ly/s17-06364 
 
 We will use Slack: http://s17-06-364.slack.com and email for class communications.
 
