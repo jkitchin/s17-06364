@@ -29,11 +29,7 @@ Assignments will be located here: https://github.com/jkitchin/s17-06364/tree/mas
 
 * Assignments
 
-All assignments must be turned in to the Box email address: submiss.uj1v37qz3m0gpzsu@u.box.com. Please do not send them to me directly.
-
-All assignments must turned in as a Jupyter notebook. I recommend you install Anaconda Python for this.
-
-Every assignment will have a label, and it must be named by this scheme: andrewid-label.ipynb in all lower-case letters. Failure to follow those /simple/ instructions will mean your assignment will not be graded.
+All assignments must turned in as a Jupyter notebook. I recommend you install Anaconda Python for this. I will provide you with directions for how to access the assignments and turn them in. I suggest you use the same computer for all your assignments.
 
 Assignments are due by 11:59:59pm on the due date. Assignments submitted after we have collected it may not get graded.
 
@@ -47,9 +43,7 @@ I will use Python exclusively in class, every day. Python is free, and better th
 
 See http://kitchingroup.cheme.cmu.edu/pycse/ 
 
-It is not hard. You will see it a lot.
-
-If you do not like it, you can use Matlab. You have to publish your work to a PDF to turn it in though.
+It is not hard. You will see it a lot. It is an opportunity to learn something new!
 
 * The Jupyter notebook
 
