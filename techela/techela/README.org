@@ -1,6 +1,6 @@
 #+TITLE: Techela in a Box
 
-Techela in a Box is a set of IPython magic commands for running a course from IPython. Students complete assignments as IPython notebooks, or they create a PDF of their work. They use Ipython to submit the assignments by email. The assignments are automatically uploaded to a folder on Box.com. Instructors and TAs then prepare gradable PDFs of the assignments, add feedback and grades to them, and finally return them to the students by email.
+Techela in a Box is a set of IPython magic commands for running a course from IPython using Box.com and GitHUB. Students complete assignments as IPython notebooks. They use Ipython to submit the assignments by email. The assignments are automatically uploaded to a folder on Box.com. Instructors and TAs then the assignments, add feedback and grades to them, and finally return them to the students by email.
 
 * Installation
 
@@ -13,11 +13,11 @@ Then, open IPython, and run this command.
 !pip install techela
 #+END_SRC
 
-** Instructors
-You need a working LaTeX installation, with the acrotex distribution and popupmenu installed. I recommend TexLive.
+** TODO Instructors
 
 
-* Using techela
+
+* TODO Using techela
 ** First time course setup for instructors
 *** Box setup
 1. Create a Box folder you plan to use for the course. Invite the TAs as collaborators.

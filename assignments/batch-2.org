@@ -1,0 +1,12 @@
+#+ASSIGNMENT: batch-2
+#+POINTS: 2
+#+DUEDATE: <2017-01-27 Fri>
+#+CATEGORY: homework
+#+RUBRIC: default
+
+
+The reaction $A \rightarrow B$ occurs in a batch reactor. $A$ is consumed at a rate of $-r_A = k C_A^{2}$ with $k=0.33$ L/mol/min. The initial concentration of A in the reactor is 2.5 M. Make a plot of the concentration of A as a function of time, and calculate the concentration of A after 10 minutes.
+
+#+BEGIN_SRC ipython :session
+
+#+END_SRC

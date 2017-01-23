@@ -1,0 +1,13 @@
+#+ASSIGNMENT: batch-1
+#+POINTS: 2
+#+DUEDATE: <2017-01-26 Thu>
+#+CATEGORY: homework
+#+RUBRIC: default
+
+
+In a batch reactor the concentration of A starts out at 1 M. Ten minutes later, the concentration is 0.6 M. Assuming the reaction occurs at a rate of $-r_A = k C_A$,  use math software to determine what $k$ must be. Make sure to show how you arrived at the equations you solved.
+
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
