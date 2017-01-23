@@ -1,3 +1,6 @@
+#+TITLE: Lecture 1
+#+AUTHOR: John Kitchin
+
 * Lecture 1 - Chapter 1.1-1.3
 
 A goal of reaction engineering is to design processes that convert low value feedstocks to high value products using chemical reactions.

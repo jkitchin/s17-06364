@@ -15,6 +15,7 @@ Specific Course Information: Fundamental concepts in the kinetic modeling of che
 Prerequisites: 06-321, 06-323, 09-347   Required: Yes
 
 * Specific Course Goals
+
 After this course you will be able to:
 
 - D1 Formulate and solve mass balance equations for systems with reactions	a
@@ -40,7 +41,7 @@ Topics:
 
 * Grading
 
-#+caption: Categories and weights for graded
+#+caption: Categories and weights for graded assignments
 #+tblname: categories
 | Category      | weight |
 |---------------+--------|
@@ -51,13 +52,13 @@ Topics:
 
 Homeworks will be assigned one to three times a week. Each assignment will typically be one problem that should take 30-90 minutes to complete.
 
-Quizzes will be given in class. You should be prepared to take a quiz at any time. These will typically be short, timed problems.
+There may be quizzes if we need them. They will count in the homework category.
 
 Exams will probably be scheduled and given during class. 
 
 I recommend you bring your computer to class every day. You will need it to follow the lecture notes.
 
-Late assignments will automatically lose 50% of their points. Late assignments can only be turned in by email.
+Late assignments will automatically lose 50% of their points. 
 
 ** Grading criteria
 

@@ -1,3 +1,6 @@
+#+TITLE: Introduction to 06-364
+#+AUTHOR: John Kitchin
+
 * Welcome to 06-364 Spring 2017
 
 I am Prof. Kitchin. My office is in Doherty Hall A207F.
@@ -16,15 +19,21 @@ You can access Slack via website, desktop app, and phone app. Let's make it work
 
 * The course website
 
-This is currently evolving. At the moment, you can access it at http://bit.ly/s17-06-364 via Google Drive. I may move it to Github soon though. I will announce it on Slack when that happens.
+The course website is it at http://bit.ly/s17-06364 in GitHUB.
+
+The syllabus: https://github.com/jkitchin/s17-06364/blob/master/syllabus.org
+
+You can see the lecture notes here: https://github.com/jkitchin/s17-06364/tree/master/lectures and the course schedule: https://github.com/jkitchin/s17-06364/blob/master/course-schedule.org
+
+Assignments will be located here: https://github.com/jkitchin/s17-06364/tree/master/assignments. I will provide you with directions on how to use them when it is time.
 
 * Assignments
 
-All assignments must be turned in to the Box email address. Please do not send them to me directly.
+All assignments must be turned in to the Box email address: submiss.uj1v37qz3m0gpzsu@u.box.com. Please do not send them to me directly.
 
-All assignments must either be a Jupyter notebook or a PDF.
+All assignments must turned in as a Jupyter notebook. I recommend you install Anaconda Python for this.
 
-Every assignment will have a label, and it must be named by this scheme: andrewid-label.ipynb or andrewid-label.pdf in all lower-case letters. Failure to follow those /simple/ instructions will mean your assignment will not be graded.
+Every assignment will have a label, and it must be named by this scheme: andrewid-label.ipynb in all lower-case letters. Failure to follow those /simple/ instructions will mean your assignment will not be graded.
 
 Assignments are due by 11:59:59pm on the due date. Assignments submitted after we have collected it may not get graded.
 
