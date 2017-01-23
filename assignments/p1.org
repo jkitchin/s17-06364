@@ -1,4 +1,4 @@
-#+ASSIGNMENT: 
+#+ASSIGNMENT: batch-1
 #+POINTS: 2
 #+DUEDATE: <2017-01-25 Wed>
 #+CATEGORY: homework
