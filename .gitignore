@@ -1,2 +1,5 @@
-/lectures/.ipynb_checkpoints
+.ipynb_checkpoints
+__pycache__
 .DS_Store
+*.egg-info
+sandbox

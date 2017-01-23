@@ -1,0 +1,70 @@
+#+TITLE: Techela in a Box
+
+Techela in a Box is a set of IPython magic commands for running a course from IPython. Students complete assignments as IPython notebooks, or they create a PDF of their work. They use Ipython to submit the assignments by email. The assignments are automatically uploaded to a folder on Box.com. Instructors and TAs then prepare gradable PDFs of the assignments, add feedback and grades to them, and finally return them to the students by email.
+
+* Installation
+
+** Python
+You need Python 3, I recommend Anaconda.
+
+Then, open IPython, and run this command.
+
+#+BEGIN_SRC python :results output org drawer
+!pip install techela
+#+END_SRC
+
+** Instructors
+You need a working LaTeX installation, with the acrotex distribution and popupmenu installed. I recommend TexLive.
+
+
+* Using techela
+** First time course setup for instructors
+*** Box setup
+1. Create a Box folder you plan to use for the course. Invite the TAs as collaborators.
+2. Create a folder called submissions in this folder, and enable uploads by email. Make a note of the email address.
+
+*************** TODO public box folder for assignments
+need base-url and a label to open assignments.
+
+This could be on box or google drive, or github.
+*************** END
+
+3. Create a folder called assignments 
+
+4. Create a file called setup.json with contents like this:
+
+#+BEGIN_SRC python :results output org drawer
+import json
+
+data = {'submit-email': 'submiss.uj1v37qz3m0gpzsu@u.box.com',
+        'course': 's17-06364',
+        'assignments-url': 'https://github.com/jkitchin/s17-06364'}
+
+with open('setup.json', 'w') as f:
+    f.write(json.dumps(data))  
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+:END:
+
+
+*** Admin commands in IPython
+
+#+BEGIN_SRC sh
+techela --collect label
+techela --prepare label
+techela --grade label
+techela --return label
+#+END_SRC
+
+** For students
+
+1. Open Ipython.
+2. import techela
+2. Type techela. This will setup a course for you. You will be prompted for a URL that will be provided to you by the instructor.
+
+
+
+
+
