@@ -2,9 +2,10 @@
   CLOSED: [2017-01-22 Sun 12:31]
 * DONE <2017-02-01 Wed> *NO CLASS* 
   CLOSED: [2017-01-22 Sun 12:31]
-* <2017-01-23 Mon> Introduction [[./lectures/lecture-00.org]], [[./lectures/lecture-01.org]]
+* DONE <2017-01-23 Mon> Introduction [[./lectures/lecture-00.org]], [[./lectures/lecture-01.org]]
+  CLOSED: [2017-01-25 Wed 14:10]
 * <2017-01-25 Wed> [[./lectures/lecture-02.org]]
-* <2017-01-30 Mon>
+* <2017-01-30 Mon> [[./lectures/lecture-03.org]]
 * <2017-02-01 Wed>
 * <2017-02-06 Mon> *NO CLASS*
 * <2017-02-08 Wed> *NO CLASS*
