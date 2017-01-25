@@ -68,6 +68,7 @@ def hello():
     # construct assignments/andrewid-label.ipynb to check if they have local
     # versions.
     assignments = data['assignments']
+    print(assignments)
     assignment_files = [os.path.split(assignment)[-1]
                         for assignment in assignments]
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
@@ -121,7 +122,6 @@ def setup_post():
     return redirect(url_for('hello'))
 
 
-
 @app.route("/lecture/<label>")
 def open_lecture(label):
     fname = '{}/lectures/{}.ipynb'.format(COURSEDIR, label)
@@ -146,10 +146,10 @@ def open_assignment(label):
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
         NAME = data['NAME']
-        
+
     fname = '{}assignments/{}-{}.ipynb'.format(COURSEDIR,
-                                                ANDREWID,
-                                                label)
+                                               ANDREWID,
+                                               label)
     if not os.path.exists(fname):
         urllib.request.urlretrieve('{}/{}.ipynb'.format(ASSIGNMENTURL,
                                                         label),
