@@ -179,7 +179,16 @@ def open_assignment(label):
 
     return redirect(url_for('hello'))
 
-
+@app.route("/new")
+def new_notebook():
+    CWD = os.getcwd()
+    os.chdir(COURSEDIR)
+    cmd = ["jupyter", "notebook"]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE,
+                     stdin=subprocess.PIPE)
+    os.chdir(CWD)
+    
 @app.route("/submit/<label>")
 def authenticate(label):
     "Get the andrew password."
