@@ -59,8 +59,13 @@ def hello():
         NAME = data['NAME']
 
     # Should be setup now. Update the course info
-    urllib.request.urlretrieve('{}/s17-06364.json'.format(BASEURL),
-                               '{}/s17-06364.json'.format(COURSEDIR))
+    ONLINE = True
+    try:
+        urllib.request.urlretrieve('{}/s17-06364.json'.format(BASEURL),
+                                   '{}/s17-06364.json'.format(COURSEDIR))
+    except:
+        print('Unable to download the course json file!!!!!!')
+        ONLINE = False
 
     with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
         data = json.loads(f.read())
@@ -110,7 +115,8 @@ def hello():
                            COURSEDIR=COURSEDIR,
                            ANDREWID=ANDREWID,
                            NAME=NAME,
-                           lectures=zip(lecture_labels, lecture_status),
+                           ONLINE=ONLINE,
+                           lectures=list(zip(lecture_labels, lecture_status)),
                            assignments4templates=list(zip(assignment_labels,
                                                           assignment_paths,
                                                           assignment_status,
@@ -143,6 +149,22 @@ def open_lecture(label):
                                    + '{}.ipynb'.format(label), fname)
         # We need to check for images. Boo...
         # They look like this in the cells: ![img](./images/control-volume.png)
+
+    # Now open the notebook.
+    cmd = ["jupyter", "notebook", fname]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE,
+                     stdin=subprocess.PIPE)
+
+    return redirect(url_for('hello'))
+
+
+@app.route("/course-lecture/<label>")
+def open_course_lecture(label):
+    fname = '{}/lectures/course-{}.ipynb'.format(COURSEDIR, label)
+
+    urllib.request.urlretrieve(LECTUREURL
+                               + '{}.ipynb'.format(label), fname)
 
     # Now open the notebook.
     cmd = ["jupyter", "notebook", fname]
@@ -271,15 +293,3 @@ def submit_post():
         s.quit()
 
     return redirect(url_for('hello'))
-
-
-if __name__ == "__main__":
-    import threading
-    import webbrowser
-
-    port = 5000
-    url = "http://127.0.0.1:{0}".format(port)
-
-    threading.Timer(1.25, lambda: webbrowser.open(url)).start()
-
-    app.run(port=port, debug=True)

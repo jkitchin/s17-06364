@@ -1,6 +1,12 @@
 <!doctype html>
 <title>S17 06-364 - Techela in a flask</title>
 
+{% if not ONLINE %}
+<font color="red" size=110%>
+  WARNING: You do not appear to be online! You will not be able to download new files or submit assignments.
+  </font>
+{% endif %}
+
 <h1>S17 06-364 - Techela in a flask</h1>
 You registered as {{NAME}} ({{ANDREWID}}) (<a href="/setup">Change registration information</a>)<br>
 Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
@@ -10,7 +16,8 @@ Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 <br>
 <a href="/new">New Notebook</a> (opens in a new browser tab).
 
-<h2> Lectures </h2>
+<h2> Your Lectures </h2>
+These are your local copies. You can edit them and add your own notes.
 
 <ul>
 {% for label, status in lectures %}
@@ -18,11 +25,20 @@ Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 {% endfor %}
 </ul>
 
+<h2> Course Lectures </h2>
+These are the notes that I have used in class. Each time you open one, it will download the latest copy of the notes, so anything you change in these files will be lost each time.
+
+<ul>
+{% for label, status in lectures %}
+<li><a href="/course-lecture/{{ label }}">{{ label }}</a> 
+{% endfor %}
+</ul>
+
 
 <h2>Assignments</h2>
 <ul>
   {% for label, path, status, duedate, turnedin in assignments4templates %}
-  <li><a href="/assignment/{{ label }}">{{ path }}</a> ({{ status | safe }}) Due: {{duedate}}  <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}} </li>
+  <li><a href="/assignment/{{ label }}">{{ label }}</a> ({{ status | safe }}) Due: {{duedate}}  <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}} </li>
   {% endfor %}
 </ul>
 
