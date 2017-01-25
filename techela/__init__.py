@@ -109,11 +109,11 @@ def hello():
                            ANDREWID=ANDREWID,
                            NAME=NAME,
                            lectures=zip(lecture_labels, lecture_status),
-                           assignments=list(zip(assignment_labels,
-                                                assignment_paths,
-                                                assignment_status,
-                                                duedates,
-                                                turned_in)))
+                           assignments4templates=list(zip(assignment_labels,
+                                                          assignment_paths,
+                                                          assignment_status,
+                                                          duedates,
+                                                          turned_in)))
 
 
 @app.route("/setup")

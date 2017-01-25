@@ -21,7 +21,7 @@ Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 
 <h2>Assignments</h2>
 <ul>
-  {% for label, path, status, duedate, turnedin in assignments %}
+  {% for label, path, status, duedate, turnedin in assignments4templates %}
   <li><a href="/assignment/{{ label }}">{{ path }}</a> ({{ status | safe }}) Due: {{duedate}}  <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}} </li>
   {% endfor %}
 </ul>
