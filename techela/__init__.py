@@ -80,7 +80,7 @@ def hello():
     # construct assignments/andrewid-label.ipynb to check if they have local
     # versions.
     assignments = data['assignments']
-    print(assignments)
+
     assignment_files = [os.path.split(assignment)[-1]
                         for assignment in assignments]
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
