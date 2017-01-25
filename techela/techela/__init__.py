@@ -18,11 +18,7 @@ app = Flask(__name__)
 COURSE = 's17-06364'
 COURSEDIR = os.path.expanduser('~/{}/'.format(COURSE))
 
-if not os.path.isdir(COURSEDIR):
-    os.makedirs(COURSEDIR)
-    os.makedirs(COURSEDIR + 'assignments/')
-    os.makedirs(COURSEDIR + 'solutions/')
-    os.makedirs(COURSEDIR + 'lectures/')
+
 
 CONFIG = '{}/techela.json'.format(COURSEDIR)
 if os.path.exists(CONFIG):
@@ -49,9 +45,20 @@ SOLUTIONURL = BASEURL + 'solutions/'
 
 @app.route("/")
 def hello():
-    # TODO download this from github.
 
-    with open('s17-06364.json') as f:
+    if not os.path.isdir(COURSEDIR):
+        os.makedirs(COURSEDIR)
+        os.makedirs(COURSEDIR + 'assignments/')
+        os.makedirs(COURSEDIR + 'solutions/')
+        os.makedirs(COURSEDIR + 'lectures/')
+
+        return redirect(url_for('setup'))
+
+    # Should be setup now.
+    urllib.request.urlretrieve('{}/s17-06364.json'.format(BASEURL),
+                               '{}/s17-06364.json'.format(COURSEDIR))
+
+    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
         data = json.loads(f.read())
 
     # First get lecture status
@@ -89,6 +96,20 @@ def hello():
                                            assignment_status,
                                            duedates,
                                            turned_in))
+
+
+@app.route("/setup")
+def setup_view():
+    return render_template('setup.html')
+
+
+@app.route("/setup_post", methods=['POST'])
+def setup_post():
+    andrewid = request.form['andrewid']
+    fullname = request.form['fullname']
+
+    return redirect(url_for('hello'))
+
 
 
 @app.route("/lecture/<label>")
@@ -209,4 +230,4 @@ def submit_post():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
