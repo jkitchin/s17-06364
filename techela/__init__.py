@@ -1,5 +1,5 @@
 """A flask of techela."""
-import getpass
+
 import os
 import json
 import smtplib
