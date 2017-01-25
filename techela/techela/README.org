@@ -1,6 +1,8 @@
-#+TITLE: Techela in a Box
+#+TITLE: Techela in a flask
 
-Techela in a Box is a set of IPython magic commands for running a course from IPython using Box.com and GitHUB. Students complete assignments as IPython notebooks. They use Ipython to submit the assignments by email. The assignments are automatically uploaded to a folder on Box.com. Instructors and TAs then the assignments, add feedback and grades to them, and finally return them to the students by email.
+Techela in a flask is an application for using Jupyter notebooks in a course.
+
+is a set of IPython magic commands for running a course from IPython using Box.com and GitHUB. Students complete assignments as IPython notebooks. They use Ipython to submit the assignments by email. The assignments are automatically uploaded to a folder on Box.com. Instructors and TAs then the assignments, add feedback and grades to them, and finally return them to the students by email.
 
 * Installation
 

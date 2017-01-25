@@ -1,0 +1,18 @@
+{% block body %}
+  <h2>Techela setup</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <a href="/">Home</a><br>
+
+  Please enter your AndrewID and the full name you would like put in your homework assignments below. This information will be saved and used to create homework filenames. 
+  
+  <form action="{{ url_for('setup_post') }}" method="POST">
+    <input type="hidden" name="label" value={{label}}>
+    <dl>
+      <dt>Andrew ID:
+	<dd><input type="text" name="andrewid">
+	  <dt>Full Name:
+	    <dd><input type="text" name="fullname">
+	    <dd><input type=submit value=Submit>
+    </dl>
+  </form>
+  {% endblock %}

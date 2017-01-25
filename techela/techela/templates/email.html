@@ -1,6 +1,10 @@
 {% block body %}
-  <h2>AndrewID</h2>
+  <h2>Authentication for submitting homework.</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <a href="/">Home</a><br>
+  
+  Please enter your AndrewID password in the form below to submit your homework assignment for {{label}}. Your homework will be sent by your Andrew email account. Be patient, it takes a few seconds to send. When it is done, you will be redirected back to the Home page, and you should see some indication the assignment has been turned in.
+  
   <form action="{{ url_for('submit_post') }}" method="POST">
     <input type="hidden" name="label" value={{label}}>
     <dl>

@@ -18,21 +18,7 @@ app = Flask(__name__)
 COURSE = 's17-06364'
 COURSEDIR = os.path.expanduser('~/{}/'.format(COURSE))
 
-
-
 CONFIG = '{}/techela.json'.format(COURSEDIR)
-if os.path.exists(CONFIG):
-    with open(CONFIG) as f:
-        data = json.loads(f.read())
-        ANDREWID = data['ANDREWID']
-        NAME = data['NAME']
-else:
-    ANDREWID = input("Enter your Andrew ID: ")
-    NAME = input("Enter your full name: ")
-    with open(CONFIG, 'w') as f:
-        f.write(json.dumps({'ANDREWID': ANDREWID,
-                            'NAME': NAME}))
-
 
 BOX_EMAIL = 'submiss.uj1v37qz3m0gpzsu@u.box.com'
 
@@ -52,9 +38,15 @@ def hello():
         os.makedirs(COURSEDIR + 'solutions/')
         os.makedirs(COURSEDIR + 'lectures/')
 
-        return redirect(url_for('setup'))
+    if not os.path.exists(CONFIG):
+        return redirect(url_for('setup_view'))
 
-    # Should be setup now.
+    with open(CONFIG) as f:
+        data = json.loads(f.read())
+        ANDREWID = data['ANDREWID']
+        NAME = data['NAME']
+
+    # Should be setup now. Update the course info
     urllib.request.urlretrieve('{}/s17-06364.json'.format(BASEURL),
                                '{}/s17-06364.json'.format(COURSEDIR))
 
@@ -62,37 +54,47 @@ def hello():
         data = json.loads(f.read())
 
     # First get lecture status
-    lecture_labels = data['lectures']
-    lecture_paths = ['{}/lectures/{}.ipynb'.format(COURSEDIR, label)
-                     for label in lecture_labels]
+    lecture_paths = [os.path.join(COURSEDIR, path)
+                     for path in data['lectures']]
     lecture_status = ['Downloaded' if os.path.exists(path)
-                      else 'Not downloaded'
+                      else '<font color="red">Not downloaded</font>'
                       for path in lecture_paths]
 
-    # Next get assignments.
-    assignment_labels = data['assignments']
-    assignment_paths = ['{}/assignments/{}-{}.ipynb'.format(COURSEDIR,
+    # Next get assignments. These are in assignments/label.ipynb For students I
+    # construct assignments/andrewid-label.ipynb to check if they have local
+    # versions.
+    assignments = data['assignments']
+    assignment_files = [os.path.split(assignment)[-1]
+                        for assignment in assignments]
+    assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
+    assignment_paths = ['{}assignments/{}-{}.ipynb'.format(COURSEDIR,
                                                             ANDREWID,
                                                             label)
                         for label in assignment_labels]
     assignment_status = ['Downloaded' if os.path.exists(path)
-                         else 'Not downloaded'
+                         else '<font color="red">Not downloaded</font>'
                          for path in assignment_paths]
 
-    duedates = []
+    duedates = [assignments[f]['duedate'] for f in assignments]
     turned_in = []
     for path in assignment_paths:
-        with open(path) as f:
-            d = json.loads(f.read())
-            duedates.append(d['metadata']['org']['DUEDATE'])
-            turned_in.append(d['metadata'].get('TURNED-IN', None))
+        if os.path.exists(path):
+            with open(path) as f:
+                d = json.loads(f.read())
+                ti = d['metadata'].get('TURNED-IN', None)
+                if ti:
+                    turned_in.append(ti['timestamp'])
+        else:
+            duedates.append('Unknown')
+            turned_in.append('Not yet.')
 
     return render_template('hello.html',
                            COURSEDIR=COURSEDIR,
                            ANDREWID=ANDREWID,
                            NAME=NAME,
-                           lectures=zip(lecture_labels, lecture_status),
+                           lectures=zip(lecture_paths, lecture_status),
                            assignments=zip(assignment_labels,
+                                           assignment_paths,
                                            assignment_status,
                                            duedates,
                                            turned_in))
@@ -105,8 +107,12 @@ def setup_view():
 
 @app.route("/setup_post", methods=['POST'])
 def setup_post():
-    andrewid = request.form['andrewid']
-    fullname = request.form['fullname']
+    ANDREWID = request.form['andrewid']
+    NAME = request.form['fullname']
+
+    with open(CONFIG, 'w') as f:
+        f.write(json.dumps({'ANDREWID': ANDREWID.lower(),
+                            'NAME': NAME}))
 
     return redirect(url_for('hello'))
 
@@ -132,8 +138,12 @@ def open_lecture(label):
 
 @app.route("/assignment/<label>")
 def open_assignment(label):
-    print('Opening {}'.format(label))
-    fname = '{}/assignments/{}-{}.ipynb'.format(COURSEDIR,
+    with open(CONFIG) as f:
+        data = json.loads(f.read())
+        ANDREWID = data['ANDREWID']
+        NAME = data['NAME']
+        
+    fname = '{}assignments/{}-{}.ipynb'.format(COURSEDIR,
                                                 ANDREWID,
                                                 label)
     if not os.path.exists(fname):
@@ -179,6 +189,11 @@ def authenticate(label):
 @app.route("/submit_post", methods=['POST'])
 def submit_post():
     """Turn in LABEL by email."""
+
+    with open(CONFIG) as f:
+        data = json.loads(f.read())
+        ANDREWID = data['ANDREWID']
+        NAME = data['NAME']
 
     password = request.form['password']
     label = request.form['label']
@@ -230,4 +245,12 @@ def submit_post():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    import threading
+    import webbrowser
+
+    port = 5000
+    url = "http://127.0.0.1:{0}".format(port)
+
+    threading.Timer(1.25, lambda: webbrowser.open(url)).start()
+
+    app.run(port=port, debug=True)
