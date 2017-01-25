@@ -56,6 +56,10 @@ def hello():
     # First get lecture status
     lecture_paths = [os.path.join(COURSEDIR, path)
                      for path in data['lectures']]
+    lecture_files = [os.path.split(path)[-1] for path in lecture_paths]
+
+    lecture_labels = [os.path.splitext(f)[0] for f in lecture_files]
+    
     lecture_status = ['Downloaded' if os.path.exists(path)
                       else '<font color="red">Not downloaded</font>'
                       for path in lecture_paths]
@@ -92,7 +96,7 @@ def hello():
                            COURSEDIR=COURSEDIR,
                            ANDREWID=ANDREWID,
                            NAME=NAME,
-                           lectures=zip(lecture_paths, lecture_status),
+                           lectures=zip(lecture_labels, lecture_status),
                            assignments=zip(assignment_labels,
                                            assignment_paths,
                                            assignment_status,
