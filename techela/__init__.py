@@ -59,7 +59,7 @@ def hello():
     lecture_files = [os.path.split(path)[-1] for path in lecture_paths]
 
     lecture_labels = [os.path.splitext(f)[0] for f in lecture_files]
-    
+
     lecture_status = ['Downloaded' if os.path.exists(path)
                       else '<font color="red">Not downloaded</font>'
                       for path in lecture_paths]
@@ -72,8 +72,8 @@ def hello():
                         for assignment in assignments]
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
     assignment_paths = ['{}assignments/{}-{}.ipynb'.format(COURSEDIR,
-                                                            ANDREWID,
-                                                            label)
+                                                           ANDREWID,
+                                                           label)
                         for label in assignment_labels]
     assignment_status = ['Downloaded' if os.path.exists(path)
                          else '<font color="red">Not downloaded</font>'
@@ -183,6 +183,7 @@ def open_assignment(label):
 
     return redirect(url_for('hello'))
 
+
 @app.route("/new")
 def new_notebook():
     CWD = os.getcwd()
@@ -192,6 +193,8 @@ def new_notebook():
                      stderr=subprocess.PIPE,
                      stdin=subprocess.PIPE)
     os.chdir(CWD)
+    return redirect(url_for('hello'))
+
     
 @app.route("/submit/<label>")
 def authenticate(label):
@@ -213,8 +216,8 @@ def submit_post():
 
     # Create the container (outer) email message.
     msg = MIMEMultipart()
-    subject = '[{}] - Turning in {}'
-    msg['Subject'] = subject.format(COURSE, label)
+    subject = '[{}] - Turning in {} from {}'
+    msg['Subject'] = subject.format(COURSE, label, NAME)
     msg['From'] = '{}@andrew.cmu.edu'.format(ANDREWID)
     msg['To'] = BOX_EMAIL
     msg['Cc'] = '{}@andrew.cmu.edu'.format(ANDREWID)

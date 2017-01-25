@@ -1,10 +1,10 @@
 {
     "assignments": {
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>"
-        },
         "assignments/batch-2.ipynb": {
             "duedate": "<2017-01-27 Fri>"
+        },
+        "assignments/batch-1.ipynb": {
+            "duedate": "<2017-01-26 Thu>"
         }
     },
     "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
