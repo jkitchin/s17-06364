@@ -22,9 +22,7 @@ Your files are in <a href="file:///{{COURSEDIR}}">{{COURSEDIR}}</a> <br>
 <h2>Assignments</h2>
 <ul>
   {% for label, path, status, duedate, turnedin in assignments %}
-  {{assignments}}
-<li><a href="/assignment/{{ label }}">{{ path }}</a> ({{ status | safe }}) <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}}
-  <br> Due: {{duedate}} </li>
-{% endfor %}
+  <li><a href="/assignment/{{ label }}">{{ path }}</a> ({{ status | safe }}) Due: {{duedate}}  <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}} </li>
+  {% endfor %}
 </ul>
 
