@@ -102,7 +102,6 @@ def hello():
                 if ti:
                     turned_in.append(ti['timestamp'])
         else:
-            duedates.append('Unknown')
             turned_in.append('Not yet.')
 
     return render_template('hello.html',
