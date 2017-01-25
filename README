@@ -1,0 +1,40 @@
+# -*- mode: org -*-
+#+TITLE: Techela in a flask
+
+Techela in a flask is an application for using Jupyter notebooks in a course.
+
+There is one command, techela, which launches the flask app for the course and opens it in a browser. This app lists all course lectures, and assignments, and provides the functionality required to download and submit assignments. 
+
+Students complete assignments as IPython notebooks. The app submits the  assignments by email using an authenticated server. The assignments are automatically uploaded to a folder on Box.com. Instructors and TAs then the assignments, add feedback and grades to them, and finally return them to the students by email.
+
+This package is currently only usable at CMU without significant modification.
+
+* Installation
+
+** Python
+You need Python 3, I recommend Anaconda.
+
+Then, open IPython, and run this command.
+
+#+BEGIN_SRC python :results output org drawer
+!pip install techela
+#+END_SRC
+
+** TODO Instructors
+
+* TODO Using techela
+** First time course setup for instructors
+*** Box setup
+1. Create a Box folder you plan to use for the course. Invite the TAs as collaborators.
+2. Create a folder called submissions in this folder, and enable uploads by email. Make a note of the email address.
+
+** For students
+
+1. Open Ipython.
+2. import techela
+2. Type techela. This will setup a course for you. 
+
+
+
+
+
