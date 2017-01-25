@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='techela',
-      version='0.3',
+      version='0.3.2',
       description='Utilities for techela.',
       url='http://github.com/jkitchin/s17-06364',
       author='John Kitchin',
@@ -14,6 +14,5 @@ setup(name='techela',
       long_description='''A python version of techela''',
       install_requires=['Flask'],)
 
-
-# to put up a new version, 
-# (shell-command "python setup.py sdist upload") 
+# to put up a new version
+# (shell-command "python setup.py sdist upload")
