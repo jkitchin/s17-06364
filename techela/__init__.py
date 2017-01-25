@@ -100,9 +100,21 @@ def hello():
                 d = json.loads(f.read())
                 ti = d['metadata'].get('TURNED-IN', None)
                 if ti:
-                    turned_in.append(ti['timestamp'])
+                    turned_in.append(ti['timestamp'])                
+                else:
+                    turned_in.append('Not yet.')
         else:
-            turned_in.append('Not yet.')
+            turned_in.append(None)
+
+    print('Paths: ', assignment_paths)
+    print('Turned: ', turned_in)
+    print('Labels: ', assignment_labels)
+    
+    print(list(zip(assignment_labels,
+                                                          assignment_paths,
+                                                          assignment_status,
+                                                          duedates,
+                                                          turned_in)))
 
     return render_template('hello.html',
                            COURSEDIR=COURSEDIR,
