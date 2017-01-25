@@ -1,3 +1,17 @@
+* Installing techela
+
+We will use techela to access assignments and lecture notes. It is a simple web app that will do what you need for the class. We have to install it in Python. It is new, and may take a few days to work cleanly. Have some patience, it will be worth it.
+
+Basically we will install the techela package, and then run the techela command.
+
+#+BEGIN_SRC ipython :session
+!pip install -U techela
+!techela
+#+END_SRC
+
+The first time you run it, you will be prompted for your Andrew ID and full name. Then it will open a website on your computer for the course.
+
+
 * Lecture 2 (Ch. 1.4-1.5)
 ** The continuously stirred tank reactor (CSTR) 
 
@@ -188,7 +202,7 @@ print('It takes a volume of {0:1.2f} L to get an exit concentration of 0.5M'.for
 #+RESULTS:
 : It takes a volume of 19.97 L to get an exit concentration of 0.5M
 
-* Things you should review
+* Things you should review (in addition to Ch 1)
 
 1. [[https://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.linspace.html][numpy.linspace]]
 2. [[https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.optimize.fsolve.html][scipy.optimize.fsolve]]
@@ -199,3 +213,14 @@ print('It takes a volume of {0:1.2f} L to get an exit concentration of 0.5M'.for
 7. matplotlib.pyplot.ylabel
 
 See this [[http://matplotlib.org/users/pyplot_tutorial.html][plotting tutorial]].
+
+
+You should be able to:
+
+1. Evaluate simple mathematical expressions with the Jupyter notebook and Python.
+2. Make a simple plot of two arrays.
+3. Solve a simple nonlinear equation.
+4. Numerically integrate a simple integral.
+5. Integrate a simple first-order differential equation.
+6. Write mole balances for the three kinds of reactors we have discussed so far.
+7. Solve simple problems like the ones demonstrated so far.
