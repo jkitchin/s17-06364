@@ -38,6 +38,8 @@ def open_course():
         opener = "open" if sys.platform == "darwin" else "xdg-open"
         subprocess.call([opener, COURSEDIR])
 
+    return redirect(url_for('hello'))
+
 
 @app.route("/")
 def hello():
