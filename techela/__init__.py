@@ -6,7 +6,7 @@ import smtplib
 import subprocess
 import time
 import urllib
-
+import sys
 
 from email import encoders
 from email.mime.base import MIMEBase
@@ -27,6 +27,16 @@ BASEURL = 'https://raw.githubusercontent.com/jkitchin/s17-06364/master/'
 LECTUREURL = BASEURL + 'lectures/'
 ASSIGNMENTURL = BASEURL + 'assignments/'
 SOLUTIONURL = BASEURL + 'solutions/'
+
+
+@app.route("/coursedir")
+def open_course():
+    """Open the course directory in a file explorer."""
+    if sys.platform == "win32":
+        os.startfile(COURSEDIR)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, COURSEDIR])
 
 
 @app.route("/")
