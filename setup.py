@@ -13,3 +13,7 @@ setup(name='techela',
       include_package_data=True,
       long_description='''A python version of techela''',
       install_requires=['Flask'],)
+
+
+# to put up a new version, 
+# (shell-command "python setup.py sdist upload") 
