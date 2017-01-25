@@ -1,0 +1,26 @@
+<!doctype html>
+<title>S17 06-364 - Techela in a flask</title>
+
+<h1>S17 06-364 - Techela in a flask</h1>
+You registered as {{NAME}} ({{ANDREWID}})<br>
+Your files are in <a href="file:///{{COURSEDIR}}">{{COURSEDIR}}</a> <br>
+
+<a href="https://github.com/jkitchin/s17-06364/blob/master/syllabus.org">Syllabus</a><br>
+<a href="https://github.com/jkitchin/s17-06364/blob/master/course-schedule.org">Course schedule</a>
+
+<h2> Lectures </h2>
+
+<ul>
+{% for label, status in lectures %}
+<li><a href="/lecture/{{ label }}">{{ label }}</a> ({{ status }})</li>
+{% endfor %}
+</ul>
+
+
+<h2>Assignments</h2>
+<ul>
+{% for label, status, duedate, turnedin in assignments %}
+<li><a href="/assignment/{{ label }}">{{ label }}</a> ({{ status }}) Due: {{duedate}} <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}}</li>
+{% endfor %}
+</ul>
+

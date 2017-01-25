@@ -64,7 +64,8 @@ These will be given for a while.
 
 The mole balance will be the foundation of reactor design.
 
-[[./images/control-volume.png]]
+
+ghss:./images/control-volume.png      
 
 In - Out + Generation = Accumulation
 

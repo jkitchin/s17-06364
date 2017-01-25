@@ -1,0 +1,12 @@
+{% block body %}
+  <h2>AndrewID</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('submit_post') }}" method="POST">
+    <input type="hidden" name="label" value={{label}}>
+    <dl>
+      <dt>Andrew Password:
+      <dd><input type=password name=password>
+      <dd><input type=submit value=Submit>
+    </dl>
+  </form>
+{% endblock %}
