@@ -1,4 +1,13 @@
 <!doctype html>
+<head>
+<style>
+  table, th, td {
+  padding: 5px;
+  border-collapse: collapse;
+    border: 1px solid black;
+}
+</style>
+</head>
 <title>S17 06-364 - Techela in a flask</title>
 
 {% if not ONLINE %}
@@ -7,7 +16,11 @@
   </font>
 {% endif %}
 
-<h1>S17 06-364 - Techela in a flask</h1>
+{% if ANDREWID in ['jkitchin', 'eerdinc', 'dmolinat', 'dklee1'] %}
+<br><a href="/admin">Admin</a><br>
+{% endif %}
+
+<h1>S17 06-364 - Techela in a flask (version {{version}}) </h1>
 You registered as {{NAME}} ({{ANDREWID}}) (<a href="/setup">Change registration information</a>)<br>
 Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 
@@ -36,9 +49,15 @@ These are the notes that I have used in class. Each time you open one, it will d
 
 
 <h2>Assignments</h2>
-<ul>
+<table>
   {% for label, path, status, duedate, turnedin in assignments4templates %}
-  <li><a href="/assignment/{{ label }}">{{ label }}</a> ({{ status | safe }}) Due: {{duedate}}  <a href="/submit/{{ label }}">Submit</a> Turned in: {{turnedin}} </li>
+  <tr>
+    <td><a href="/assignment/{{ label }}">{{ label }}</a></td>
+    <td>{{ status | safe }}</td>
+    <td>Due: {{duedate}}</td>
+    <td><a href="/submit/{{ label }}">Submit</a></td>
+    <td>Turned in: {{turnedin}}</td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Techela admin setup</title>
+     
+    
+
+  </head>
+  <body>
+
+    Browse to "Box Sync/s17-06-364/s17-06-364.json" and select it.
+    
+    <form method=post action="{{ url_for('admin_setup_post') }}" enctype=multipart/form-data>
+
+      <script type="text/javascript">
+function GetDirectory()
+{
+strFile = document.FileForm.filename.value;
+intPos = strFile.lastIndexOf("\\");
+strDirectory = strFile.substring(0, intPos);
+//alert(strDirectory);
+document.FileForm.Directory.value = strDirectory;
+}
+
+</script>
+<input type="file" id="filename" name="filename" value="" onChange="GetDiretory()">
+<input type="hidden" id="Directory" name="Directory" value="">
+ <input type="button" id="findout" onclick="fileuploadtext();" value="findout"/>
+     </form>
+	
+  </body>
+</html>
+
+

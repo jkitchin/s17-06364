@@ -1,13 +1,15 @@
 #!python
 
-import threading
-import webbrowser
+# import threading
+# import webbrowser
 
-from techela import *
+# from techela import *
 
-port = 5000
-url = "http://127.0.0.1:{0}".format(port)
+# port = 5000
+# url = "http://127.0.0.1:{0}".format(port)
 
-threading.Timer(1.25, lambda: webbrowser.open(url)).start()
+# threading.Timer(1.25, lambda: webbrowser.open(url)).start()
 
-app.run(port=port, debug=True)
+# app.run(port=port, debug=True)
+
+print('Deprecated. Please run "python -m techela.app"')

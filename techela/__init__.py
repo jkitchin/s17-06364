@@ -1,4 +1,5 @@
 """A flask of techela."""
+from pkg_resources import get_distribution
 
 import os
 import json
@@ -6,13 +7,18 @@ import smtplib
 import subprocess
 import time
 import urllib
+import shutil
 import sys
 
 from email import encoders
 from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from flask import Flask, render_template, redirect, url_for, request
+
+__version__ = get_distribution('techela').version
+
 app = Flask(__name__)
 
 COURSE = 's17-06364'
@@ -53,7 +59,7 @@ def hello():
     if not os.path.exists(CONFIG):
         return redirect(url_for('setup_view'))
 
-    with open(CONFIG) as f:
+    with open(CONFIG, encoding='utf-8') as f:
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
         NAME = data['NAME']
@@ -67,7 +73,7 @@ def hello():
         print('Unable to download the course json file!!!!!!')
         ONLINE = False
 
-    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
         data = json.loads(f.read())
 
     # First get lecture status
@@ -101,7 +107,7 @@ def hello():
     turned_in = []
     for path in assignment_paths:
         if os.path.exists(path):
-            with open(path) as f:
+            with open(path, encoding='utf-8') as f:
                 d = json.loads(f.read())
                 ti = d['metadata'].get('TURNED-IN', None)
                 if ti:
@@ -116,6 +122,7 @@ def hello():
                            ANDREWID=ANDREWID,
                            NAME=NAME,
                            ONLINE=ONLINE,
+                           version=__version__,
                            lectures=list(zip(lecture_labels, lecture_status)),
                            assignments4templates=list(zip(assignment_labels,
                                                           assignment_paths,
@@ -293,3 +300,219 @@ def submit_post():
         s.quit()
 
     return redirect(url_for('hello'))
+
+# * Admin
+
+@app.route('/admin')
+def admin():
+    "Setup admin page."
+    # First install the new key bindings.
+    import notebook.nbextensions
+    from notebook.services.config import ConfigManager
+
+    import techela
+    js = '{}/{}'.format(techela.__path__[0], 'static/techela.js')
+    notebook.nbextensions.install_nbextension(js, user=True)
+    cm = ConfigManager()
+    cm.update('notebook', {"load_extensions": {"techela": True}})
+
+    ONLINE = True
+    try:
+        urllib.request.urlretrieve('{}/s17-06364.json'.format(BASEURL),
+                                   '{}/s17-06364.json'.format(COURSEDIR))
+    except:
+        print('Unable to download the course json file!!!!!!')
+        ONLINE = False
+
+    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+        data = json.loads(f.read())
+
+    # Next get assignments. These are in assignments/label.ipynb For students I
+    # construct assignments/andrewid-label.ipynb to check if they have local
+    # versions.
+    assignments = data['assignments']
+
+    assignment_files = [os.path.split(assignment)[-1]
+                        for assignment in assignments]
+    assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
+    duedates = [assignments[f]['duedate'] for f in assignments]
+
+    return render_template('admin.html',
+                           ONLINE=ONLINE,
+                           assignments4templates=list(zip(assignment_labels,
+                                                          duedates)))
+
+
+def get_roster():
+    "Read roster and return a list of dictionaries for each student."
+    import csv
+    roster_file = os.path.expanduser('~/Box Sync/s17-06-364/course/roster.csv')
+    with open(roster_file) as f:
+        reader = csv.reader(f, delimiter=',')
+        rows = [row for row in reader]
+        roster_entries = [dict(zip(rows[0], row)) for row in rows]
+    # skip first entry that is the headers
+    return roster_entries[1:]
+
+
+@app.route('/roster')
+def roster():
+    "Render roster page"
+    return render_template('roster.html',
+                           roster=get_roster())
+
+
+@app.route('/grade-assignment/<label>')
+def grade_assignment(label):
+
+    roster = get_roster()
+    andrewids = [d['Andrew ID'] for d in roster]
+
+    submission_dir = os.path.expanduser('~/Box Sync/s17-06-364/submissions')
+    assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
+    assignment_dir = '{}/{}'.format(assignment_dir, label)
+
+    if not os.path.isdir(assignment_dir):
+        os.makedirs(assignment_dir)
+
+    grade_data = []
+
+    for entry in roster:
+        andrewid = entry['Andrew ID']
+        d = {}
+        d['name'] = '{} {}'.format(entry['Preferred/First Name'],
+                                   entry['Last Name'])
+
+        sfile = '{}-{}.ipynb'.format(andrewid, label)
+        SFILE = os.path.join(submission_dir, sfile)
+
+        AFILE = os.path.join(assignment_dir, sfile)
+        if not os.path.exists(AFILE) and os.path.exists(SFILE):
+            # Now we move SFILE to AFILE
+            shutil.copy(SFILE, AFILE)
+
+        d['filename'] = AFILE
+        d['andrewid'] = andrewid
+        d['label'] = label
+
+        # Check for a grade and returned
+        if os.path.exists(AFILE):
+            with open(AFILE) as f:
+                j = json.loads(f.read())
+                if j['metadata'].get('grade', None):
+                    d['grade'] = j['metadata']['grade']['overall']
+                else:
+                    d['grade'] = None
+
+                if j['metadata'].get('RETURNED', None):
+                    d['returned'] = j['metadata']['RETURNED']
+                else:
+                    d['returned'] = None
+
+        grade_data.append(d)
+
+    app.jinja_env.globals.update(exists=os.path.exists)
+
+    return render_template('grade-assignment.html',
+                           label=label,
+                           grade_data=grade_data)
+
+
+@app.route('/grade/<andrewid>/<label>')
+def grade(andrewid, label):
+    "Opens the file for andrewid and label."
+    assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
+    AFILE = os.path.join(assignment_dir,
+                         label,
+                         '{}-{}.ipynb'.format(andrewid, label))
+
+    # Now open the notebook.
+    cmd = ["jupyter", "notebook", AFILE]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE,
+                     stdin=subprocess.PIPE)
+
+    return redirect(url_for('grade_assignment', label=label))
+
+
+@app.route('/return/<andrewid>/<label>')
+def return_one(andrewid, label):
+    assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
+    AFILE = os.path.join(assignment_dir,
+                         label,
+                         '{}-{}.ipynb'.format(andrewid, label))
+    # Make sure file exists
+    if not os.path.exists(AFILE):
+        return redirect(url_for('grade_assignment', label=label))
+
+    # Check for grade, we don't return ungraded files
+    with open(AFILE) as f:
+        j = json.loads(f.read())
+        if j['metadata'].get('grade', None):
+            return redirect(url_for('grade_assignment', label=label))
+        grade = j['metadata']['grade']['overall']
+
+    # Check if it was already returned, we don't return it again
+    if j['metadata'].get('RETURNED', None):
+        return redirect(url_for('grade_assignment', label=label))
+
+    # ok, finally we have to send it back.
+    EMAIL = '{}@andrew.cmu.edu'.format(andrewid)
+
+    with open(CONFIG) as f:
+        data = json.loads(f.read())
+        ANDREWID = data['ANDREWID']
+
+    # Create the container (outer) email message.
+    msg = MIMEMultipart()
+    subject = '[{}] - {}-{}.ipynb has been graded'
+    msg['Subject'] = subject.format(COURSE, andrewid, label)
+    msg['From'] = '{}@andrew.cmu.edu'.format(ANDREWID)
+    msg['To'] = EMAIL
+
+    body = '''Grade = {}'''.format(grade)
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    ctype = 'application/octet-stream'
+    maintype, subtype = ctype.split('/', 1)
+
+    # Save some return data.
+    with open(AFILE) as f:
+        j = json.loads(f.read())
+
+    j['metadata']['RETURNED'] = time.asctime()
+
+    with open(AFILE, 'w') as f:
+        f.write(json.dumps(j))
+
+    with open(AFILE, 'rb') as fp:
+        attachment = MIMEBase(maintype, subtype)
+        attachment.set_payload(fp.read())
+        # Encode the payload using Base64
+        encoders.encode_base64(attachment)
+        # Set the filename parameter
+        aname = '{}-{}.ipynb'.format(ANDREWID, label)
+        attachment.add_header('Content-Disposition', 'attachment',
+                              filename=aname)
+        msg.attach(attachment)
+
+    with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
+        s.send_message(msg)
+        s.quit()
+
+    return redirect(url_for('grade_assignment', label=label))
+
+
+@app.route('/return-all/<label>')
+def return_all(label):
+    """Return all the assignments for label."""
+
+    roster = get_roster()
+    andrewids = [d['Andrew ID'] for d in roster]
+
+    for andrewid in andrewids:
+        return_one(andrewid, label)
+        time.sleep(1)
+
+    return redirect(url_for('grade_assignment', label=label))

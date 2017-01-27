@@ -1,0 +1,29 @@
+<!doctype html>
+<title>S17 06-364 - Techela in a flask</title>
+
+{% if not ONLINE %}
+<font color="red" size=110%>
+  WARNING: You do not appear to be online! You will not be able to download new files or submit assignments.
+  </font>
+{% endif %}
+
+<h1>S17 06-364 - Admin</h1>
+You registered as {{NAME}} ({{ANDREWID}}) (<a href="/setup">Change registration information</a>)<br>
+Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
+
+<a href="https://github.com/jkitchin/s17-06364/blob/master/syllabus.org">Syllabus</a><br>
+<a href="https://github.com/jkitchin/s17-06364/blob/master/course-schedule.org">Course schedule</a>
+<br>
+<a href="/new">New Notebook</a> (opens in a new browser tab).
+
+<br>
+<a href="/roster">Roster</a>
+
+<h2>Assignments</h2>
+Click on these links to collect and open a grade sheet for each assignment.
+<ul>
+  {% for label, duedate in assignments4templates %}
+  <li><a href="/grade-assignment/{{ label }}">{{ label }}</a>  Due: {{duedate}} </li>
+  {% endfor %}
+</ul>
+

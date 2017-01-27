@@ -1,0 +1,14 @@
+<!doctype html>
+<title>S17 06-364 - Techela in a flask</title>
+
+
+
+<h1>S17 06-364 - Roster</h1>
+
+<ul>
+  {% for d in roster[1:] %}
+  <li> {{ d['Preferred/First Name'] }}  {{ d['Last Name'] }} ({{d['Andrew ID']}}) <a href="mailto:{{d['Email']}}"> <a href="\gradebook\{{d['Andrew ID']}}">Gradebook<a/>
+</li>
+  {% endfor %}
+</ul>
+

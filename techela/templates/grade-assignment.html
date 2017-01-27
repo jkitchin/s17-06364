@@ -1,0 +1,39 @@
+<!doctype html>
+<title>S17 06-364 - Techela in a flask</title>
+
+<h1>S17 06-364 - Gradesheet for {{ label }}</h1>
+
+<a href="/return-all/{{ label }}">Return all assignments.</a>
+<br><br>
+<table border="1">
+  <tr>
+    <td>Name</td>
+    <td>File</td>
+    <td>Grade</td>
+    <td></td>
+    <td>Returned</td>
+  </tr>
+  
+  {% for d in grade_data %}
+  <tr>
+    <td>{{d['name']}}</td>
+    {% if exists(d['filename']) %}  
+    <td><a href="/grade/{{ d['andrewid'] }}/{{ label }}">{{d['andrewid']}}-{{d['label']}}.ipynb</a></td>
+    <td align="center">{{d['grade']}}</td>
+    {% if d['grade'] %}
+    <td><a href="/return/{{ d['andrewid'] }}/{{ label }}">Return</a></td>
+    <td>{{d['returned']}}</td>
+    {% else %}
+    <td></td>
+    <td></td>
+    {% endif %}
+    {% else %}
+    <td><font color="red">{{d['andrewid']}}-{{d['label']}}.ipynb is missing.</font></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    {% endif %}
+  {% endfor %}
+  </tr>  
+</table>
+
