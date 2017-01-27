@@ -1,19 +1,19 @@
 {
     "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
-    "assignments": {
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>"
-        },
-        "assignments/batch-2.ipynb": {
-            "duedate": "<2017-01-27 Fri>"
-        }
-    },
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
     "lectures": [
         "lectures/introduction.ipynb",
         "lectures/lecture-00.ipynb",
         "lectures/lecture-01.ipynb",
         "lectures/lecture-02.ipynb",
         "lectures/lecture-03.ipynb"
-    ]
+    ],
+    "assignments": {
+        "assignments/batch-2.ipynb": {
+            "duedate": "<2017-01-27 Fri>"
+        },
+        "assignments/batch-1.ipynb": {
+            "duedate": "<2017-01-26 Thu>"
+        }
+    },
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/"
 }
