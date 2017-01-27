@@ -117,6 +117,9 @@ def hello():
         else:
             turned_in.append(None)
 
+    solutions = data['solutions']
+    print(solutions)
+
     return render_template('hello.html',
                            COURSEDIR=COURSEDIR,
                            ANDREWID=ANDREWID,
@@ -129,7 +132,8 @@ def hello():
                                                           assignment_paths,
                                                           assignment_status,
                                                           duedates,
-                                                          turned_in)))
+                                                          turned_in,
+                                                          solutions)))
 
 
 @app.route("/setup")
