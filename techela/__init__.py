@@ -23,6 +23,7 @@ app = Flask(__name__)
 
 COURSE = 's17-06364'
 COURSEDIR = os.path.expanduser('~/{}/'.format(COURSE))
+SOLUTIONDIR = '{}/solutions'.format(COURSEDIR)
 
 CONFIG = '{}/techela.json'.format(COURSEDIR)
 
@@ -117,8 +118,12 @@ def hello():
         else:
             turned_in.append(None)
 
-    solutions = data['solutions']
-    print(solutions)
+    solution_paths = data['solutions']
+    solution_files = [os.path.split(path)[-1] for path in solution_paths]
+    solution_labels = [os.path.splitext(f)[0] for f in solution_files]
+
+    solutions = [label if label in solution_labels else None
+                 for label in assignment_labels]
 
     return render_template('hello.html',
                            COURSEDIR=COURSEDIR,
@@ -134,6 +139,11 @@ def hello():
                                                           duedates,
                                                           turned_in,
                                                           solutions)))
+
+@app.route("/debug")
+def debug():
+    "In debug mode this gets me to a console in the browser."
+    raise(Exception)
 
 
 @app.route("/setup")
@@ -176,6 +186,22 @@ def open_course_lecture(label):
     fname = '{}/lectures/course-{}.ipynb'.format(COURSEDIR, label)
 
     urllib.request.urlretrieve(LECTUREURL
+                               + '{}.ipynb'.format(label), fname)
+
+    # Now open the notebook.
+    cmd = ["jupyter", "notebook", fname]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE,
+                     stdin=subprocess.PIPE)
+
+    return redirect(url_for('hello'))
+
+
+@app.route("/solution/<label>")
+def open_solution(label):
+    fname = '{}/solutions/{}.ipynb'.format(COURSEDIR, label)
+
+    urllib.request.urlretrieve(SOLUTIONURL
                                + '{}.ipynb'.format(label), fname)
 
     # Now open the notebook.

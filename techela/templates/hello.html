@@ -17,7 +17,7 @@
 {% endif %}
 
 {% if ANDREWID in ['jkitchin', 'eerdinc', 'dmolinat', 'dklee1'] %}
-<br><a href="/admin">Admin</a><br>
+<br><a href="/admin">Admin</a><br> <a href="/debug">debug</a>
 {% endif %}
 
 <h1>S17 06-364 - Techela in a flask (version {{version}}) </h1>
@@ -51,6 +51,7 @@ These are the notes that I have used in class. Each time you open one, it will d
 
 
 <h2>Assignments</h2>
+<a href="/solution/example">Example solution</a><br><br>
 <table>
   {% for label, path, status, duedate, turnedin, solution in assignments4templates %}
   <tr>
@@ -58,9 +59,16 @@ These are the notes that I have used in class. Each time you open one, it will d
     <td>{{ status | safe }}</td>
     <td>Due: {{duedate}}</td>
     <td><a href="/submit/{{ label }}">Submit</a></td>
-    <td>Turned in: {{turnedin}}</td>
-    <td>{{solution}}</td>
+    <td>Turned in: {{turnedin}}</td>    
+    <td>
+      {% if solution %}
+      <a href="/solution/{{solution}}">{{solution}}</a>
+      {% else %}
+      Not available yet
+      {% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
+
 
