@@ -1,0 +1,18 @@
+#+OPTIONS: toc:nil
+* Announcements
+
+- techela 0.5 is available. Install it with 
+
+#+BEGIN_SRC sh
+pip install -U techela
+#+END_SRC
+
+
+* build                                                            :noexport:
+
+#+BEGIN_SRC emacs-lisp
+(org-html-export-to-html nil nil t t)
+#+END_SRC
+
+#+RESULTS:
+: ./announcements.html

@@ -122,6 +122,7 @@ def hello():
                            ANDREWID=ANDREWID,
                            NAME=NAME,
                            ONLINE=ONLINE,
+                           announcements=data['announcements']
                            version=__version__,
                            lectures=list(zip(lecture_labels, lecture_status)),
                            assignments4templates=list(zip(assignment_labels,
@@ -366,7 +367,6 @@ def roster():
 def grade_assignment(label):
 
     roster = get_roster()
-    andrewids = [d['Andrew ID'] for d in roster]
 
     submission_dir = os.path.expanduser('~/Box Sync/s17-06-364/submissions')
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
