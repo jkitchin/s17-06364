@@ -23,7 +23,9 @@
 <br><br>
 <table id="grades" border="1" class=tablesorter>
   <thead>
-    <th>Name</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Andrew ID</th>
     <th>File</th>
     <th>Turned in</th>
     <th>Grade</th>
@@ -33,7 +35,9 @@
   <tbody>
   {% for d in grade_data %}
   <tr>
-    <td>{{d['name']}}</td>
+    <td>{{d['first-name']}}</td>
+    <td>{{d['last-name']}}</td>
+    <td><a title="Click to send email" href="mailto:{{d['andrewid']}}@andrew.cmu.edu">{{d['andrewid']}}</a></td>
     {% if exists(d['filename']) %}  
     <td><a href="/grade/{{ d['andrewid'] }}/{{ label }}">{{d['andrewid']}}-{{d['label']}}.ipynb</a></td>
     <td>{{d['turned-in']}}</td>
@@ -49,7 +53,7 @@
     <td><font color="red">{{d['andrewid']}}-{{d['label']}}.ipynb is missing.</font></td>
     <td></td>
     <td></td>
-    <td></td>
+    <td></td>    
     <td></td>
     {% endif %}
       </tr>

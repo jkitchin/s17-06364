@@ -1,19 +1,19 @@
 """A flask of techela."""
-from pkg_resources import get_distribution
-
-import os
-import json
-import smtplib
-import subprocess
-import time
-import urllib
-import shutil
-import sys
-
+from datetime import datetime
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
+from pkg_resources import get_distribution
+import json
+import random
+import shutil
+import smtplib
+import subprocess
+import sys
+import time
+import urllib
 
 from flask import Flask, render_template, redirect, url_for, request
 
@@ -232,11 +232,13 @@ def open_assignment(label):
         with open(fname) as f:
             j = json.loads(f.read())
 
+        dt = datetime.now()
+
         author = {'cell_type': 'markdown',
                   'metadata': {},
                   'source': ['{} ({}@andrew.cmu.edu)\n'.format(NAME,
                                                                ANDREWID),
-                             'Date: {}\n'.format(time.asctime())]}
+                             'Date: {}\n'.format(dt.isoformat(" "))]}
         j['cells'].insert(0, author)
 
         # Also put Author metadata in so it is easy to email these back.
@@ -268,7 +270,7 @@ def new_notebook():
     os.chdir(CWD)
     return redirect(url_for('hello'))
 
-    
+
 @app.route("/submit/<label>")
 def authenticate(label):
     "Get the andrew password."
@@ -309,7 +311,8 @@ def submit_post():
         j = json.loads(f.read())
 
     j['metadata']['TURNED-IN'] = {}
-    j['metadata']['TURNED-IN']['timestamp'] = time.asctime()
+    dt = datetime.now()
+    j['metadata']['TURNED-IN']['timestamp'] = dt.isoformat(" ")
 
     with open(fname, 'w') as f:
         f.write(json.dumps(j))
@@ -397,6 +400,7 @@ def roster():
 def grade_assignment(label):
 
     roster = get_roster()
+    random.shuffle(roster)
 
     submission_dir = os.path.expanduser('~/Box Sync/s17-06-364/submissions')
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
@@ -410,6 +414,8 @@ def grade_assignment(label):
     for entry in roster:
         andrewid = entry['Andrew ID']
         d = {}
+        d['first-name'] = entry['Preferred/First Name']
+        d['last-name'] = entry['Last Name']
         d['name'] = '{} {}'.format(entry['Preferred/First Name'],
                                    entry['Last Name'])
 
@@ -439,6 +445,11 @@ def grade_assignment(label):
                 else:
                     d['returned'] = None
 
+                if j['metadata'].get("TURNED-IN"):
+                    d['turned-in'] = j['metadata']['TURNED-IN']['timestamp']
+                else:
+                    d['turned-in'] = None
+
         grade_data.append(d)
 
     app.jinja_env.globals.update(exists=os.path.exists)
@@ -467,23 +478,32 @@ def grade(andrewid, label):
 
 @app.route('/return/<andrewid>/<label>')
 def return_one(andrewid, label):
+    """Return an assignment by email. 
+    If a force parameter is given return even if it was returned before.
+    """
+    force = True if request.args.get('force') else False
+    print('force = ', force)
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
     AFILE = os.path.join(assignment_dir,
                          label,
                          '{}-{}.ipynb'.format(andrewid, label))
     # Make sure file exists
     if not os.path.exists(AFILE):
+        print('{} not found.'.format(AFILE))
         return redirect(url_for('grade_assignment', label=label))
 
     # Check for grade, we don't return ungraded files
     with open(AFILE) as f:
         j = json.loads(f.read())
-        if j['metadata'].get('grade', None):
+        if j['metadata'].get('grade', None) is None:
+            print('No grade in {}. not returning.'.format(AFILE))
             return redirect(url_for('grade_assignment', label=label))
         grade = j['metadata']['grade']['overall']
 
-    # Check if it was already returned, we don't return it again
-    if j['metadata'].get('RETURNED', None):
+    # Check if it was already returned, we don't return it again unless force
+    # is truthy.
+    if j['metadata'].get('RETURNED', None) and not force:
+        print('Returned already!')
         return redirect(url_for('grade_assignment', label=label))
 
     # ok, finally we have to send it back.
@@ -511,7 +531,8 @@ def return_one(andrewid, label):
     with open(AFILE) as f:
         j = json.loads(f.read())
 
-    j['metadata']['RETURNED'] = time.asctime()
+    dt = datetime.now()
+    j['metadata']['RETURNED'] = dt.isoformat(" ")
 
     with open(AFILE, 'w') as f:
         f.write(json.dumps(j))
@@ -527,9 +548,10 @@ def return_one(andrewid, label):
                               filename=aname)
         msg.attach(attachment)
 
-    with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
-        s.send_message(msg)
-        s.quit()
+    print(msg)
+#    with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
+#        s.send_message(msg)
+#        s.quit()
 
     return redirect(url_for('grade_assignment', label=label))
 
