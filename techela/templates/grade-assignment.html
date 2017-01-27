@@ -1,27 +1,45 @@
 <!doctype html>
 <title>S17 06-364 - Techela in a flask</title>
+<head>
+<script type="text/javascript" src="{{url_for('static', filename='jquery-latest.js')}}/"></script> 
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
+
+<script>
+  $(document).ready(function() 
+    { 
+        $("#grades").tablesorter({widgets:['zebra']}); 
+    } 
+  );
+</script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='themes/blue/style.css')}}" type="text/css" media="print, projection, screen" />
+
+
+</head>
 
 <h1>S17 06-364 - Gradesheet for {{ label }}</h1>
 
 <a href="/return-all/{{ label }}">Return all assignments.</a>
 <br><br>
-<table border="1">
-  <tr>
-    <td>Name</td>
-    <td>File</td>
-    <td>Grade</td>
-    <td></td>
-    <td>Returned</td>
-  </tr>
-  
+<table id="grades" border="1" class=tablesorter>
+  <thead>
+    <th>Name</th>
+    <th>File</th>
+    <th>Turned in</th>
+    <th>Grade</th>
+    <th></th>
+    <th>Returned</th>
+  </thead>
+  <tbody>
   {% for d in grade_data %}
   <tr>
     <td>{{d['name']}}</td>
     {% if exists(d['filename']) %}  
     <td><a href="/grade/{{ d['andrewid'] }}/{{ label }}">{{d['andrewid']}}-{{d['label']}}.ipynb</a></td>
+    <td>{{d['turned-in']}}</td>
     <td align="center">{{d['grade']}}</td>
     {% if d['grade'] %}
-    <td><a href="/return/{{ d['andrewid'] }}/{{ label }}">Return</a></td>
+    <td><a href="/return/{{ d['andrewid'] }}/{{ label }}?force=True">Return</a></td>
     <td>{{d['returned']}}</td>
     {% else %}
     <td></td>
@@ -32,8 +50,10 @@
     <td></td>
     <td></td>
     <td></td>
+    <td></td>
     {% endif %}
+      </tr>
   {% endfor %}
-  </tr>  
+  </tbody>
 </table>
 
