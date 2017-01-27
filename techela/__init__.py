@@ -122,7 +122,7 @@ def hello():
                            ANDREWID=ANDREWID,
                            NAME=NAME,
                            ONLINE=ONLINE,
-                           announcements=data['announcements']
+                           announcements=data['announcements'],
                            version=__version__,
                            lectures=list(zip(lecture_labels, lecture_status)),
                            assignments4templates=list(zip(assignment_labels,
