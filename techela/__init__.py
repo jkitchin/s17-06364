@@ -414,7 +414,8 @@ def roster():
 def grade_assignment(label):
 
     roster = get_roster()
-    random.shuffle(roster)
+    if request.args.get('shuffle'):
+        random.shuffle(roster)
 
     submission_dir = os.path.expanduser('~/Box Sync/s17-06-364/submissions')
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
@@ -509,11 +510,11 @@ def grade(andrewid, label):
 
 @app.route('/return/<andrewid>/<label>')
 def return_one(andrewid, label):
-    """Return an assignment by email. 
+    """Return an assignment by email.
     If a force parameter is given return even if it was returned before.
     """
     force = True if request.args.get('force') else False
-    print('force = ', force)
+
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
     GFILE = os.path.join(assignment_dir,
                          label,
@@ -580,9 +581,9 @@ def return_one(andrewid, label):
         msg.attach(attachment)
 
     print(msg)
-#    with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
-#        s.send_message(msg)
-#        s.quit()
+    with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
+        s.send_message(msg)
+        s.quit()
 
     return redirect(url_for('grade_assignment', label=label))
 
