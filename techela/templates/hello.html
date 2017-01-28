@@ -1,12 +1,19 @@
 <!doctype html>
 <head>
-<style>
-  table, th, td {
-  padding: 5px;
-  border-collapse: collapse;
-    border: 1px solid black;
-}
-</style>
+<script type="text/javascript" src="{{url_for('static', filename='jquery-latest.js')}}/"></script> 
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
+
+<script>
+  $(document).ready(function() 
+    { 
+  $("table").tablesorter({widgets:['zebra'], sortList: [[2, -1]]} ); 
+    } 
+  );
+</script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='themes/blue/style.css')}}" type="text/css" media="print, projection, screen" />
+
+
 </head>
 <title>S17 06-364 - Techela in a flask</title>
 
@@ -52,14 +59,22 @@ These are the notes that I have used in class. Each time you open one, it will d
 
 <h2>Assignments</h2>
 <a href="/solution/example">Example solution</a><br><br>
-<table>
+<table id="assignments" class=tablesorter>
+  <thead>
+    <th>label</th>
+    <th>status</th>
+    <th>due date</th>
+    <th>submit</th>
+    <th>turned in</th>
+    <th>solution</th>
+  </thead>
   {% for label, path, status, duedate, turnedin, solution in assignments4templates %}
   <tr>
     <td><a href="/assignment/{{ label }}">{{ label }}</a></td>
     <td>{{ status | safe }}</td>
-    <td>Due: {{duedate}}</td>
+    <td>{{duedate}}</td>
     <td><a href="/submit/{{ label }}">Submit</a></td>
-    <td>Turned in: {{turnedin}}</td>    
+    <td>{{turnedin}}</td>    
     <td>
       {% if solution %}
       <a href="/solution/{{solution}}">{{solution}}</a>

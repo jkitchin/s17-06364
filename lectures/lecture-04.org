@@ -1,0 +1,122 @@
+* Comparing the size of flow reactors
+
+For the CSTR we have seen that:
+
+$V = \frac{1}{-r_A} F_{A0} X$
+
+and for the PFR we have
+
+$V = F_{A0} \int_0^X \frac{1}{-r_A} dX$
+
+These two equations are related. Let's consider some data (Table 2-1 Fogler):
+
+#+BEGIN_SRC ipython :session :results value
+import numpy as np
+X = np.array([0, 0.1, 0.2, 0.4, 0.6, 0.7, 0.8])
+ra = -np.array([0.45, 0.37, 0.30, 0.195, 0.113, 0.079, 0.05])
+#+END_SRC
+
+#+RESULTS:
+
+Now, let's plot 
+
+#+BEGIN_SRC ipython :session :results value :file table2-1.png
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+plt.plot(X, 1 / -ra, 'bo-')
+plt.xlabel('Conversion (X)')
+plt.ylabel(r'$\frac{1}{-r_A}$')
+plt.grid()
+#+END_SRC
+
+#+RESULTS:
+[[file:table2-1.png]]
+
+Now, we can interpret the volume of a CSTR to be proportional to the area of a rectangle that is defined by $F_{A0} X \frac{1}{-r_A}$.
+
+The volume of the PFR, in contrast, is the area under this curve up to the desired conversion. So, for this reaction, the PFR will always have a lower volume than a CSTR for a given conversion. 
+
+Let's suppose that $F_{A0}=0.4$ mol/s, and estimate the volume required for a CSTR and PFR at 80% conversion. For the CSTR we have:
+
+#+BEGIN_SRC ipython :session
+Fa0 = 0.4  # mol / s
+
+V = Fa0 * X[-1] * (1 / -ra)[-1]
+
+print('The volume of the CSTR is {:1.3f} m^3'.format(V)) 
+#+END_SRC
+
+#+RESULTS:
+: The volume of the CSTR is 6.40 m^3
+
+
+The PFR is a little more difficult. We have to perform an integral of the discrete data. We can use the trapezoid method of integration:
+
+#+BEGIN_SRC ipython :session
+from scipy.integrate import trapz
+
+V = Fa0 * trapz(1 / -ra, X)
+
+print('The volume of the PFR is {:1.3f} m^3'.format(V))
+#+END_SRC
+
+#+RESULTS:
+: The volume of the PFR is 2.200 m^3
+
+Or Simpson's method:
+
+#+BEGIN_SRC ipython :session
+from scipy.integrate import simps
+
+V = Fa0 * simps(1 / -ra, X)
+
+print('The volume of the PFR is {:1.3f} m^3'.format(V))
+#+END_SRC
+
+#+RESULTS:
+: The volume of the PFR is 2.150 m^3
+
+Neither is "right", they both involve approximations to the true value of the integral.
+
+** Interpolation
+
+What about the volume of a reactor at X=0.5? We do not have data there, and we have no way to get new data. You have to interpolate to get the answer. The best way to do this is to let Python do the interpolating for you by creating an interpolating function.
+
+#+BEGIN_SRC ipython :session
+from scipy.interpolate import interp1d
+
+f = interp1d(X, ra)
+print(f(0.5))
+#+END_SRC  
+
+#+RESULTS:
+: -0.154
+
+#+BEGIN_SRC ipython :session
+X5 = 0.5
+ra5 = f(X5)
+V = Fa0 * X5 * (1 / -ra5)
+
+print('The volume of the CSTR is {:1.3f} m^3 at X={}.'.format(V, X5)) 
+#+END_SRC
+
+#+RESULTS:
+: The volume of the CSTR is 1.299 m^3 at X=0.5
+
+For the PFR we have some decisions to make. The best path might be to use quad. This is the simple approach that 
+
+#+BEGIN_SRC ipython :session
+from scipy.integrate import quad
+
+def integrand(X):
+    return Fa0 / -f(X)
+
+ans, err = quad(integrand, 0, X5)
+print('The volume of the PFR is {:1.3f} m^3 at X={}.'.format(ans, X5))
+#+END_SRC
+
+#+RESULTS:
+: The volume of the PFR is 0.776 m^3 at X=0.5.
+
+*Exercise*: An alternative to interpolating on -$r_A$ is to interpolate on $1 / -r_A$. Make an array of 50 points in X, compute $-r_A$ on it, and then plot $1/-r_A$ along with the known data points for $-1/-r_A$. Does it look weird to you? 

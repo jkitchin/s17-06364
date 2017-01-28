@@ -1,28 +1,36 @@
 <!doctype html>
 <title>S17 06-364 - Techela in a flask</title>
 <head>
-<style>
-  table, th, td {
-  padding: 5px;
-  border-collapse: collapse;
-    border: 1px solid black;
-}
-</style>
+<script type="text/javascript" src="{{url_for('static', filename='jquery-latest.js')}}/"></script> 
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
+
+<script>
+  $(document).ready(function() 
+    { 
+  $("table").tablesorter({widgets:['zebra'], sortList: [[2, -1]]} ); 
+    } 
+  );
+</script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='themes/blue/style.css')}}" type="text/css" media="print, projection, screen" />
+
 </head>
 
 
 <h1>S17 06-364 - Roster</h1>
 
-<table border=1>
-  <tr>
-    <td>Name</td>
-    <td>email</td>
-    <td>Gradebook</td>
-  </tr>
+<table class=tablesorter>
+  <thead>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>email</th>
+    <th>Gradebook</th>
+  </thead>
   {% for d in roster[1:] %}
   <tr>
-    <td> {{ d['Preferred/First Name'] }}  {{ d['Last Name'] }} </td>
-    <td><a href="mailto:{{d['Email']}}">{{d['Email']}}</a></td>
+    <td> {{ d['Preferred/First Name'] }}</td>
+    <td> {{ d['Last Name'] }}</td>
+    <td><a title="Click to send email" href="mailto:{{d['Email']}}">{{d['Email']}}</a></td>
     <td><a href="\gradebook\{{d['Andrew ID']}}">Gradebook<a/></td>
     </tr>
   {% endfor %}

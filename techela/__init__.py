@@ -337,6 +337,7 @@ def submit_post():
 
 # * Admin
 
+
 @app.route('/admin')
 def admin():
     "Setup admin page."
@@ -358,6 +359,11 @@ def admin():
         print('Unable to download the course json file!!!!!!')
         ONLINE = False
 
+    with open(CONFIG) as f:
+        data = json.loads(f.read())
+        ANDREWID = data['ANDREWID']
+        NAME = data['NAME']
+        
     with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
         data = json.loads(f.read())
 
@@ -372,6 +378,7 @@ def admin():
     duedates = [assignments[f]['duedate'] for f in assignments]
 
     return render_template('admin.html',
+                           NAME=NAME, ANDREWID=ANDREWID,
                            ONLINE=ONLINE,
                            assignments4templates=list(zip(assignment_labels,
                                                           duedates)))
