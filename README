@@ -39,20 +39,3 @@ Then, open IPython, and run this command.
 
 
 
-
-#+BEGIN_SRC python :results output org drawer
-import subprocess
-
-p = subprocess.Popen(['git', 'ls-files', 'assignments'],
-                     stdout=subprocess.PIPE,
-                     stderr=subprocess.PIPE)
-
-out, err = p.communicate()
-files = [f for f in out.decode("utf-8").strip().split('\n') if f.endswith('.ipynb')]
-print(files)
-#+END_SRC
-
-#+RESULTS:
-:RESULTS:
-['assignments/batch-1.ipynb', 'assignments/batch-2.ipynb']
-:END:
