@@ -365,7 +365,7 @@ def admin():
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
         NAME = data['NAME']
-        
+
     with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
         data = json.loads(f.read())
 
@@ -401,7 +401,12 @@ def get_roster():
 @app.route('/roster')
 def roster():
     "Render roster page"
+    with open(CONFIG) as f:
+        data = json.loads(f.read())
+        ANDREWID = data['ANDREWID']
+
     return render_template('roster.html',
+                           ANDREWID=ANDREWID,
                            roster=get_roster())
 
 
@@ -415,8 +420,14 @@ def grade_assignment(label):
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
     assignment_dir = '{}/{}'.format(assignment_dir, label)
 
+    assignment_archive_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments-archive')
+    assignment_archive_dir = '{}/{}'.format(assignment_archive_dir, label)
+
     if not os.path.isdir(assignment_dir):
         os.makedirs(assignment_dir)
+
+    if not os.path.isdir(assignment_archive_dir):
+        os.makedirs(assignment_archive_dir)
 
     grade_data = []
 
@@ -428,21 +439,31 @@ def grade_assignment(label):
         d['name'] = '{} {}'.format(entry['Preferred/First Name'],
                                    entry['Last Name'])
 
+        # This is the file that was submitted
         sfile = '{}-{}.ipynb'.format(andrewid, label)
         SFILE = os.path.join(submission_dir, sfile)
 
-        AFILE = os.path.join(assignment_dir, sfile)
+        # This is an archive copy in case anything happens.
+        AFILE = os.path.join(assignment_archive_dir, sfile)
         if not os.path.exists(AFILE) and os.path.exists(SFILE):
-            # Now we move SFILE to AFILE
+            # Now we copy SFILE to AFILE
             shutil.copy(SFILE, AFILE)
 
-        d['filename'] = AFILE
+        # This the file we will grade. We move it, so it will be gone from
+        # submissions. We do not move it if it already exists though.
+        GFILE = os.path.join(assignment_dir, sfile)
+        if not os.path.exists(GFILE) and os.path.exists(SFILE):
+            # Now we move SFILE to GFILE
+            shutil.move(SFILE, GFILE)
+
+        # collect data in a dictionary
+        d['filename'] = GFILE
         d['andrewid'] = andrewid
         d['label'] = label
 
         # Check for a grade and returned
-        if os.path.exists(AFILE):
-            with open(AFILE) as f:
+        if os.path.exists(GFILE):
+            with open(GFILE) as f:
                 j = json.loads(f.read())
                 if j['metadata'].get('grade', None):
                     d['grade'] = j['metadata']['grade']['overall']
@@ -461,6 +482,7 @@ def grade_assignment(label):
 
         grade_data.append(d)
 
+    # Add this function so we can use it in a template
     app.jinja_env.globals.update(exists=os.path.exists)
 
     return render_template('grade-assignment.html',
@@ -472,12 +494,12 @@ def grade_assignment(label):
 def grade(andrewid, label):
     "Opens the file for andrewid and label."
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
-    AFILE = os.path.join(assignment_dir,
+    GFILE = os.path.join(assignment_dir,
                          label,
                          '{}-{}.ipynb'.format(andrewid, label))
 
     # Now open the notebook.
-    cmd = ["jupyter", "notebook", AFILE]
+    cmd = ["jupyter", "notebook", GFILE]
     subprocess.Popen(cmd, stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE,
                      stdin=subprocess.PIPE)
@@ -493,19 +515,19 @@ def return_one(andrewid, label):
     force = True if request.args.get('force') else False
     print('force = ', force)
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
-    AFILE = os.path.join(assignment_dir,
+    GFILE = os.path.join(assignment_dir,
                          label,
                          '{}-{}.ipynb'.format(andrewid, label))
     # Make sure file exists
-    if not os.path.exists(AFILE):
-        print('{} not found.'.format(AFILE))
+    if not os.path.exists(GFILE):
+        print('{} not found.'.format(GFILE))
         return redirect(url_for('grade_assignment', label=label))
 
     # Check for grade, we don't return ungraded files
-    with open(AFILE) as f:
+    with open(GFILE) as f:
         j = json.loads(f.read())
         if j['metadata'].get('grade', None) is None:
-            print('No grade in {}. not returning.'.format(AFILE))
+            print('No grade in {}. not returning.'.format(GFILE))
             return redirect(url_for('grade_assignment', label=label))
         grade = j['metadata']['grade']['overall']
 
@@ -537,16 +559,16 @@ def return_one(andrewid, label):
     maintype, subtype = ctype.split('/', 1)
 
     # Save some return data.
-    with open(AFILE) as f:
+    with open(GFILE) as f:
         j = json.loads(f.read())
 
     dt = datetime.now()
     j['metadata']['RETURNED'] = dt.isoformat(" ")
 
-    with open(AFILE, 'w') as f:
+    with open(GFILE, 'w') as f:
         f.write(json.dumps(j))
 
-    with open(AFILE, 'rb') as fp:
+    with open(GFILE, 'rb') as fp:
         attachment = MIMEBase(maintype, subtype)
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
