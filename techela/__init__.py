@@ -185,6 +185,8 @@ def open_lecture(label):
 def open_course_lecture(label):
     fname = '{}/lectures/course-{}.ipynb'.format(COURSEDIR, label)
 
+    if os.path.exists(fname):
+        os.unlink(fname)
     urllib.request.urlretrieve(LECTUREURL
                                + '{}.ipynb'.format(label), fname)
 
