@@ -1,0 +1,17 @@
+#+ASSIGNMENT: unsteady-cstr
+#+POINTS: 3
+#+DUEDATE: 2017-02-01 23:59:59
+#+CATEGORY: homework
+#+RUBRIC: default
+
+Chapter two focused on the steady state behavior of the CSTR. Mathematically, this led to an algebraic equation. The full mole balance is:
+
+$\frac{dN_A}{dt} = F_{A0} - F_A + r_A V$ 
+
+which resembles the batch reactor, but with flows. 
+
+For the reaction $A \rightarrow B$, with $-r_A = k C_A^2$ and $k=3$ L/mol/hr in a CSTR with a volume of 66,000 L, with an inlet volumetric flow of 10 L/hr, and an inlet concentration of 0.5 M in A, plot the time dependent concentration of A in the reactor until it reaches steady state. You can assume that $N_A(t=0) = 0$ for the initial condition. Discuss how long it takes for the reactor to approximately reach steady state (you should say what you mean by steady state, and how you determined the time to reach it).
+
+#+BEGIN_SRC ipython :session
+%matplotlib inline
+#+END_SRC

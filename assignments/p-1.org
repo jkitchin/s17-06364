@@ -1,0 +1,55 @@
+#+ASSIGNMENT: p-1
+#+POINTS: 3
+#+DUEDATE: 2017-01-31 23:59:59
+#+CATEGORY: homework
+#+RUBRIC: default
+
+The reaction $A \rightarrow B$ is to be carried out in a flow reactor to achieve 99% conversions. In the next sections, compute and compare the volumes of a CSTR and PFR for each scenario. In each case the entering volumetric flow is 10 L/hr and the inlet concentration is 0.5 M in A.
+
+* Zeroth order rate law
+
+Assume that $-r_A = k$ with $k = 0.05$ mol/L/hr.
+
+** CSTR
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
+** PFR
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
+* First order rate law
+
+Assume that $-r_A = k C_A$ with $k=0.0001$ 1/s.
+
+
+** CSTR
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
+** PFR
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
+
+* Second order rate law
+
+Assume that $-r_A = k C_A^2$ with $k=3$ L/mol/hr.
+
+
+** CSTR
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
+** PFR
+#+BEGIN_SRC ipython :session
+
+#+END_SRC
+
+* Discuss the differences in volume for the different reactors
+Explain why there are, or are not differences, and why the they are different between the different rate laws.
