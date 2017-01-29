@@ -499,13 +499,22 @@ def grade(andrewid, label):
                          label,
                          '{}-{}.ipynb'.format(andrewid, label))
 
+    with open(GFILE) as f:
+        j = json.loads(f.read())
+        if j['metadata'].get('grade', None) is None:
+            print('No grade in {} yet'.format(GFILE))
+        else:
+            tech = j['metadata']['grade']['technical']
+            pres = j['metadata']['grade']['presentation']
+            print('grade: ', ('technical', tech), ('presentation', pres))
+
     # Now open the notebook.
     cmd = ["jupyter", "notebook", GFILE]
     subprocess.Popen(cmd, stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE,
                      stdin=subprocess.PIPE)
 
-    return redirect(url_for('grade_assignment', label=label))
+    return ('', 204)
 
 
 @app.route('/return/<andrewid>/<label>')
@@ -530,8 +539,10 @@ def return_one(andrewid, label):
         if j['metadata'].get('grade', None) is None:
             print('No grade in {}. not returning.'.format(GFILE))
             return redirect(url_for('grade_assignment', label=label))
+        tech = j['metadata']['grade']['technical']
+        pres = j['metadata']['grade']['presentation']
         grade = j['metadata']['grade']['overall']
-
+        print('grade: ', ('technical', tech), ('presentation', pres))
     # Check if it was already returned, we don't return it again unless force
     # is truthy.
     if j['metadata'].get('RETURNED', None) and not force:
@@ -552,7 +563,9 @@ def return_one(andrewid, label):
     msg['From'] = '{}@andrew.cmu.edu'.format(ANDREWID)
     msg['To'] = EMAIL
 
-    body = '''Grade = {}'''.format(grade)
+    body = 'Technical: {}\nPresentation: {}\nOverall Grade = {}'.format(tech,
+                                                                        pres,
+                                                                        grade)
 
     msg.attach(MIMEText(body, 'plain'))
 
@@ -574,10 +587,9 @@ def return_one(andrewid, label):
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
         encoders.encode_base64(attachment)
-        # Set the filename parameter
-        aname = '{}-{}.ipynb'.format(ANDREWID, label)
+        # Set the filename parameter     
         attachment.add_header('Content-Disposition', 'attachment',
-                              filename=aname)
+                              filename=os.path.split(GFILE)[-1])
         msg.attach(attachment)
 
     print(msg)
@@ -585,7 +597,7 @@ def return_one(andrewid, label):
         s.send_message(msg)
         s.quit()
 
-    return redirect(url_for('grade_assignment', label=label))
+    return ('', 204)
 
 
 @app.route('/return-all/<label>')

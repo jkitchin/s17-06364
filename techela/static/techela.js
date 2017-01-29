@@ -103,6 +103,7 @@ Jupyter.keyboard_manager.command_shortcuts.add_shortcut('g', {
 			Jupyter.notebook.execute_cell();}}},
 		    {silent: false, 
 		     store_history: false, 
-		     stop_on_error: true})
+		     stop_on_error: true});
+     Jupyter.notebook.save_notebook();
      Jupyter.notebook.save_checkpoint();}});
 
