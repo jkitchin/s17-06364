@@ -246,7 +246,7 @@ plt.legend(loc='best')
 
 ** Adiabatic isomerization
 
-The reaction $n-C_4H_{10} \rightarrow i-C_$H_{10}$ is exothermic. If it is run in an adiabatic reactor, the temperature in the reactor will be a function of conversion, and so the rate will not be a simple function of just concentration. You can see in the data below that the rate appears to increase initially, then decrease. For isothermal reactions, we expect the rate to only decrease as the reactants are consumed. Here the reactants are consumed, but the rate goes up because the temperature is increasing.
+The reaction $n-C_4H_{10} \rightarrow i-C_4H_{10}$ is exothermic. If it is run in an adiabatic reactor, the temperature in the reactor will be a function of conversion, and so the rate will not be a simple function of just concentration. You can see in the data below that the rate appears to increase initially, then decrease. For isothermal reactions, we expect the rate to only decrease as the reactants are consumed. Here the reactants are consumed, but the rate goes up because the temperature is increasing.
 
 #+BEGIN_SRC ipython :session
 X = np.array([0, 0.2, 0.4, 0.6, 0.65])
@@ -260,7 +260,7 @@ Our goal here is to design three reactors in this configuration and determine th
 
 
 #+attr_org: :width 300
-[[ghss:./example-2-7.png]]
+[[ghss:./images/example-2-7.png]]
 
 
 
