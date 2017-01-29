@@ -257,8 +257,12 @@ ra = -np.array([39, 53, 59, 38, 25])  # kmol/m^3/h
 
 Our goal here is to design three reactors in this configuration and determine the volumes of each reactor for an entering molar flow of 50 kmol/hr of n-butane.
 
+
+
 #+attr_org: :width 300
 [[ghss:./example-2-7.png]]
+
+
 
 First, we compute the Levenspiel quantities. This will help us solve the problem because the volumes of these reactors are related to the Levenspiel quantities.
 
@@ -333,3 +337,13 @@ plt.legend(loc='best')
 *Exercise* It looks like you could have an overall smaller volume with two reactors. What two reactors are they, and how should they be configured?
 
 Next lecture: [[./lecture-05.ipynb]]
+* New concepts
+
+1. Numerical integration of discrete data: pydoc:scipy.integrate.trapz and pydoc:scipy.integrate.simps
+2. Interpolation: pydoc:scipy.interpolate.interp1d
+3. Plotting subplots, shaded areas, and the legend
+  - pydoc:matplotlib.pyplot.subplot
+  - pydoc:matplotlib.pyplot.fill_between
+  - pydoc:matplotlib.pyplot.legend
+
+You should complete reading Chapter 2 this week.
