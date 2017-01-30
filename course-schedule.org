@@ -6,7 +6,7 @@
   CLOSED: [2017-01-25 Wed 14:10]
 * <2017-01-25 Wed> [[./lectures/lecture-02.org]]
 * <2017-01-30 Mon> [[./lectures/lecture-03.org]]
-* <2017-02-01 Wed>
+* <2017-02-01 Wed> [[./lectures/lecture-04.org]]
 * <2017-02-06 Mon> *NO CLASS*
 * <2017-02-08 Wed> *NO CLASS*
 * <2017-02-13 Mon>
