@@ -1,5 +1,32 @@
 {
-    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
+    "assignments": {
+        "assignments/levenspiel-1.ipynb": {
+            "duedate": "2017-02-02 23:59:59"
+        },
+        "assignments/cstr-mss.ipynb": {
+            "duedate": "2017-01-30 23:59"
+        },
+        "assignments/levenspiel-2.ipynb": {
+            "duedate": "2017-01-30 23:59"
+        },
+        "assignments/p-1.ipynb": {
+            "duedate": "2017-01-31 23:59:59"
+        },
+        "assignments/batch-1.ipynb": {
+            "duedate": "<2017-01-26 Thu>"
+        },
+        "assignments/batch-2.ipynb": {
+            "duedate": "<2017-01-27 Fri>"
+        },
+        "assignments/thinking-1.ipynb": {
+            "duedate": "2017-01-30 23:59"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "duedate": "2017-02-01 23:59:59"
+        }
+    },
+    "announcements": "<div id=\"outline-container-orgec6a3be\" class=\"outline-2\">\n<h2 id=\"orgec6a3be\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.6.2 is available. Install it with this command. Recommended update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
     "lectures": [
         "lectures/introduction.ipynb",
         "lectures/lecture-00.ipynb",
@@ -8,27 +35,9 @@
         "lectures/lecture-03.ipynb",
         "lectures/lecture-04.ipynb"
     ],
-    "announcements": "<div id=\"outline-container-orgec6a3be\" class=\"outline-2\">\n<h2 id=\"orgec6a3be\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.6.2 is available. Install it with this command. Recommended update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
-    "assignments": {
-        "assignments/unsteady-cstr.ipynb": {
-            "duedate": "2017-02-01 23:59:59"
-        },
-        "assignments/p-1.ipynb": {
-            "duedate": "2017-01-31 23:59:59"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "duedate": "2017-02-02 23:59:59"
-        },
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>"
-        },
-        "assignments/batch-2.ipynb": {
-            "duedate": "<2017-01-27 Fri>"
-        }
-    },
+    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
     "solutions": [
         "solutions/batch-1.ipynb",
         "solutions/example.ipynb"
-    ],
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/"
+    ]
 }
