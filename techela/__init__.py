@@ -105,6 +105,21 @@ def hello():
                          for path in assignment_paths]
 
     duedates = [assignments[f]['duedate'] for f in assignments]
+    colors = []
+    for dd in duedates:
+        today = datetime.utcnow()
+        if "<" in dd:
+            d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+        else:
+            d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+
+        if (d - today).days < 0:
+            colors.append('black')
+        elif (d - today).days <= 7:
+            colors.append('red')
+        else:
+            colors.append('green')
+
     turned_in = []
     for path in assignment_paths:
         if os.path.exists(path):
@@ -136,6 +151,7 @@ def hello():
                            assignments4templates=list(zip(assignment_labels,
                                                           assignment_paths,
                                                           assignment_status,
+                                                          colors,
                                                           duedates,
                                                           turned_in,
                                                           solutions)))

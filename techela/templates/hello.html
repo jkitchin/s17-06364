@@ -68,11 +68,11 @@ These are the notes that I have used in class. Each time you open one, it will d
     <th>turned in</th>
     <th>solution</th>
   </thead>
-  {% for label, path, status, duedate, turnedin, solution in assignments4templates %}
+  {% for label, path, status, color, duedate, turnedin, solution in assignments4templates %}
   <tr>
     <td><a href="/assignment/{{ label }}">{{ label }}</a></td>
     <td>{{ status | safe }}</td>
-    <td>{{duedate}}</td>
+    <td><font color="{{color}}">{{duedate}}</font></td>
     <td><a href="/submit/{{ label }}">Submit</a></td>
     <td>{{turnedin}}</td>    
     <td>
