@@ -1,27 +1,4 @@
 {
-    "solutions": [
-        "solutions/batch-1.ipynb",
-        "solutions/example.ipynb"
-    ],
-    "announcements": "<div id=\"outline-container-org24146e1\" class=\"outline-2\">\n<h2 id=\"org24146e1\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.6.1 is available. Install it with this command. Recommended update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
-    "assignments": {
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>"
-        },
-        "assignments/batch-2.ipynb": {
-            "duedate": "<2017-01-27 Fri>"
-        },
-        "assignments/p-1.ipynb": {
-            "duedate": "2017-01-31 23:59:59"
-        },
-        "assignments/unsteady-cstr.ipynb": {
-            "duedate": "2017-02-01 23:59:59"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "duedate": "2017-02-02 23:59:59"
-        }
-    },
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
     "lectures": [
         "lectures/introduction.ipynb",
         "lectures/lecture-00.ipynb",
@@ -30,5 +7,28 @@
         "lectures/lecture-03.ipynb",
         "lectures/lecture-04.ipynb"
     ],
-    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com"
+    "solutions": [
+        "solutions/batch-1.ipynb",
+        "solutions/example.ipynb"
+    ],
+    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
+    "assignments": {
+        "assignments/batch-2.ipynb": {
+            "duedate": "<2017-01-27 Fri>"
+        },
+        "assignments/p-1.ipynb": {
+            "duedate": "2017-01-31 23:59:59"
+        },
+        "assignments/batch-1.ipynb": {
+            "duedate": "<2017-01-26 Thu>"
+        },
+        "assignments/levenspiel-1.ipynb": {
+            "duedate": "2017-02-02 23:59:59"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "duedate": "2017-02-01 23:59:59"
+        }
+    },
+    "announcements": "<div id=\"outline-container-org24146e1\" class=\"outline-2\">\n<h2 id=\"org24146e1\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.6.1 is available. Install it with this command. Recommended update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/"
 }
