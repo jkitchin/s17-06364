@@ -32,7 +32,11 @@
   <tbody>
   {% for key in grades %}
   <tr>
+    {% if grades[key]['overall'] %}
+    <td><a href="/grade/{{andrewid}}/{{key}}">{{key}}</a></td>
+    {% else %}
     <td>{{key}}</td>
+    {% endif %}
     <td>{{grades[key]['technical']}}</td>
     <td>{{grades[key]['presentation']}}</td>    
     <td>{{grades[key]['overall']}}</td>
