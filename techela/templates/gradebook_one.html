@@ -1,0 +1,45 @@
+<!doctype html>
+<title>S17 06-364 - Techela in a flask Gradebook</title>
+<head>
+<script type="text/javascript" src="{{url_for('static', filename='jquery-latest.js')}}/"></script> 
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
+
+<script>
+  $(document).ready(function() 
+    { 
+        $("#gradesheet").tablesorter({widgets:['zebra'], sortList:[[0, 0]]}); 
+    } 
+  );
+</script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='themes/blue/style.css')}}" type="text/css" media="print, projection, screen" />
+
+
+</head>
+
+<h1>S17 06-364 - Gradesheet for {{name}} ({{andrewid}})</h1>
+<a href="/admin">admin</a> <a href="/">Home</a>
+
+<table id="gradesheet" border="1" class=tablesorter>
+  <thead>
+    <th>Label</th>
+    <th>Technical</th>
+    <th>Presentation</th>
+    <th>Overall</th>
+    <th>Category</th>
+    <th>Points</th>
+  </thead>
+  <tbody>
+  {% for key in grades %}
+  <tr>
+    <td>{{key}}</td>
+    <td>{{grades[key]['technical']}}</td>
+    <td>{{grades[key]['presentation']}}</td>    
+    <td>{{grades[key]['overall']}}</td>
+    <td>{{grades[key]['category']}}</td>
+    <td>{{grades[key]['points']}}</td>    
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+

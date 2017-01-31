@@ -115,8 +115,10 @@ def hello():
 
         if (d - today).days < 0:
             colors.append('black')
-        elif (d - today).days <= 7:
+        elif (d - today).days <= 2:
             colors.append('red')
+        elif (d - today).days <= 7:
+            colors.append('orange')
         else:
             colors.append('green')
 
@@ -394,12 +396,24 @@ def admin():
                         for assignment in assignments]
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
     duedates = [assignments[f]['duedate'] for f in assignments]
+    graders = [assignments[f]['grader'] for f in assignments]
+
+    statuses = []
+    for label in assignment_labels:
+        f = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"), label, "STATUS")
+        if os.path.exists(f):
+            with open(f) as tf:
+                statuses.append(tf.read())
+        else:
+            statuses.append(None)
 
     return render_template('admin.html',
                            NAME=NAME, ANDREWID=ANDREWID,
                            ONLINE=ONLINE,
                            assignments4templates=list(zip(assignment_labels,
-                                                          duedates)))
+                                                          duedates,
+                                                          graders,
+                                                          statuses)))
 
 
 def get_roster():
@@ -501,6 +515,15 @@ def grade_assignment(label):
 
     # Add this function so we can use it in a template
     app.jinja_env.globals.update(exists=os.path.exists)
+
+    status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"),
+                               label, "STATUS")
+
+    # if we don't have a status file create one. If we do have one, I don't
+    # think it makes sense to change it.
+    if not os.path.exists(status_file):
+        with open(status_file, 'w') as f:
+            f.write('Collected')
 
     return render_template('grade-assignment.html',
                            label=label,
@@ -627,4 +650,68 @@ def return_all(label):
         return_one(andrewid, label)
         time.sleep(1)
 
+    status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"),
+                               label, "STATUS")
+
+    # if we don't have a status file create one. If we do have one, I don't
+    # think it makes sense to change it.
+    if not os.path.exists(status_file):
+        with open(status_file, 'w') as f:
+            f.write('Returned')
+
     return redirect(url_for('grade_assignment', label=label))
+
+
+@app.route('/gradebook_one/<andrewid>')
+def gradebook_one(andrewid):
+    'Gather grades for andrewid.'
+
+    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+        data = json.loads(f.read())
+
+    # Next get assignments. These are in assignments/label.ipynb For students I
+    # construct assignments/andrewid-label.ipynb to check if they have local
+    # versions.
+    assignments = data['assignments']
+
+    assignment_files = [os.path.split(assignment)[-1]
+                        for assignment in assignments]
+    assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
+
+    assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
+
+    grades = {}
+
+    for label in assignment_labels:
+        sfile = '{assignment_dir}/{label}/{andrewid}-{label}.ipynb'.format(**locals())
+
+        # Start with this default.
+        grades[label] = {'label': label,
+                         'technical': None,
+                         'presentation': None,
+                         'overall': None,
+                         'category': None,
+                         'points': None}
+
+        if os.path.exists(sfile):
+            with open(sfile) as f:
+                j = json.loads(f.read())
+                if j['metadata'].get('grade', None):
+                    grades[label] = {'andrewid': andrewid,                                     
+                                     'technical': j['metadata']['grade']['technical'],
+                                     'presentation': j['metadata']['grade']['presentation'],
+                                     'overall': j['metadata']['grade']['overall'],
+                                     'category': j['metadata']['org']['CATEGORY'],
+                                     'points': j['metadata']['org']['POINTS']}
+
+    roster = get_roster()
+    for d in roster:
+        if andrewid == d['Andrew ID']:
+            name = '{} {}'.format(d['Preferred/First Name'],
+                                  d['Last Name'])
+            break
+
+    return render_template('gradebook_one.html',
+                           name=name,
+                           andrewid=andrewid,
+                           grades=grades)

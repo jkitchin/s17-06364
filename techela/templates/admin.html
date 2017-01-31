@@ -1,4 +1,21 @@
 <!doctype html>
+<head>
+<script type="text/javascript" src="{{url_for('static', filename='jquery-latest.js')}}/"></script> 
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
+
+<script>
+  $(document).ready(function() 
+    { 
+  $("table").tablesorter({widgets:['zebra'], sortList: [[1, -1]]} ); 
+    } 
+  );
+</script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='themes/blue/style.css')}}" type="text/css" media="print, projection, screen" />
+
+
+</head>
+
 <title>S17 06-364 - Techela in a flask</title>
 
 {% if not ONLINE %}
@@ -21,9 +38,20 @@ Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 
 <h2>Assignments</h2>
 Click on these links to collect and open a grade sheet for each assignment.
-<ul>
-  {% for label, duedate in assignments4templates %}
-  <li><a href="/grade-assignment/{{ label }}">{{ label }}</a>  Due: {{duedate}} </li>
+<table class=tablesorter>
+  <thead>
+    <th>Label</th>
+    <th>Duedate</th>
+    <th>Grader</th>
+    <th>Status</th>
+  </thead>
+  {% for label, duedate, grader,status in assignments4templates %}
+  <tr>
+    <td><a href="/grade-assignment/{{ label }}">{{ label }}</a></td>
+    <td>{{duedate}} </td>
+    <td>{{grader}}</td>
+    <td>{{status}}</td>
+    </tr>
   {% endfor %}
-</ul>
+</table>
 
