@@ -349,7 +349,12 @@ def submit_post():
         msg.attach(attachment)
 
     with smtplib.SMTP_SSL('smtp.andrew.cmu.edu', port=465) as s:
-        s.login(ANDREWID, password)
+        try:
+            s.login(ANDREWID, password)
+        except smtplib.SMTPAuthenticationError:
+            print('caught error for', label)
+            return render_template("password_error.html", label=label)
+
         s.send_message(msg)
         s.quit()
 
