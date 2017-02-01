@@ -1,2 +1,3 @@
 recursive-include techela/templates *
+recursive-include techela/static *
 
