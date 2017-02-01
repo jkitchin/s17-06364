@@ -1,39 +1,39 @@
 {
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
     "assignments": {
-        "assignments/cstr-mss.ipynb": {
-            "duedate": "2017-02-09 23:59:59",
-            "grader": "Daniel"
+        "assignments/levenspiel-1.ipynb": {
+            "grader": "Daniel",
+            "duedate": "2017-02-02 23:59:59"
         },
         "assignments/batch-2.ipynb": {
-            "duedate": "<2017-01-27 Fri>",
-            "grader": "jkitchin"
-        },
-        "assignments/unsteady-cstr.ipynb": {
-            "duedate": "2017-02-01 23:59:59",
-            "grader": "David"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "duedate": "2017-02-02 23:59:59",
-            "grader": "Daniel"
-        },
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>",
-            "grader": "jkitchin"
-        },
-        "assignments/thinking-1.ipynb": {
-            "duedate": "2017-02-07 23:59:59",
-            "grader": "Elif"
+            "grader": "jkitchin",
+            "duedate": "<2017-01-27 Fri>"
         },
         "assignments/p-1.ipynb": {
-            "duedate": "2017-01-31 23:59:59",
-            "grader": "Elif"
+            "grader": "Elif",
+            "duedate": "2017-01-31 23:59:59"
+        },
+        "assignments/batch-1.ipynb": {
+            "grader": "jkitchin",
+            "duedate": "<2017-01-26 Thu>"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "grader": "David",
+            "duedate": "2017-02-01 23:59:59"
+        },
+        "assignments/cstr-mss.ipynb": {
+            "grader": "Daniel",
+            "duedate": "2017-02-09 23:59:59"
+        },
+        "assignments/thinking-1.ipynb": {
+            "grader": "Elif",
+            "duedate": "2017-02-07 23:59:59"
         },
         "assignments/levenspiel-2.ipynb": {
-            "duedate": "2017-02-08 23:59:59",
-            "grader": "David"
+            "grader": "David",
+            "duedate": "2017-02-08 23:59:59"
         }
     },
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
     "solutions": [
         "solutions/batch-1.ipynb",
         "solutions/batch-2.ipynb",
