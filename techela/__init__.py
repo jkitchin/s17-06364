@@ -158,18 +158,18 @@ def hello():
                                                           turned_in,
                                                           solutions)))
 
+
 @app.route("/debug")
 def debug():
     "In debug mode this gets me to a console in the browser."
     raise(Exception)
 
 
-# TODO make template
 @app.route("/about")
 def about():
     import platform
 
-    os=platform.platform()
+    opsys = platform.platform()
 
     pyexe = sys.executable
     pyver = sys.version
@@ -562,7 +562,8 @@ def grade_assignment(label):
         # if we are not POSTDUE, copy it if it exists.
         # If we are POSTDUE, copy it if it does not exist in the archive.
         if ((not POSTDUE and os.path.exists(SFILE))
-            or (POSTDUE and not os.path.exists(AFILE))):
+            or (POSTDUE and os.path.exists(SFILE)
+                and not os.path.exists(AFILE))):
             shutil.copy(SFILE, AFILE)
 
         # Now we do the move. This is the file we will grade. We move it, so it
@@ -578,21 +579,24 @@ def grade_assignment(label):
 
         # here the GFILE should exist. whether we update it depends. Let's check
         # if it is graded. If we have not graded it, we might as well update it.
-        with open(GFILE) as f:
-            j = json.loads(f.read())
-            if (os.path.exists(SFILE)
-                and j['metadata'].get('grade', None) is None):
-                shutil.move(SFILE, GFILE)
-
+        # Check for a grade and return timestamp
         # collect data in a dictionary
         d['filename'] = GFILE
         d['andrewid'] = andrewid
         d['label'] = label
-
-        # Check for a grade and return timestamp
+        d['grade'] = None
+        d['turned-in'] = None
+        d['returned'] = None
+        
         if os.path.exists(GFILE):
             with open(GFILE) as f:
                 j = json.loads(f.read())
+                # if the file is ungraded, we go ahead and move it over.
+                if (os.path.exists(SFILE)
+                    and j['metadata'].get('grade', None) is None):
+                    shutil.move(SFILE, GFILE)
+
+
                 if j['metadata'].get('grade', None):
                     d['grade'] = j['metadata']['grade']['overall']
                 else:
