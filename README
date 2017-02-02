@@ -39,3 +39,28 @@ Then, open IPython, and run this command.
 
 
 
+
+
+#+BEGIN_SRC ipython :session :results output drawer
+from datetime import datetime
+
+today = datetime.utcnow()
+dd = '2017-01-31 23:59:59'
+
+if "<" in dd:
+    d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+else:
+    d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+
+if (today - d).days >= 0:
+    POSTDUE = True
+else:
+    POSTDUE = False
+
+print(POSTDUE)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+True
+:END:

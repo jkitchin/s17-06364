@@ -6,7 +6,7 @@
 <script>
   $(document).ready(function() 
     { 
-  $("table").tablesorter({widgets:['zebra'], sortList: [[1, -1]]} ); 
+  $("table").tablesorter({widgets:['zebra'], sortList: [[2, -1]]} ); 
     } 
   );
 </script>
@@ -40,17 +40,19 @@ Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 Click on these links to collect and open a grade sheet for each assignment.
 <table class=tablesorter>
   <thead>
-    <th>Label</th>
+    <th>Label (click to collect)</th>
+    <th>Solution (in Box)</th>
     <th>Duedate</th>
     <th>Grader</th>
     <th>Status</th>
   </thead>
-  {% for label, duedate, grader,status in assignments4templates %}
+  {% for label, duedate, grader, status, color in assignments4templates %}
   <tr>
-    <td><a href="/grade-assignment/{{ label }}">{{ label }}</a></td>
-    <td>{{duedate}} </td>
-    <td>{{grader}}</td>
-    <td>{{status}}</td>
+    <td><a title="click to collect and grade" href="/grade-assignment/{{ label }}">{{ label }}</a></td>
+    <td><a href="/admin-solution/{{ label }}">{{ label }}</a></td>
+    <td><font color="{{color}}">{{duedate}}</font></td>
+    <td><font color="{{color}}">{{grader}}</font></td>
+    <td><font color="{{color}}">{{status}}</font></td>    
     </tr>
   {% endfor %}
 </table>

@@ -1,0 +1,151 @@
+* Solving integral/ODE problems 
+
+Remember we previously noted we do not have an easy way solve an equation like:
+
+$10 = \int_{x=0}^A x^2 dx$
+
+where we want to find the value of A that makes that true. The integrand is $f(x) = x^2$ It looks like we should use quad to evaluate the integral, but we do not know the second limit. We can still define this like an fsolve problem. The problem is to define a function that takes an argument A, and returns zero when the value of A makes the integral equal to 10.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.integrate import quad
+from scipy.optimize import fsolve
+
+def integrand(x):
+    return x**2
+
+
+def objective(A):
+    ans, err = quad(integrand, 0, A)
+    return 10 - ans
+
+print(fsolve(objective, 3))    
+#+END_SRC 
+
+#+RESULTS:
+:RESULTS:
+[ 3.10723251]
+:END:
+
+We can use a similar approach to solve for the volume in a PFR required to reach a conversion. 
+
+$\frac{dX}{dV} = \frac{-r_A}{F_{A0}}$ with $F_{A0}$ = 2 mol / min, a volumetric flow of 0.7 L/min, and $-ra = k C_A$ with $k=1.1$ 1/min. Find the volume required to get 49% conversion. This is related to the previous problem, because we need to integrate from V=0 to some V, to get the desired conversion. We will again frame this as an fsolve problem.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.integrate import odeint
+from scipy.optimize import fsolve
+import numpy as np
+
+Fa0 = 2 # mol / min
+nu = 0.7 # L / min
+k = 1.1 # 1 / min
+
+def ode(X, V):
+    Fa = Fa0 * (1 - X)
+    Ca = Fa / nu
+    ra = -k * Ca
+    return -ra / Fa0
+
+def objective(Vf):
+    Vspan = [0, Vf]
+    sol = odeint(ode, 0, Vspan)
+    Xf = sol[-1, 0]
+    return Xf - 0.49 
+    
+Vf, = fsolve(objective, 0.2)
+print('The volume required is {:1.2f} L'.format(Vf))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+The volume required is 0.43 L
+:END:
+
+Compare this to the inverted integral form that we can just evaluate. This next example is shorter, if you know that you can use this equation:
+
+$V = F_{A0} \int_0^X \frac{dX}{-r_A}$
+
+#+BEGIN_SRC ipython :session :results output drawer
+Fa0 = 2 # mol / min
+nu = 0.7 # L / min
+k = 1.1 # 1 / min
+
+def integrand(X):
+    Fa = Fa0 * (1 - X)
+    Ca = Fa / nu
+    ra = -k * Ca
+    return Fa0 / -ra
+
+ans, err = quad(integrand, 0, 0.49)
+print(ans)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+0.42849198844057806
+:END:
+
+* ODE events
+
+For completeness, we discuss an alternative approach, which is to stop integrating the ODE when a condition is met, e.g. the conversion is 0.49. Do that we need to define an "event" function that will detect that occurrence, and when it occurs tell the integrator what to do. We have to install a new Python package called pycse. This block should install it for you when you run it. You only need to do this once.
+
+#+BEGIN_SRC ipython :session :results output drawer
+!pip install pycse
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+Requirement already satisfied: pycse in /Users/jkitchin/Dropbox/books/pycse
+Requirement already satisfied: quantities==0.10.1 in /Users/jkitchin/anaconda3/lib/python3.5/site-packages (from pycse)
+:END:
+
+Now we set up out our ode function the same as before.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from pycse import odelay
+import numpy as np
+
+Fa0 = 2 # mol / min
+nu = 0.7 # L / min
+k = 1.1 # 1 / min
+
+def ode(X, V):
+    Fa = Fa0 * (1 - X)
+    Ca = Fa / nu
+    ra = -k * Ca
+    return -ra / Fa0
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+:END:
+
+Next we define an event function. This function has the same signature as the ode function, and returns three values: a value that is equal to zero at the event (in this case when X = 0.49), a boolean value to terminate (if True) or not (if False), and a direction which is a mandatory return value that we ignore for now. We set isterminal to be True so that it stops the solver when the event occurs. 
+
+#+BEGIN_SRC ipython :session :results output drawer
+def event(X, V):
+    value = X - 0.49
+    isterminal = True
+    direction = 0
+    return value, isterminal, direction
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+:END:
+
+Finally we define a volume span, and run the odelay function which is like odeint, but which accepts a list of event functions. It returns 5 outputs, the integration range, the solution, the "x-values" where the event occurred, the "y-values" that correspond to those x-values, and an integer to tell you which event occurred (0 means the first event). In this example, we will ignore the last three values, and just get the last value from the vspan variable that is returned from odelay. 
+
+#+BEGIN_SRC ipython :session :results output drawer
+Vspan = np.linspace(0, 1)
+
+vspan, sol, ex, ey, ei = odelay(ode, 0, Vspan, events=[event])
+
+print('The volume required is {:1.2f} L'.format(vspan[-1]))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+The volume required is 0.43 L
+:END:
+
+We will use odelay and other functions from pycse throughout the semester.

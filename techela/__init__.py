@@ -50,7 +50,7 @@ def open_course():
 
 @app.route("/")
 def hello():
-
+    "This is the opening page."
     if not os.path.isdir(COURSEDIR):
         os.makedirs(COURSEDIR)
         os.makedirs(COURSEDIR + 'assignments/')
@@ -164,6 +164,28 @@ def debug():
     raise(Exception)
 
 
+# TODO make template
+@app.route("/about")
+def about():
+    import platform
+
+    os=platform.platform()
+
+    pyexe = sys.executable
+    pyver = sys.version
+
+    import techela
+    techela_ver = techela.__version__
+
+    try:
+        import pycse
+        pycse_ver = pycse.__version__
+    except:
+        pycse_ver = None
+    return render_template('about.html',
+                           **locals())
+
+
 @app.route("/setup")
 def setup_view():
     return render_template('setup.html')
@@ -231,6 +253,20 @@ def open_solution(label):
                      stdin=subprocess.PIPE)
 
     return redirect(url_for('hello'))
+
+
+@app.route("/admin-solution/<label>")
+def admin_solution(label):
+    "Open admin solution"
+    fname = os.path.expanduser("~/Box Sync/s17-06-364/solutions/{}.ipynb".format(label))
+
+    # Now open the notebook.
+    cmd = ["jupyter", "notebook", fname]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE,
+                     stdin=subprocess.PIPE)
+
+    return redirect(url_for('admin'))
 
 
 @app.route("/assignment/<label>")
@@ -401,16 +437,33 @@ def admin():
                         for assignment in assignments]
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
     duedates = [assignments[f]['duedate'] for f in assignments]
+
     graders = [assignments[f]['grader'] for f in assignments]
 
     statuses = []
     for label in assignment_labels:
-        f = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"), label, "STATUS")
+        f = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"),
+                         label, "STATUS")
         if os.path.exists(f):
             with open(f) as tf:
                 statuses.append(tf.read())
         else:
             statuses.append(None)
+
+    colors = []
+    for status, dd in zip(statuses, duedates):
+        today = datetime.utcnow()
+        if "<" in dd:
+            d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+        else:
+            d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+
+        if status == 'Returned\n':
+            colors.append('black')
+        elif (d - today).days <= 2:
+            colors.append('orange')
+        else:
+            colors.append('red')
 
     return render_template('admin.html',
                            NAME=NAME, ANDREWID=ANDREWID,
@@ -418,7 +471,8 @@ def admin():
                            assignments4templates=list(zip(assignment_labels,
                                                           duedates,
                                                           graders,
-                                                          statuses)))
+                                                          statuses,
+                                                          colors)))
 
 
 def get_roster():
@@ -447,16 +501,38 @@ def roster():
 
 @app.route('/grade-assignment/<label>')
 def grade_assignment(label):
+    """Copy assignments to the archive directory, and move them to the assignments
+    directory."""
 
     roster = get_roster()
+    # the first time you visit this page, we shuffle it, but on subsequent
+    # visits we don't. The shuffle is to grade them in a different order each
+    # time.
+    # This is triggered by a url like /grade-assignment/label?shuffle=true
     if request.args.get('shuffle'):
         random.shuffle(roster)
+
+    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+        data = json.loads(f.read())
+
+    today = datetime.utcnow()
+    dd = data['assignments']['assignments/{}.ipynb'.format(label)]['duedate']
+    if "<" in dd:
+        d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+    else:
+        d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+
+    if (today - d).days >= 0:
+        POSTDUE = True
+    else:
+        POSTDUE = False
 
     submission_dir = os.path.expanduser('~/Box Sync/s17-06-364/submissions')
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
     assignment_dir = '{}/{}'.format(assignment_dir, label)
 
-    assignment_archive_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments-archive')
+    assignment_archive_dir = os.path.expanduser('~/Box Sync/s17-06-364/'
+                                                'assignments-archive')
     assignment_archive_dir = '{}/{}'.format(assignment_archive_dir, label)
 
     if not os.path.isdir(assignment_dir):
@@ -481,23 +557,39 @@ def grade_assignment(label):
 
         # This is an archive copy in case anything happens.
         AFILE = os.path.join(assignment_archive_dir, sfile)
-        if not os.path.exists(AFILE) and os.path.exists(SFILE):
-            # Now we copy SFILE to AFILE
+
+        # The logic I want to happen is:
+        # if we are not POSTDUE, copy it if it exists.
+        # If we are POSTDUE, copy it if it does not exist in the archive.
+        if ((not POSTDUE and os.path.exists(SFILE))
+            or (POSTDUE and not os.path.exists(AFILE))):
             shutil.copy(SFILE, AFILE)
 
-        # This the file we will grade. We move it, so it will be gone from
-        # submissions. We do not move it if it already exists though.
+        # Now we do the move. This is the file we will grade. We move it, so it
+        # will be gone from submissions. We do not move it if it has been
+        # graded.
         GFILE = os.path.join(assignment_dir, sfile)
+
+        # We don't have the file and it is submitted we might as well collect
+        # it.
         if not os.path.exists(GFILE) and os.path.exists(SFILE):
             # Now we move SFILE to GFILE
             shutil.move(SFILE, GFILE)
+
+        # here the GFILE should exist. whether we update it depends. Let's check
+        # if it is graded. If we have not graded it, we might as well update it.
+        with open(GFILE) as f:
+            j = json.loads(f.read())
+            if (os.path.exists(SFILE)
+                and j['metadata'].get('grade', None) is None):
+                shutil.move(SFILE, GFILE)
 
         # collect data in a dictionary
         d['filename'] = GFILE
         d['andrewid'] = andrewid
         d['label'] = label
 
-        # Check for a grade and returned
+        # Check for a grade and return timestamp
         if os.path.exists(GFILE):
             with open(GFILE) as f:
                 j = json.loads(f.read())
