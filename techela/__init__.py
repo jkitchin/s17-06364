@@ -458,7 +458,7 @@ def admin():
         else:
             d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
 
-        if status == 'Returned\n':
+        if status is not None and status.startswith('Returned'):
             colors.append('black')
         elif (d - today).days <= 2:
             colors.append('orange')
@@ -621,7 +621,8 @@ def grade_assignment(label):
                                label, "STATUS")
 
     # if we don't have a status file create one. If we do have one, I don't
-    # think it makes sense to change it.
+    # think it makes sense to change it since it should either be Collected or
+    # Returned.
     if not os.path.exists(status_file):
         with open(status_file, 'w') as f:
             f.write('Collected')
@@ -751,14 +752,11 @@ def return_all(label):
         return_one(andrewid, label)
         time.sleep(1)
 
-    status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"),
+    status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments/{}".format(label)),
                                label, "STATUS")
 
-    # if we don't have a status file create one. If we do have one, I don't
-    # think it makes sense to change it.
-    if not os.path.exists(status_file):
-        with open(status_file, 'w') as f:
-            f.write('Returned')
+    with open(status_file, 'w') as f:
+        f.write('Returned')
 
     return redirect(url_for('grade_assignment', label=label))
 
