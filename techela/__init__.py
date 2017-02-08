@@ -752,7 +752,7 @@ def return_all(label):
         return_one(andrewid, label)
         time.sleep(1)
 
-    status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments/{}".format(label)),
+    status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments/"),
                                label, "STATUS")
 
     with open(status_file, 'w') as f:

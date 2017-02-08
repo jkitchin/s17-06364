@@ -25,7 +25,7 @@ The net rate of consumption is the sum of these two reactions (B is consumed in 
 
 $r_B = -k_B C_B^2 + k_{-B} C_D C_H$
 
-Note we have three concentrations in this rate law! They are related by stoichiometry, and later we will see how to do that. 
+Note we have three concentrations in this rate law! They are related by stoichiometry, and later we will see how to handle that. 
 
 At equilibrium, we have that the net rate must be zero (or else the concentrations will be changing). So:
 
