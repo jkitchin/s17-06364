@@ -1,5 +1,46 @@
 {
+    "solutions": [
+        "solutions/batch-1.ipynb",
+        "solutions/batch-2.ipynb",
+        "solutions/example.ipynb"
+    ],
     "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
+    "assignments": {
+        "assignments/thinking-1.ipynb": {
+            "duedate": "2017-02-07 23:59:59",
+            "grader": "Elif"
+        },
+        "assignments/batch-2.ipynb": {
+            "duedate": "<2017-01-27 Fri>",
+            "grader": "jkitchin"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "duedate": "2017-02-01 23:59:59",
+            "grader": "David"
+        },
+        "assignments/p-1.ipynb": {
+            "duedate": "2017-01-31 23:59:59",
+            "grader": "Elif"
+        },
+        "assignments/levenspiel-2.ipynb": {
+            "duedate": "2017-02-08 23:59:59",
+            "grader": "David"
+        },
+        "assignments/levenspiel-1.ipynb": {
+            "duedate": "2017-02-02 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/cstr-mss.ipynb": {
+            "duedate": "2017-02-09 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/batch-1.ipynb": {
+            "duedate": "<2017-01-26 Thu>",
+            "grader": "jkitchin"
+        }
+    },
+    "announcements": "<div id=\"outline-container-orgec6a3be\" class=\"outline-2\">\n<h2 id=\"orgec6a3be\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.6.2 is available. Install it with this command. Recommended update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
+    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
     "lectures": [
         "lectures/introduction.ipynb",
         "lectures/lecture-00.ipynb",
@@ -10,46 +51,5 @@
         "lectures/lecture-05.ipynb",
         "lectures/lecture-06.ipynb",
         "lectures/supplement-1.ipynb"
-    ],
-    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
-    "solutions": [
-        "solutions/batch-1.ipynb",
-        "solutions/batch-2.ipynb",
-        "solutions/example.ipynb"
-    ],
-    "announcements": "<div id=\"outline-container-orgec6a3be\" class=\"outline-2\">\n<h2 id=\"orgec6a3be\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.6.2 is available. Install it with this command. Recommended update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
-    "assignments": {
-        "assignments/thinking-1.ipynb": {
-            "duedate": "2017-02-07 23:59:59",
-            "grader": "Elif"
-        },
-        "assignments/levenspiel-2.ipynb": {
-            "duedate": "2017-02-08 23:59:59",
-            "grader": "David"
-        },
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>",
-            "grader": "jkitchin"
-        },
-        "assignments/unsteady-cstr.ipynb": {
-            "duedate": "2017-02-01 23:59:59",
-            "grader": "David"
-        },
-        "assignments/cstr-mss.ipynb": {
-            "duedate": "2017-02-09 23:59:59",
-            "grader": "Daniel"
-        },
-        "assignments/p-1.ipynb": {
-            "duedate": "2017-01-31 23:59:59",
-            "grader": "Elif"
-        },
-        "assignments/batch-2.ipynb": {
-            "duedate": "<2017-01-27 Fri>",
-            "grader": "jkitchin"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "duedate": "2017-02-02 23:59:59",
-            "grader": "Daniel"
-        }
-    }
+    ]
 }
