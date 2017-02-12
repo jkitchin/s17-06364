@@ -192,6 +192,7 @@ plt.ylim([0, 10.5])
 :END:
 
 It is always good to check that things worked as expected. Here the volume should have been constant after 50 minutes, and you can see that it is.
+
 * Reactor design with pressure drops
 
 We now consider a generalization of the changing volumetric flow that occurs when the pressure changes. The general form of the volumetric flow is:
@@ -401,6 +402,6 @@ plt.tight_layout()
 
 - You can see more than 50% pressure drop over the length of the bed
 
-- Set \alpha to 0 to see the effect of the pressure drop. Does conversion increase or decrease?
+- Set $\alpha$ to 0 to see the effect of the pressure drop. Does conversion increase or decrease?
 
 Note that the $y$ will go to zero, and at that point you will have problems solving the equations. This is an unphysical limit and the Ergun equation probably becomes invalid. It is not possible to actually get to a pressure of 0! Also, if the reactor vents to the atmosphere, is not possible to get a pressure less than an atm at the exit. 
