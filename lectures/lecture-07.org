@@ -9,13 +9,13 @@ So far you have learned to design a variety of reactors with single reactions oc
 Let us consider a simple model for the total cost of an operation. Let the total cost be the operating cost of the reactor plus the cost of the feedstocks. 
 
 The operating cost of a reactor can be determined by amortizing the reactor cost over some length of time, and adding the cost required for maintenance, and paying workers.
-  - The units of this cost will usually be $/volume/time
+  - The units of this cost will usually be dollars/volume/time
   - The cost of operating the reactor then is $C_R = V_R operating_{cost}$
 
 Feedstock costs are related to the cost of raw materials times the rate at which they are consumed.
   - The cost associated with each reactant will be $C_{j} = F_j reactant_{cost}$ if $reactant_{cost}$ is in $/mol.
 
-Let us consider an example. $Y$ is produced at a rate of 90 kmol/min in a CSTR by the reaction $X \rightarrow Y$ at a reaction rate of $r = 0.1 C_X$ (kmol/m^3/min)  with an inlet concentration of $C_{X0} = 1.5$ kmol/m^3.  The reactant $X$ costs $1.20 per kmol. The cost of the reactor is $0.1 per minute per cubic meter. If we discard unreacted X, what is the minimum cost of making Y?
+Let us consider an example. $Y$ is produced at a rate of 90 kmol/min in a CSTR by the reaction $X \rightarrow Y$ at a reaction rate of $r = 0.1 C_X$ (kmol/m^{3}/min)  with an inlet concentration of $C_{X0} = 1.5$ kmol/m^{3}.  The reactant $X$ costs $1.20 per kmol. The cost of the reactor is 0.1 per minute per cubic meter. If we discard unreacted X, what is the minimum cost of making Y?
 
 We need to know the volume and volumetric flow that will minimize the total cost.
 
@@ -23,7 +23,7 @@ We have a mole balance on X:
 
 \begin{align}
 0 = F_{X0} - F_X + r_X V \\
-0 = F_{X0} * C_X v_0 - k C_X V
+0 = F_{X0} - C_X v_0 - k C_X V
 \end{align}
 
 We have two unknowns and one equation, but if we specify one variable, we can solve for the other one.
@@ -32,7 +32,9 @@ Let us start by specifying a $v_0$, and solving for $V$, then we calculate the c
 
 There are some bounds on $v_0$: We must have at least 90 kmol/min of X entering the reactor to produce 90 kmol/min of Y
   - Actually that would be a conversion of 100%, which is not reasonable.
-  - Let us assume 90% conversion is acceptable for now, which means v_0 must be at least 100 kmol/min / 1.5 mol/m^3 \approx 66 m^3/min.
+  - Let us assume 90% conversion is acceptable for now, which means $v_0$ must be at least 100 kmol/min / 1.5 mol/m^{3} \approx 66 m^{3}/min.
+
+First we define what we know.
 
 #+BEGIN_SRC ipython :session :results output drawer silent
 from scipy.optimize import fsolve
@@ -46,7 +48,7 @@ reactor_cost = 0.1  # $/m^3
 Xcost = 1.20        # $/kmol
 #+END_SRC
 
-First, we can define an objective function. This is the function we need to solve to find the volume of a reactor if the volumetric flow is specified. We define it like a regular objective function, but we add a second argument that will be a /parameter/ for the volumetric flow.
+Next, we can define an objective function. This is the function we need to solve to find the volume of a reactor if the volumetric flow is specified. We define it like a regular objective function, but we add a second argument that will be a /parameter/ for the volumetric flow.
 
 #+BEGIN_SRC ipython :session :results output drawer silent
 def objective(V, v0):
@@ -57,7 +59,7 @@ def objective(V, v0):
     return Fx0 - Fx + rx * V
 #+END_SRC
 
-Next, we define a range of volumetric flows to calculate the cost for, and a function for the cost. So we will create a range of volumetric flows from 66 to 200 m^3/min. For each value, we pass it as an args parameter to the objective function, and then we solve for the reactor volume. Once we have the volume we can calculate the reactor cost, and with the volumetric flow calculate the reactant cost. Finally, we compute the cost of the operation. If we have selected the initial range correctly, we will see a minimum.
+Then, we define a range of volumetric flows to calculate the cost for, and a function for the cost. So we will create a range of volumetric flows from 66 to 200 m^{3}/min. For each value, we pass it as an args parameter to the objective function, and then we solve for the reactor volume. Once we have the volume we can calculate the reactor cost, and with the volumetric flow calculate the reactant cost. Finally, we compute the cost of the operation. If we have selected the initial range correctly, we will see a minimum.
 
 #+BEGIN_SRC ipython :session :results output drawer
 from scipy.optimize import fsolve
@@ -74,6 +76,8 @@ def cost_func(vol_flow):
 cost = [cost_func(v) for v in v0]
 #+END_SRC
 
+
+Now we plot the cost function.
 
 #+BEGIN_SRC ipython :session :results output drawer
 %matplotlib inline
@@ -92,12 +96,12 @@ Here we get the approximate minimum of the cost, and the corresponding volumetri
 
 #+BEGIN_SRC ipython :session :results output drawer
 imin = np.argmin(cost)
-print('Min cost of ${} at V={}'.format(cost[imin], v0[imin]))
+print('Min cost of ${:1.2f} at V={:1.2f} m^{{3}}'.format(cost[imin], v0[imin]))
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-Min cost of $3.655606758832566 at V=104.28571428571428
+Min cost of $3.66 at V=104.29 m^{3}
 :END:
 
 The cost at low volumetric flow is dominated by the increasing reactor size. The cost at high volumetric flow is dominated by the cost of the feedstock $X$. 
@@ -106,9 +110,9 @@ The cost at low volumetric flow is dominated by the increasing reactor size. The
 
 ** Profit example
 
-Now, let us consider profit. Profit is the difference between the value of the products and the cost to make them. Say compound X with a concentration of 2.5 kmol / m^3 flows at a rate of 12 m^3/min into a tubular reactor where it is converted to $Y$.
+Now, let us consider profit. Profit is the difference between the value of the products and the cost to make them. Say compound X with a concentration of 2.5 kmol / m^{3} flows at a rate of 12 m^{3}/min into a tubular reactor where it is converted to $Y$.
 
-The reaction occurs at a rate of $r = 30.0 C_X$ 1/min. $Y$ has a value $V_Y$ of $1.50 / kmol, and the cost of reactor operation $C_R$ is $2.50 per minute per m^3. What is the maximum profit?
+The reaction occurs at a rate of $r = 30.0 C_X$ 1/min. $Y$ has a value $V_Y$ of $1.50 / kmol, and the cost of reactor operation $C_R$ is $2.50 per minute per m^{3}. What is the maximum profit?
 
 The value of the products will be $F_Y V_Y$ and the operating cost will be $V_R C_R$. We have to compute the exit molar flow of product as a function of reactor volume, and then compute the profit for each volume.
 
@@ -116,6 +120,7 @@ Here we set up mole balances on $X$ and $Y$.
   - It is not strictly necessary, we could just get $F_X$, and compute $F_Y$ by stoichiometry later
   - Instead, we compute $F_Y$ in the solution
 
+As before we start by defining what we know.
 #+BEGIN_SRC ipython :session :results output drawer
 import numpy as np
 from scipy.integrate import odeint
@@ -128,7 +133,24 @@ FX0 = CX0 * v0
 FY0 = 0.0
 #+END_SRC
 
-#+BEGIN_SRC ipython :session :results output drawer
+
+Next we define the ODE and solve it. Note we have two coupled ODEs here:
+
+$\frac{dF_x}{dV} = r_x$
+
+$\frac{dF_y}{dV} = r_y$
+
+with
+
+$r = k C_x$
+
+and by stoichiometry:
+
+$\frac{r_x}{-1} = \frac{r_y}{1} = r$.
+
+So, the first variable to our ode function will actually hold two values: $F_x$ and $F_y$, and the function must return two values, one for each ode.
+
+#+BEGIN_SRC ipython :session :results output drawer silent
 def dFdV(F, V):
     Fx, Fy = F
     Cx = Fx / v0
@@ -145,6 +167,8 @@ sol = odeint(dFdV, [FX0, FY0], Vspan)
 
 Fy = sol[:, 1]
 #+END_SRC
+
+With the solution in hand, we can calculate the product value and operating cost, and finally the profit.
 
 #+BEGIN_SRC ipython :session :results output drawer
 V_Y = 1.50 # $/kmol
@@ -164,24 +188,23 @@ plt.ylabel('Profit ($)')
 [[file:ipython-inline-images/ob-ipython-b5de191251640a6e11fd24c1c34b3452.png]]
 :END:
 
+As before we can estimate the maximum pretty accurately with the index of the maximum value in the profit array.
+
 #+BEGIN_SRC ipython :session :results output drawer
 imax = np.argmax(profit)
 print(imax)
-print('Max profit of ${} at V = {}'.format(profit[imax], Vspan[imax]))
+print('Max profit of ${:1.2f} at V = {:1.2f} m^3.'.format(profit[imax], Vspan[imax]))
 #+END_SRC
 
-- You can see a maximum in profit at a reactor volume of about 1.5 m^3.
+#+RESULTS:
+:RESULTS:
+25
+Max profit of $40.19 at V = 1.53 m^3.
+:END:
 
-- To get a more quantitative answer, we need to use optimization
+You can see a maximum in profit at a reactor volume of about 1.5 m^{3}. To get a more quantitative answer, we need to use optimization. We need to define an objective function to minimize.  The profit goes through a maximum, so -profit will go through a minimum. 
 
-- We need to define an objective function to minimize
-
-- The profit goes through a maximum, so -profit will go through a minimum
-
-- We will use an optional argument to our profit function that determines the sign of the return value
-  - For the optimization we set the sign to be -1
-  - After we have a solution we use the default sign of +1 to compute the profit
-  - This is just for convenience. You could multiply by \pm 1 as needed.
+We will use an optional argument to our profit function that determines the sign of the return value. For the optimization we set the sign to be -1. After we have a solution we use the default sign of +1 to compute the profit. This is just for convenience. You could multiply by \pm 1 as needed.
 
 #+BEGIN_SRC ipython :session :results output drawer
 def profit(V, sign=1):
@@ -195,7 +218,7 @@ print(profit(1.53))
 from scipy.optimize import fmin
 
 opt_V, = fmin(profit, 1.5, args=(-1,))
-print('Maximum profit is {} at V = {}'.format(profit(opt_V), opt_V))
+print('Maximum profit is ${:1.2f} at V = {:1.2f} m^{{3}}'.format(profit(opt_V), opt_V))
 #+END_SRC
 
 #+RESULTS:
@@ -205,8 +228,16 @@ Optimization terminated successfully.
          Current function value: -40.193337
          Iterations: 11
          Function evaluations: 22
-Maximum profit is 40.19333745971681 at V = 1.5226318359375
+Maximum profit is $40.19 at V = 1.52 m^{3}
 :END:
 
 
+You can see the results are quite close in this case. That is because we use 50 points in the graph, and near the maximum the profit does not change much. 
 
+* Summary
+
+We introduced one new idea in this lecture: optimization. This is usually a minimization, but it can also be a maximization. You need to use optimization when you have conflicting objectives, e.g. you want a high conversion, but it takes large reactors to achieve that, which may not be cost effective.
+
+The first example we solved graphically, and with the second example we showed a more quantitative approach using pydoc:scipy.optimize.fmin. That function is like pydoc:scipy.optimize.fsolve, except it minimizes an objective function rather than solving it. You could think of it like solving for the first derivative being equal to zero.
+
+Otherwise, we have simply combined some simple ideas that couple reactor design with other information about the cost of operation, and simple definitions of cost and profit.
