@@ -196,7 +196,7 @@ def setup_post():
     ANDREWID = request.form['andrewid']
     NAME = request.form['fullname']
 
-    with open(CONFIG, 'w') as f:
+    with open(CONFIG, 'w', encoding='utf-8') as f:
         f.write(json.dumps({'ANDREWID': ANDREWID.lower(),
                             'NAME': NAME}))
 
@@ -271,7 +271,7 @@ def admin_solution(label):
 
 @app.route("/assignment/<label>")
 def open_assignment(label):
-    with open(CONFIG) as f:
+    with open(CONFIG, encoding='utf-8') as f:
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
         NAME = data['NAME']
@@ -285,7 +285,7 @@ def open_assignment(label):
                                    fname)
 
         # Insert their full name at the top
-        with open(fname) as f:
+        with open(fname, encoding='utf-8') as f:
             j = json.loads(f.read())
 
         dt = datetime.now()
@@ -302,7 +302,7 @@ def open_assignment(label):
         j['metadata']['author']['name'] = NAME
         j['metadata']['author']['email'] = '{}@andrew.cmu.edu'.format(ANDREWID)
 
-        with open(fname, 'w') as f:
+        with open(fname, 'w', encoding='utf-8') as f:
             f.write(json.dumps(j))
 
     # Now open the notebook.
@@ -337,7 +337,7 @@ def authenticate(label):
 def submit_post():
     """Turn in LABEL by email."""
 
-    with open(CONFIG) as f:
+    with open(CONFIG, encoding='utf-8') as f:
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
         NAME = data['NAME']
@@ -363,17 +363,17 @@ def submit_post():
         raise Exception('{} not found.'.format(fname))
 
     # Save some turn in data.
-    with open(fname) as f:
+    with open(fname, encoding='utf-8') as f:
         j = json.loads(f.read())
 
     j['metadata']['TURNED-IN'] = {}
     dt = datetime.now()
     j['metadata']['TURNED-IN']['timestamp'] = dt.isoformat(" ")
 
-    with open(fname, 'w') as f:
+    with open(fname, 'w', encoding='utf-8') as f:
         f.write(json.dumps(j))
 
-    with open(fname, 'rb') as fp:
+    with open(fname, 'rb', encoding='utf-8') as fp:
         attachment = MIMEBase(maintype, subtype)
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
@@ -420,12 +420,12 @@ def admin():
         print('Unable to download the course json file!!!!!!')
         ONLINE = False
 
-    with open(CONFIG) as f:
+    with open(CONFIG, encoding='utf-8') as f:
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
         NAME = data['NAME']
 
-    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
         data = json.loads(f.read())
 
     # Next get assignments. These are in assignments/label.ipynb For students I
@@ -445,7 +445,7 @@ def admin():
         f = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"),
                          label, "STATUS")
         if os.path.exists(f):
-            with open(f) as tf:
+            with open(f, encoding='utf-8') as tf:
                 statuses.append(tf.read())
         else:
             statuses.append(None)
@@ -479,7 +479,7 @@ def get_roster():
     "Read roster and return a list of dictionaries for each student."
     import csv
     roster_file = os.path.expanduser('~/Box Sync/s17-06-364/course/roster.csv')
-    with open(roster_file) as f:
+    with open(roster_file, encoding='utf-8') as f:
         reader = csv.reader(f, delimiter=',')
         rows = [row for row in reader]
         roster_entries = [dict(zip(rows[0], row)) for row in rows]
@@ -490,7 +490,7 @@ def get_roster():
 @app.route('/roster')
 def roster():
     "Render roster page"
-    with open(CONFIG) as f:
+    with open(CONFIG, encoding='utf-8') as f:
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
 
@@ -512,7 +512,7 @@ def grade_assignment(label):
     if request.args.get('shuffle'):
         random.shuffle(roster)
 
-    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
         data = json.loads(f.read())
 
     today = datetime.utcnow()
@@ -589,7 +589,7 @@ def grade_assignment(label):
         d['returned'] = None
         
         if os.path.exists(GFILE):
-            with open(GFILE) as f:
+            with open(GFILE, encoding='utf-8') as f:
                 j = json.loads(f.read())
                 # if the file is ungraded, we go ahead and move it over.
                 if (os.path.exists(SFILE)
@@ -624,7 +624,7 @@ def grade_assignment(label):
     # think it makes sense to change it since it should either be Collected or
     # Returned.
     if not os.path.exists(status_file):
-        with open(status_file, 'w') as f:
+        with open(status_file, 'w', encoding='utf-8') as f:
             f.write('Collected')
 
     return render_template('grade-assignment.html',
@@ -640,7 +640,7 @@ def grade(andrewid, label):
                          label,
                          '{}-{}.ipynb'.format(andrewid, label))
 
-    with open(GFILE) as f:
+    with open(GFILE, encoding='utf-8') as f:
         j = json.loads(f.read())
         if j['metadata'].get('grade', None) is None:
             print('No grade in {} yet'.format(GFILE))
@@ -675,7 +675,7 @@ def return_one(andrewid, label):
         return redirect(url_for('grade_assignment', label=label))
 
     # Check for grade, we don't return ungraded files
-    with open(GFILE) as f:
+    with open(GFILE, encoding='utf-8') as f:
         j = json.loads(f.read())
         if j['metadata'].get('grade', None) is None:
             print('No grade in {}. not returning.'.format(GFILE))
@@ -693,7 +693,7 @@ def return_one(andrewid, label):
     # ok, finally we have to send it back.
     EMAIL = '{}@andrew.cmu.edu'.format(andrewid)
 
-    with open(CONFIG) as f:
+    with open(CONFIG, encoding='utf-8') as f:
         data = json.loads(f.read())
         ANDREWID = data['ANDREWID']
 
@@ -714,16 +714,16 @@ def return_one(andrewid, label):
     maintype, subtype = ctype.split('/', 1)
 
     # Save some return data.
-    with open(GFILE) as f:
+    with open(GFILE, encoding='utf-8') as f:
         j = json.loads(f.read())
 
     dt = datetime.now()
     j['metadata']['RETURNED'] = dt.isoformat(" ")
 
-    with open(GFILE, 'w') as f:
+    with open(GFILE, 'w', encoding='utf-8') as f:
         f.write(json.dumps(j))
 
-    with open(GFILE, 'rb') as fp:
+    with open(GFILE, 'rb', encoding='utf-8') as fp:
         attachment = MIMEBase(maintype, subtype)
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
@@ -755,7 +755,7 @@ def return_all(label):
     status_file = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments/"),
                                label, "STATUS")
 
-    with open(status_file, 'w') as f:
+    with open(status_file, 'w', encoding='utf-8') as f:
         f.write('Returned')
 
     return redirect(url_for('grade_assignment', label=label))
@@ -765,7 +765,7 @@ def return_all(label):
 def gradebook_one(andrewid):
     'Gather grades for andrewid.'
 
-    with open('{}/s17-06364.json'.format(COURSEDIR)) as f:
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
         data = json.loads(f.read())
 
     # Next get assignments. These are in assignments/label.ipynb For students I
@@ -793,7 +793,7 @@ def gradebook_one(andrewid):
                          'points': None}
 
         if os.path.exists(sfile):
-            with open(sfile) as f:
+            with open(sfile, encoding='utf-8') as f:
                 j = json.loads(f.read())
                 if j['metadata'].get('grade', None):
                     grades[label] = {'andrewid': andrewid,                                     
