@@ -373,7 +373,7 @@ def submit_post():
     with open(fname, 'w', encoding='utf-8') as f:
         f.write(json.dumps(j))
 
-    with open(fname, 'rb', encoding='utf-8') as fp:
+    with open(fname, 'rb') as fp:
         attachment = MIMEBase(maintype, subtype)
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
@@ -723,7 +723,7 @@ def return_one(andrewid, label):
     with open(GFILE, 'w', encoding='utf-8') as f:
         f.write(json.dumps(j))
 
-    with open(GFILE, 'rb', encoding='utf-8') as fp:
+    with open(GFILE, 'rb') as fp:
         attachment = MIMEBase(maintype, subtype)
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
