@@ -10,13 +10,16 @@
   CLOSED: [2017-02-12 Sun 18:31]
 * DONE <2017-02-01 Wed> [[./lectures/lecture-04.org]]
   CLOSED: [2017-02-12 Sun 18:31]
-* <2017-02-06 Mon> *NO CLASS*
-* <2017-02-08 Wed> *NO CLASS*
-* <2017-02-13 Mon> [[./lectures/lecture-05.org]]
+* DONE <2017-02-06 Mon> *NO CLASS*
+  CLOSED: [2017-02-16 Thu 10:19]
+* DONE <2017-02-08 Wed> *NO CLASS*
+  CLOSED: [2017-02-14 Tue 10:19]
+* DONE <2017-02-13 Mon> [[./lectures/lecture-05.org]]
+  CLOSED: [2017-02-14 Tue 10:19]
 * <2017-02-15 Wed> [[./lectures/lecture-06.org]]
 * <2017-02-20 Mon> [[./lectures/lecture-07.org]]
-* <2017-02-22 Wed>
-* <2017-02-27 Mon>
+* <2017-02-22 Wed> [[./lectures/lecture-08.org]]
+* <2017-02-27 Mon> *NO CLASS*
 * <2017-03-01 Wed>
 * <2017-03-06 Mon>
 * <2017-03-08 Wed>

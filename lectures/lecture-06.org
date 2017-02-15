@@ -11,7 +11,10 @@ Semibatch reactors are most often used when there are multiple reactions present
 
 #+CAPTION: A semi-batch reactor
 #+attr_org: :width 300
-[[ghss:./semibatch.png]]
+
+
+#+attr_org: :width 300
+[[ghss:./images/semibatch.png]]
 
 
 
@@ -23,7 +26,7 @@ All other species mole balances are the same as the batch reactor /except/ that 
 
 Note, we need an equation for how the volume changes now too. If the density is not a function of composition, we have $V = V_0 + \nu_0 t$, or alternatively: $\frac{dV}{dt} = \nu_0$.
 
-Let us consider an example of $A + B \rightarrow C$. We start with 5 L of $A$ at a concentration of 2 mol/L in a 10 L reactor.  We add $B$ at a rate of $0.1 L / min$ at a concentration of 2 mol/L. The rate law is given as $r = k C_A C_B^2$ with $k = 0.02$ L^2/mol^2/hr. Find the concentration of A when the reactor is full.
+Let us consider an example of $A + B \rightarrow C$. We start with 5 L of $A$ at a concentration of 2 mol/L in a 10 L reactor.  We add $B$ at a rate of $0.1 L / min$ at a concentration of 2 mol/L. The rate law is given as $r = k C_A C_B^2$ with $k = 0.02$ L^{2}/mol^{2}/hr. Find the concentration of A when the reactor is full.
 
 The mole balance on $A$ is $\frac{d N_A}{dt} = r_A V$ with $N_A(t=0) = V_0 C_{A0}$.
 
@@ -262,7 +265,7 @@ which must be numerically integrated with appropriate initial conditions.
 
 We consider the partial oxidation of ethylene to ethylene oxide:
 
-$C_{2}H_4 + 0.5 O_2 -> C_{2}H_{4}O$
+$C_{2}H_4 + 0.5 O_2 \rightarrow C_{2}H_{4}O$
 
 Oxygen is fed in a stoichiometric amount in the form of air.
 
@@ -283,7 +286,7 @@ We need a mole balance for each species so we can compute the total molar flow r
 
 - We need a differential equation on the change in pressure
 
-#+BEGIN_SRC ipython :session :results output drawer
+#+BEGIN_SRC ipython :session :results output drawer silent
 import numpy as np
 from scipy.integrate import odeint
 
@@ -325,9 +328,10 @@ def ode(F, W):
     return [dFadW, dFbdW, dFcdW, dydW]
 #+END_SRC
 
+
 The integration of the ODEs is straight-forward.
 
-#+BEGIN_SRC ipython :session :results output drawer
+#+BEGIN_SRC ipython :session :results output drawer silent
 # initial conditions
 y0 = 1.0 # P0/P0
 F0 = [Fa0, Fb0, Fc0, y0]
@@ -337,6 +341,7 @@ Wspan = np.linspace(0, 60) # lb_m cat
 sol = odeint(ode, F0, Wspan)
 Fa, Fb, Fc, y = sol.T
 #+END_SRC
+
 
 
 Let us look at some details. First, we plot the volumetric flow in the reactor and then the conversion. We do not have the temperature, so we cannot actually determine the inlet volumetric flow, so we instead plot $\nu/\nu_0 = Ft / Ft0  P0 / P$.
@@ -360,7 +365,7 @@ plt.ylabel('volumetric flow ratio')
 [[file:ipython-inline-images/ob-ipython-248fc62a94540f7937e01c2d74cc632e.png]]
 :END:
 
-You can see that the volumetric flow is increasing substantially!
+You can see that the volumetric flow is increasing substantially! Next we consider the conversion.
 
 #+BEGIN_SRC ipython :session :results output drawer
 X = (Fa0 - Fa) / Fa0
@@ -376,9 +381,40 @@ plt.ylabel('Conversion')
 [[file:ipython-inline-images/ob-ipython-24d9cf198547bb6f4b45d4fd05ad14d2.png]]
 :END:
 
-From the conversion graph, we can see the answer is we need about 50 lb of catalyst to get 60% conversion.
+From the conversion graph, we can see the answer is we need about 50 lb of catalyst to get 60% conversion. We can get a more precise answer with interpolation.
 
-Finally, we look at 
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.interpolate import interp1d
+from scipy.optimize import fsolve
+
+f = interp1d(Wspan, X)
+
+def objective(W):
+    return f(W) - 0.6
+
+ans, = fsolve(objective, 50)
+print('X=0.6 at a catalyst weight of {:1.2f} lb_m'.format(ans))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+X=0.6 at a catalyst weight of 47.98 lb_m
+:END:
+
+If you "invert" the interpolation you can avoid the fsolve. This will not always work, but it does here because inverting the interpolation results in a single-valued function. The interpolation function returns an array, so we have to convert the result to a float for formatting here.
+
+#+BEGIN_SRC ipython :session :results output drawer
+f2 = interp1d(X, Wspan)
+print('X=0.6 at a catalyst weight of {:1.2f} lb_m'.format(float(f2(0.6))))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+X=0.6 at a catalyst weight of 47.98 lb_m
+:END:
+
+Finally, we look at the molar flows and pressure drop.
+
 #+BEGIN_SRC ipython :session :results output drawer
 plt.subplot(1, 2, 1) # subplot with two columns in one row
 plt.plot(Wspan, Fa, Wspan, Fb, Wspan, Fc)
@@ -405,3 +441,9 @@ plt.tight_layout()
 - Set $\alpha$ to 0 to see the effect of the pressure drop. Does conversion increase or decrease?
 
 Note that the $y$ will go to zero, and at that point you will have problems solving the equations. This is an unphysical limit and the Ergun equation probably becomes invalid. It is not possible to actually get to a pressure of 0! Also, if the reactor vents to the atmosphere, is not possible to get a pressure less than an atm at the exit. 
+
+* Summary points
+
+Today we focused on scenarios where we have to use molar flows and /not/ conversion because the concentrations change for reasons other than reaction. In the case of the semibatch reactor the concentrations change because of dilution, in addition to reaction. In the pressure drop case the concentrations change because of the pressure drop, in addition to the reaction.
+
+We introduced the idea of coupled ODEs, and the use of interpolation in solving some problems with ODEs.
