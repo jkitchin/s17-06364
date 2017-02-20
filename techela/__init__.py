@@ -717,11 +717,15 @@ def return_one(andrewid, label):
 
     # Now we add the comments to the email body.
     i = 1
-    body += '\nComments:\n'
+    comments = []
     for cell in j['cells']:
         if cell['metadata'].get('type', None) == 'comment':
-            body += '\n{0}. {1}'.format(i, cell['metadata'].get('content', ''))
+            comments.append('{0}. {1}'.format(i, cell['metadata'].get('content', '')))
             i += 1
+
+    if comments:
+        body += '\nComments:\n'
+        body += comments.join('\n')
 
     dt = datetime.now()
     j['metadata']['RETURNED'] = dt.isoformat(" ")
@@ -734,7 +738,7 @@ def return_one(andrewid, label):
         attachment.set_payload(fp.read())
         # Encode the payload using Base64
         encoders.encode_base64(attachment)
-        # Set the filename parameter     
+        # Set the filename parameter
         attachment.add_header('Content-Disposition', 'attachment',
                               filename=os.path.split(GFILE)[-1])
         msg.attach(attachment)
