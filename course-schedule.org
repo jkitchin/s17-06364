@@ -18,7 +18,8 @@
   CLOSED: [2017-02-14 Tue 10:19]
 * DONE <2017-02-15 Wed> [[./lectures/lecture-06.org]]
   CLOSED: [2017-02-17 Fri 12:14]
-* <2017-02-20 Mon> [[./lectures/lecture-07.org]]
+* DONE <2017-02-20 Mon> [[./lectures/lecture-07.org]]
+  CLOSED: [2017-02-20 Mon 18:01]
 * <2017-02-22 Wed> [[./lectures/lecture-08.org]]
 * <2017-02-27 Mon> recitation
 * <2017-03-01 Wed> [[./lectures/lecture-09.org]]
