@@ -1,0 +1,215 @@
+* Parameter estimation with nonlinear regression 
+
+Nonlinear models are abundant in reaction engineering. For example,  \(r = k C_A^n \) is linear in the $k$ parameter, and nonlinear in $n$.
+
+Nonlinear fitting is essentially a non-linear optimization problem. Unlike linear regression, where we directly compute the parameters using matrix algebra, we have to provide an initial guess and iterate to the solution in non-linear regression.
+
+Similar to using fsolve, we must define a function of the model. The function takes an independent variable, and parameters, f(x, a, b,...). The function should return a value of $y$ for every value of $x$, i.e. it should be vectorized.
+
+It is possible to formulate these problems as nonlinear minimization of summed squared errors. See [[http://jkitchin.github.io/blog/2013/02/18/Nonlinear-curve-fitting/][this example]]. The function pydoc:scipy.optimize.curve_fit provides nonlinear fitting of models (functions) to data.
+
+Here is an example usage. We are given some data and we want to fit the function $f(x) = \frac{a x}{b + x}$ to the data and find the values of $a$ and $b$.
+
+#+BEGIN_SRC ipython :session :results output drawer
+import numpy as np
+from scipy.optimize import curve_fit
+
+x = np.array([0.5, 0.387, 0.24, 0.136, 0.04, 0.011])
+y = np.array([1.255, 1.25, 1.189, 1.124, 0.783, 0.402])
+
+# this is the function we want to fit to our data
+def func(x, a, b):
+    'nonlinear function in a and b to fit to data'
+    return a * x / (b + x)
+
+initial_guess = [1, 2]
+
+pars, pcov = curve_fit(func, x, y, p0=initial_guess)
+
+a, b = pars
+print('a = {0} and b={1}'.format(a,b))
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+plt.plot(x,y,'bo ')
+xfit = np.linspace(min(x), max(x))
+yfit = func(xfit, *pars)
+plt.plot(xfit,yfit,'b-')
+plt.legend(['data','fit'],loc='best')
+plt.xlabel('x')
+plt.ylabel('y')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+a = 1.3275314289266469 and b=0.02646155910186084
+[[file:ipython-inline-images/ob-ipython-d88d446a45cba1bb1057924e71bb067f.png]]
+:END:
+You should always visually inspect the fit. Consider this different guess.
+
+#+BEGIN_SRC ipython :session :results output drawer
+initial_guess = [0.1, 0.2]
+
+pars, pcov = curve_fit(func, x, y, p0=initial_guess)
+
+a, b = pars
+print('a = {0} and b={1}'.format(a,b))
+
+plt.plot(x,y,'bo ')
+xfit = np.linspace(min(x), max(x))
+yfit = func(xfit, *pars)
+plt.plot(xfit,yfit,'b-')
+plt.legend(['data','fit'],loc='best')
+plt.xlabel('x')
+plt.ylabel('y')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+a = 0.4987965138154436 and b=-0.09143090905061758
+[[file:ipython-inline-images/ob-ipython-fd42029bb0f3afc75ee574c98556088d.png]]
+:END:
+
+
+What has happened here is the $b$ parameter became negative, and so there is a division by zero. It is still a fit in the sense that there is a local minimum in summed squared error. However, we need to know if a negative $b$ parameter has any physical meaning. If the units are volume, concentration, etc..., it may not be physically meaningful.
+
+** Uncertainty in nonlinear regression
+
+We also need to estimate uncertainties in nonlinear parameters
+
+- =pycse= provides pydoc:pycse.nlinfit for this. 
+
+Here is an example usage of nlinfit.
+
+#+BEGIN_SRC ipython :session :results output drawer
+np.set_printoptions(precision=3)
+from pycse import nlinfit
+
+x = np.array([0.5, 0.387, 0.24, 0.136, 0.04, 0.011])
+y = np.array([1.255, 1.25, 1.189, 1.124, 0.783, 0.402])
+
+
+def func(x, a, b):
+    'nonlinear function in a and b to fit to data'
+    return a * x / (b + x)
+
+initial_guess = [1.2, 0.03]
+alpha = 0.05
+pars, pint, se = nlinfit(func, x, y, initial_guess, alpha)
+
+plt.plot(x,y,'bo ')
+xfit = np.linspace(min(x), max(x))
+yfit = func(xfit, *pars)
+plt.plot(xfit,yfit,'b-')
+plt.legend(['data','fit'],loc='best')
+plt.xlabel('x')
+plt.ylabel('y')
+
+aint, bint = np.array(pint)
+print('The 95% confidence interval on a is {0}'.format(aint))
+print('The 95% confidence interval on b is {0}'.format(bint))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+The 95% confidence interval on a is [ 1.301  1.355]
+The 95% confidence interval on b is [ 0.024  0.029]
+[[file:ipython-inline-images/ob-ipython-d88d446a45cba1bb1057924e71bb067f.png]]
+:END:
+
+Here the two intervals are relatively small, and do not include zero, suggesting both parameters are significant. More importantly, the errors are not skewed by a nonlinear transformation.
+
+Note you have to provide an initial guess. This will not always be easy to guess, and a linear regression may be a good way to get a good guess. There may be more than one minimum in the fit also, so different guesses may give different parameters.
+
+
+* Differential flow reactors for determining rate laws
+
+For many reactions it is not feasible to perform batch reactions. Especially for gas phase reactions on catalysts, a flow reactor is preferrable. If we can use a packed bed reactor with an approximately differential (i.e. a small thickness), then it is possible to directly measure the rate of reaction:
+
+\( \frac{dF_A}{dW} = r_A \)
+
+We approximate the rate as:
+
+\( r_A \approx \frac{F_{A,exit} - F_{A0}}{W_b} \)
+
+where $W_b$ is the weight of the bed, $F_{A,exit} = \nu C_A$ is the molar flow of $A$ out of the reactor, and $F_{A0}$ is the molar flow entering the reactor.
+
+It is important that $W_b$ is small, to keep the total conversion as small as possible while still being able to measure changes in the molar flows. Low total conversion is important so you can assume $C_A$ is essentially constant in the reactor bed.  Instead of measuring a small change in the reactants, you may also measure the increase in molar flow rate of products, which increase from zero (assuming they are not in the feed).
+
+In this reactor setup, you measure $r_A$ as a function of inlet conditions, and then fit the data to a proposed rate law.  Here is an example of rate data from a differential reactor as a function of inlet concentration of $A$.  We assume that $r_1 = k C_A^\alpha$ and fit the model to the data.
+
+#+BEGIN_SRC ipython :session :results output drawer
+C_A = np.array([1.0, 4.0, 2.0, 0.1, 0.5])    # mol/m^3
+r_1 = np.array([1.2, 2.0, 1.36, 0.36, 0.74]) # mol/m^3/min
+
+def rate(Ca, k, alpha):
+    return k * Ca**alpha
+
+p, pint, se = nlinfit(rate, C_A, r_1, [10, 0.5])
+print('Estimated parameters are k={}, alpha={}'.format(*p))
+print('At the 95% confidence level:')
+print('k is between {0}'.format(pint[0]))
+print('alpha is between {0}'.format(pint[1]))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+Estimated parameters are k=1.067250291500129, alpha=0.4461986323686289
+At the 95% confidence level:
+k is between [ 0.9    1.234]
+alpha is between [ 0.304  0.588]
+:END:
+
+* Role of uncertainty in reactor design
+
+What should we do with the knowledge of uncertainty? We can use it to estimate the uncertainty in reactor design. Let's consider the design of a batch reactor that should convert 80% of reactant A in the time it is run. The question is how long should we run it? We want to be sure we achieve 80% conversion, but not run too long, since it costs money to do that. Let us use the rate law we just determined, and assume we start with an initial concentration of $A$ of 1.5M. First, we solve for the time using the estimated parameters. We can solve for the time here as:
+
+$t = \int_{C_{A0}}^{C_A} \frac{dC_A}{-k C_A^\alpha}$
+
+#+BEGIN_SRC ipython :session :results output drawer
+Ca0 = 1.5 # M
+X = 0.8
+Ca = Ca0 * (1 - X)
+
+from scipy.integrate import quad
+
+def objective(ca, k, alpha):
+    return 1 / (-k * ca**alpha)
+a1, _ = quad(objective, Ca0, Ca, args=(p[0], p[1]))
+print('t1 = {} minutes'.format(a1))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+t1 = 1.2492920712809759 minutes
+:END:
+
+Now, what about the uncertainty though? We have uncertainty in k and alpha. Let's calculate the time for all the combinations of k and alpha to see what range of times might conceivably be possible. We can do that by looping over the confidence interval ranges and computing the times.
+
+#+BEGIN_SRC ipython :session :results output drawer
+for k1 in pint[0]:
+    for alpha1 in pint[1]:
+        a2, _ = quad(objective, Ca0, Ca, args=(k1, alpha1))
+        print('({}, {}): t2 = {} minutes'.format(k1, alpha1, a2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(0.9000476513435338, 0.30394027629553644): t2 = 1.4262422719511303 minutes
+(0.9000476513435338, 0.5884569884417213): t2 = 1.545110933698486 minutes
+(1.234452931656724, 0.30394027629553644): t2 = 1.0398825051949792 minutes
+(1.234452931656724, 0.5884569884417213): t2 = 1.1265504186329351 minutes
+:END:
+
+Visually we inspect this and see that the longest time it might take to get 80% conversion is 1.55 minutes. That is a worst-case scenario, and we might choose that because then we are pretty sure that we will get at least 80% conversion. That is for the smallest $k$ and largest $\alpha$. We are likely to get higher than 80% conversion in this case, because the probability that the true values of $k$ and $\alpha$ having these values is not high. The point here is that because of uncertainty, it is possible that the true time to get 80% conversion can be less than or greater than the time we estimate from the best fit parameters. The likelihood of achieving 80% conversion from the fitted parameters is only about 50%! To increase the likelihood, we have to run longer, and this is a simple approach to estimate how much longer. It does not tell us though, how much more certain we are. We examined the limits of the 95% confidence intervals. That does not imply we are 95% certain of reaching 80% conversion at 1.55 minutes though. To get a precise estimate of certainty, we need to use statistics.
+
+* Summary
+
+Important python functions to learn:
+1. pydoc:scipy.optimize.curve_fit - use when you only want parameters of a nonlinear model
+2. pydoc:pycse.nlinfit - use when you want parameters and uncertainty of a nonlinear model
+
+
+Reminders:
+1. pydoc:scipy.integrate.quad
+2. pydoc:pycse.regress - linear regression with uncertainty

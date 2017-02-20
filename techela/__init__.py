@@ -708,14 +708,20 @@ def return_one(andrewid, label):
                                                                         pres,
                                                                         grade)
 
-    msg.attach(MIMEText(body, 'plain'))
-
     ctype = 'application/octet-stream'
     maintype, subtype = ctype.split('/', 1)
 
     # Save some return data.
     with open(GFILE, encoding='utf-8') as f:
         j = json.loads(f.read())
+
+    # Now we add the comments to the email body.
+    i = 1
+    body += '\nComments:\n'
+    for cell in j['cells']:
+        if cell['metadata'].get('type', None) == 'comment':
+            body += '\n{0}. {1}'.format(i, cell['metadata'].get('content', ''))
+            i += 1
 
     dt = datetime.now()
     j['metadata']['RETURNED'] = dt.isoformat(" ")
@@ -732,6 +738,8 @@ def return_one(andrewid, label):
         attachment.add_header('Content-Disposition', 'attachment',
                               filename=os.path.split(GFILE)[-1])
         msg.attach(attachment)
+
+    msg.attach(MIMEText(body, 'plain'))
 
     print(msg)
     with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:

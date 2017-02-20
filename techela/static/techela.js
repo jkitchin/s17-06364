@@ -13,11 +13,11 @@ Jupyter.keyboard_manager.command_shortcuts.add_shortcut('c', {
 			var resp = response.content.text;      
 			console.log(response.content);
 			var comment = prompt("Comment: ");
-			var text = '<font color="red"> test' + resp + ": "+ comment + '</font>';
+			var text = '<font color="red">' + resp + ": "+ comment + '</font>';
 			var cell = Jupyter.notebook.get_selected_cell();
 			cell.set_text(text);
 			cell.metadata.type = "comment";
-			cell.metadata.content = text;
+			cell.metadata.content = comment;
 			Jupyter.notebook.execute_cell();}}},
 		    {silent: false, 
 		     store_history: false, 
