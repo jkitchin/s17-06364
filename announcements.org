@@ -1,7 +1,7 @@
 #+OPTIONS: toc:nil
 * Announcements
 
-- techela 0.7.0 is available. Install it with this command. If you do not have any problems with the app, there is no need to update.
+- techela 0.7.1 is available. Install it with this command. Recommended update. It adds an easier way to save your returned homeworks to a folder to open them.
 
 #+BEGIN_SRC sh
 pip install -U techela
