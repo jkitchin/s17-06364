@@ -1,67 +1,4 @@
 {
-    "assignments": {
-        "assignments/cstr-mss.ipynb": {
-            "grader": "Daniel",
-            "duedate": "2017-02-09 23:59:59"
-        },
-        "assignments/p-1.ipynb": {
-            "grader": "Elif",
-            "duedate": "2017-01-31 23:59:59"
-        },
-        "assignments/pfr-profit.ipynb": {
-            "grader": "David",
-            "duedate": "2017-02-23 23:59:59"
-        },
-        "assignments/pbr-pressure-drop.ipynb": {
-            "grader": "Daniel",
-            "duedate": "2017-02-16 23:59:59"
-        },
-        "assignments/batch-2.ipynb": {
-            "grader": "jkitchin",
-            "duedate": "<2017-01-27 Fri>"
-        },
-        "assignments/thinking-1.ipynb": {
-            "grader": "Elif",
-            "duedate": "2017-02-07 23:59:59"
-        },
-        "assignments/levenspiel-2.ipynb": {
-            "grader": "David",
-            "duedate": "2017-02-08 23:59:59"
-        },
-        "assignments/semibatch-1.ipynb": {
-            "grader": "David",
-            "duedate": "2017-02-16 23:59:59"
-        },
-        "assignments/unsteady-cstr.ipynb": {
-            "grader": "David",
-            "duedate": "2017-02-01 23:59:59"
-        },
-        "assignments/pfr-inerts.ipynb": {
-            "grader": "Daniel",
-            "duedate": "2017-02-23 23:59:59"
-        },
-        "assignments/batch-1.ipynb": {
-            "grader": "jkitchin",
-            "duedate": "<2017-01-26 Thu>"
-        },
-        "assignments/pfr-equilibrium-1.ipynb": {
-            "grader": "Elif",
-            "duedate": "2017-02-14 23:59:59"
-        },
-        "assignments/muddy-waters.ipynb": {
-            "grader": "John",
-            "duedate": "2017-02-21 23:59:59"
-        },
-        "assignments/cstr-multiple-1.ipynb": {
-            "grader": "Elif",
-            "duedate": "2017-02-21 23:59:59"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "grader": "Daniel",
-            "duedate": "2017-02-02 23:59:59"
-        }
-    },
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
     "solutions": [
         "solutions/batch-1.ipynb",
         "solutions/batch-2.ipynb",
@@ -85,6 +22,69 @@
         "lectures/lecture-11.ipynb",
         "lectures/supplement-1.ipynb"
     ],
-    "announcements": "<div id=\"outline-container-orgdde13ff\" class=\"outline-2\">\n<h2 id=\"orgdde13ff\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.7.0 is available. Install it with this command. If you do not have any problems with the app, there is no need to update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
-    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com"
+    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
+    "assignments": {
+        "assignments/levenspiel-1.ipynb": {
+            "grader": "Daniel",
+            "duedate": "2017-02-02 23:59:59"
+        },
+        "assignments/pfr-equilibrium-1.ipynb": {
+            "grader": "Elif",
+            "duedate": "2017-02-14 23:59:59"
+        },
+        "assignments/pfr-profit.ipynb": {
+            "grader": "David",
+            "duedate": "2017-02-23 23:59:59"
+        },
+        "assignments/semibatch-1.ipynb": {
+            "grader": "David",
+            "duedate": "2017-02-16 23:59:59"
+        },
+        "assignments/muddy-waters.ipynb": {
+            "grader": "John",
+            "duedate": "2017-02-21 23:59:59"
+        },
+        "assignments/pbr-pressure-drop.ipynb": {
+            "grader": "Daniel",
+            "duedate": "2017-02-16 23:59:59"
+        },
+        "assignments/pfr-inerts.ipynb": {
+            "grader": "Daniel",
+            "duedate": "2017-02-23 23:59:59"
+        },
+        "assignments/thinking-1.ipynb": {
+            "grader": "Elif",
+            "duedate": "2017-02-07 23:59:59"
+        },
+        "assignments/cstr-mss.ipynb": {
+            "grader": "Daniel",
+            "duedate": "2017-02-09 23:59:59"
+        },
+        "assignments/batch-2.ipynb": {
+            "grader": "jkitchin",
+            "duedate": "<2017-01-27 Fri>"
+        },
+        "assignments/batch-1.ipynb": {
+            "grader": "jkitchin",
+            "duedate": "<2017-01-26 Thu>"
+        },
+        "assignments/cstr-multiple-1.ipynb": {
+            "grader": "Elif",
+            "duedate": "2017-02-21 23:59:59"
+        },
+        "assignments/p-1.ipynb": {
+            "grader": "Elif",
+            "duedate": "2017-01-31 23:59:59"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "grader": "David",
+            "duedate": "2017-02-01 23:59:59"
+        },
+        "assignments/levenspiel-2.ipynb": {
+            "grader": "David",
+            "duedate": "2017-02-08 23:59:59"
+        }
+    },
+    "announcements": "<div id=\"outline-container-orgdde13ff\" class=\"outline-2\">\n<h2 id=\"orgdde13ff\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.7.0 is available. Install it with this command. If you do not have any problems with the app, there is no need to update.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n"
 }

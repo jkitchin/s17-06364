@@ -93,3 +93,21 @@ These are the notes that I have used in class. Each time you open one, it will d
 </table>
 
 
+<h2>Graded assignments</h2>
+When you get your graded assignment returned by email, save the attachment to this directory <a href="/coursedir?path=graded-assignments">{{COURSEDIR}}graded-assignments</a>. They will appear below for you to open.
+
+<table id="assignments" class=tablesorter>
+  <thead>
+    <th>filename</th>
+    <th>grade</th>
+    <th>graded-by</th>
+  </thead>
+  {% for fname, grade, grader in graded_assignments %}
+  <tr>
+    <td><a href="/graded-assignment/{{ fname }}">{{ fname }}</a></td>
+    <td>{{grade}}</td>
+    <td>{{grader}}</td>
+   
+  </tr>
+  {% endfor %}
+</table>

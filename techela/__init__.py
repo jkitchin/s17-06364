@@ -4,6 +4,7 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import glob
 import os
 from pkg_resources import get_distribution
 import json
@@ -37,13 +38,17 @@ SOLUTIONURL = BASEURL + 'solutions/'
 
 
 @app.route("/coursedir")
-def open_course():
+def open_course(path=None):
     """Open the course directory in a file explorer."""
+    d = COURSEDIR
+    path = request.args.get('path')
+
+    if path: d += path
     if sys.platform == "win32":
-        os.startfile(COURSEDIR)
+        os.startfile(d)
     else:
         opener = "open" if sys.platform == "darwin" else "xdg-open"
-        subprocess.call([opener, COURSEDIR])
+        subprocess.call([opener, d])
 
     return redirect(url_for('hello'))
 
@@ -56,6 +61,9 @@ def hello():
         os.makedirs(COURSEDIR + 'assignments/')
         os.makedirs(COURSEDIR + 'solutions/')
         os.makedirs(COURSEDIR + 'lectures/')
+
+    if not os.path.isdir(COURSEDIR + 'graded-assignments/'):
+        os.makedirs(COURSEDIR + 'graded-assignments/')
 
     if not os.path.exists(CONFIG):
         return redirect(url_for('setup_view'))
@@ -142,6 +150,16 @@ def hello():
     solutions = [label if label in solution_labels else None
                  for label in assignment_labels]
 
+    # graded assignments
+    graded_assignments = []
+    for ipynb in glob.glob(COURSEDIR + 'graded-assignments/*.ipynb'):
+        with open(ipynb, encoding='utf-8') as f:
+            gd = json.loads(f.read())
+
+            graded_assignments += [[os.path.split(ipynb)[-1],
+                                    gd['metadata'].get('grade', {}).get('overall', None),
+                                    gd['metadata']['org']['GRADER']]]
+
     return render_template('hello.html',
                            COURSEDIR=COURSEDIR,
                            ANDREWID=ANDREWID,
@@ -156,7 +174,8 @@ def hello():
                                                           colors,
                                                           duedates,
                                                           turned_in,
-                                                          solutions)))
+                                                          solutions)),
+                           graded_assignments=graded_assignments)
 
 
 @app.route("/debug")
@@ -307,6 +326,19 @@ def open_assignment(label):
 
     # Now open the notebook.
     # os.system('jupyter notebook {}'.format(fname))
+    cmd = ["jupyter", "notebook", fname]
+    subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE,
+                     stdin=subprocess.PIPE)
+
+    return redirect(url_for('hello'))
+
+
+@app.route("/graded-assignment/<fname>")
+def open_graded_assignment(fname):
+
+    fname = COURSEDIR + 'graded-assignments/{}'.format(fname)
+
     cmd = ["jupyter", "notebook", fname]
     subprocess.Popen(cmd, stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE,
