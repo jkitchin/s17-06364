@@ -96,6 +96,8 @@ def hello():
                       else '<font color="red">Not downloaded</font>'
                       for path in lecture_paths]
 
+    lecture_keywords = data['lecture_keywords']
+
     # Next get assignments. These are in assignments/label.ipynb For students I
     # construct assignments/andrewid-label.ipynb to check if they have local
     # versions.
@@ -158,7 +160,7 @@ def hello():
 
             graded_assignments += [[os.path.split(ipynb)[-1],
                                     gd['metadata'].get('grade', {}).get('overall', None),
-                                    gd['metadata']['org']['GRADER']]]
+                                    gd['metadata']['org'].get('GRADER', 'unknown')]]
 
     return render_template('hello.html',
                            COURSEDIR=COURSEDIR,
@@ -167,7 +169,7 @@ def hello():
                            ONLINE=ONLINE,
                            announcements=data['announcements'],
                            version=__version__,
-                           lectures=list(zip(lecture_labels, lecture_status)),
+                           lectures=list(zip(lecture_labels, lecture_status, lecture_keywords)),
                            assignments4templates=list(zip(assignment_labels,
                                                           assignment_paths,
                                                           assignment_status,

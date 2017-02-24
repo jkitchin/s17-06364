@@ -45,7 +45,7 @@ Your course files are in <a href="/coursedir">{{COURSEDIR}}</a> <br>
 These are your local copies. You can edit them and add your own notes.
 
 <ul>
-{% for label, status in lectures %}
+{% for label, status,keywords in lectures %}
 <li><a href="/lecture/{{ label }}">{{ label }}</a> ({{ status | safe}})</li>
 {% endfor %}
 </ul>
@@ -55,8 +55,8 @@ These are your local copies. You can edit them and add your own notes.
 These are the notes that I have used in class. Each time you open one, it will download the latest copy of the notes, so anything you change in these files will be lost each time you open the link.
 
 <ul>
-{% for label, status in lectures %}
-<li><a href="/course-lecture/{{ label }}">{{ label }}</a> 
+{% for label, status, keywords in lectures %}
+<li><a href="/course-lecture/{{ label }}">{{ label }} {{keywords}}</a> 
 {% endfor %}
 </ul>
 </td>
