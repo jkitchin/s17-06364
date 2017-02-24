@@ -1,0 +1,71 @@
+#+OX-IPYNB-KEYWORD-METADATA: keywords
+#+KEYWORDS: review
+
+* A review
+
+** Solving algebraic equations
+
+Solve the equation $x^2 = 3$ for $x$.
+
+This is an algebraic equation that is nonlinear in $x$. So, we use fsolve. To do that we need to define a function that will be equal to zero at the solution. We get that with this equation:
+
+$0 = 3 - x^2$
+
+#+BEGIN_SRC ipython :session :results output drawer
+def objective(x):
+    return 3 - x**2
+#+END_SRC
+
+We need to provide a guess for fsolve. An easy way to get a guess is to graph the function.
+
+#+BEGIN_SRC ipython :session :results output drawer
+%matplotlib inline
+import matplotlib.pyplot as plt
+import numpy as np
+
+X = np.linspace(0, 3)
+Y = objective(X)
+
+plt.plot(X, Y)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-9975f307f7f3f2ae244be326277db731.png]]
+:END:
+
+You should see in this graph that the objective function passes through zero around 1.7. We use that to make a guess in fsolve.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.optimize import fsolve
+
+ans, = fsolve(objective, 1.7)
+print(ans)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+1.73205080757
+:END:
+
+** Solving an integral
+
+Evaluate the integral: $\int_0^\pi sin(x) dx$. This is a definite integral so we use quad.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.integrate import quad
+
+def integrand(x):
+    return np.sin(x)
+
+ans, err = quad(integrand, 0, np.pi)
+
+print(ans)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+2.0
+:END:
+
+** 

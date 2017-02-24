@@ -1,3 +1,5 @@
+#+TITLE: Parameter estimation with nonlinear regression 
+
 * Parameter estimation with nonlinear regression 
 
 Nonlinear models are abundant in reaction engineering. For example,  \(r = k C_A^n \) is linear in the $k$ parameter, and nonlinear in $n$.
