@@ -1,7 +1,109 @@
 #+OX-IPYNB-KEYWORD-METADATA: keywords
 #+KEYWORDS: review
 
-* A review
+* Reminder on how to get Python help
+
+Use the help function.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.optimize import fsolve
+
+help(fsolve)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+Help on function fsolve in module scipy.optimize.minpack:
+
+fsolve(func, x0, args=(), fprime=None, full_output=0, col_deriv=0, xtol=1.49012e-08, maxfev=0, band=None, epsfcn=None, factor=100, diag=None)
+    Find the roots of a function.
+    
+    Return the roots of the (non-linear) equations defined by
+    ``func(x) = 0`` given a starting estimate.
+    
+    Parameters
+    ----------
+    func : callable ``f(x, *args)``
+        A function that takes at least one (possibly vector) argument.
+    x0 : ndarray
+        The starting estimate for the roots of ``func(x) = 0``.
+    args : tuple, optional
+        Any extra arguments to `func`.
+    fprime : callable(x), optional
+        A function to compute the Jacobian of `func` with derivatives
+        across the rows. By default, the Jacobian will be estimated.
+    full_output : bool, optional
+        If True, return optional outputs.
+    col_deriv : bool, optional
+        Specify whether the Jacobian function computes derivatives down
+        the columns (faster, because there is no transpose operation).
+    xtol : float, optional
+        The calculation will terminate if the relative error between two
+        consecutive iterates is at most `xtol`.
+    maxfev : int, optional
+        The maximum number of calls to the function. If zero, then
+        ``100*(N+1)`` is the maximum where N is the number of elements
+        in `x0`.
+    band : tuple, optional
+        If set to a two-sequence containing the number of sub- and
+        super-diagonals within the band of the Jacobi matrix, the
+        Jacobi matrix is considered banded (only for ``fprime=None``).
+    epsfcn : float, optional
+        A suitable step length for the forward-difference
+        approximation of the Jacobian (for ``fprime=None``). If
+        `epsfcn` is less than the machine precision, it is assumed
+        that the relative errors in the functions are of the order of
+        the machine precision.
+    factor : float, optional
+        A parameter determining the initial step bound
+        (``factor * || diag * x||``).  Should be in the interval
+        ``(0.1, 100)``.
+    diag : sequence, optional
+        N positive entries that serve as a scale factors for the
+        variables.
+    
+    Returns
+    -------
+    x : ndarray
+        The solution (or the result of the last iteration for
+        an unsuccessful call).
+    infodict : dict
+        A dictionary of optional outputs with the keys:
+    
+        ``nfev``
+            number of function calls
+        ``njev``
+            number of Jacobian calls
+        ``fvec``
+            function evaluated at the output
+        ``fjac``
+            the orthogonal matrix, q, produced by the QR
+            factorization of the final approximate Jacobian
+            matrix, stored column wise
+        ``r``
+            upper triangular matrix produced by QR factorization
+            of the same matrix
+        ``qtf``
+            the vector ``(transpose(q) * fvec)``
+    
+    ier : int
+        An integer flag.  Set to 1 if a solution was found, otherwise refer
+        to `mesg` for more information.
+    mesg : str
+        If no solution is found, `mesg` details the cause of failure.
+    
+    See Also
+    --------
+    root : Interface to root finding algorithms for multivariate
+    functions. See the 'hybr' `method` in particular.
+    
+    Notes
+    -----
+    ``fsolve`` is a wrapper around MINPACK's hybrd and hybrj algorithms.
+
+:END:
+
+* A Mathematics Review
 
 ** Solving algebraic equations
 
@@ -68,4 +170,126 @@ print(ans)
 2.0
 :END:
 
-** 
+** Differential equations
+
+Solve the differential equation $\frac{dy}{dx} = \frac{1}{x + 0.1}$ from $x=0$ to $x=1$ if $y(x=0) = 1$ and plot your solution.
+
+This problem states a differential equation in standard form: $y'(x) = f(x, y)$. We are given an initial condition, and a range to find the function $y(x)$ over. For this problem, we use odeint. We have to:
+
+1. define a function for the right hand side of the ODE
+2. Define an array for the range we solve/integrate over
+
+#+BEGIN_SRC ipython :session :results output drawer
+def ode(y, x):
+    return 1 / (x + 0.1)
+#+END_SRC
+
+Here we define an integration range.
+
+#+BEGIN_SRC ipython :session :results output drawer
+xspan = np.linspace(0, 1)
+#+END_SRC
+
+And now we get the solution.
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.integrate import odeint
+
+y0 = 1
+sol = odeint(ode, y0, xspan)
+#+END_SRC
+
+And finally plot it.
+
+#+BEGIN_SRC ipython :session :results output drawer
+plt.plot(xspan, sol)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-f4db7646a5262c27071c64e1e849d882.png]]
+:END:
+* The algorithm we use for almost every problem
+
+1. The mole balance and design equation
+
+ Three basic kinds of reactors: batch, CSTR, PFR/PBR
+ A few special kinds: semibatch
+
+2. Rate law - an algebraic expression for the rate of each reaction
+
+3. Stoichiometry - determines the species specific net rates, and concentrations
+  e.g $C_A = F_A / \nu$.
+
+4. Combine - to get a fully specified mathematical problem
+
+5. Evaluate - using fsolve, odeint
+
+** Example
+
+Find the volume required to reach 90% conversion of A for the elementary gas phase reaction
+
+$2A + B \rightarrow C$ which takes place in a CSTR at constant temperature (500 K) and constant pressure (16.4 atm). The feed is equal molar in A and B, and A is fed at 5 mol/s. The rate constant for this reaction is reported to be 10 (L/mol)^{2}/s.
+
+R = 0.082 atm L / (mol K)
+
+1. The mole balance/design equation. We have a CSTR, so we choose: $V = \frac{F_{A0} X}{-r_A}$.
+
+2. The rate law. The reaction is specified as elementary. That means: $r_A = k C_A^2 C_B$. We use the stoichiometry as the reaction is written. Note we have a gas-phase reaction with changing moles, so we have to compute: $C_A = F_A / \nu$ with $\nu = \nu_0 F_T / F_{T0}$. The total molar flow rates involve all three species. 
+
+$F_T = F_A + F_B + F_C$
+
+and 
+
+$F_{T0} + F_{A0} + F_{B0}$
+
+There is no C flowing into this reactor.
+
+3. Stoichiometry. We want 90% conversion on A, so we renormalize the reaction to be: $A + 1/2 B \rightarrow 1/2 C$. This leads us to these molar flows:
+
+$F_A = F_{A0} - F_{A0} X$
+
+$F_B = F_{B0} - 0.5 * F_{A0} X$
+
+$F_C = F_{C0} + 0.5 * F_{A0} X$
+
+4. We combine these into a fully formulated problem and then evaluate it.
+
+#+BEGIN_SRC ipython :session :results output drawer
+# Given data
+Fa0 = Fb0 = 5 # mol / s
+ya0 = 0.5 # mole fraction of A in the feed
+P0 = 16.4  # atm
+T0 = 500 # K
+R = 0.082 # atm L / mol / K
+
+
+# initial concentration and volumetric flow
+Ca0 =  ya0 * P0 / R / T0  # mol / L
+v0  = Fa0 / Ca0
+
+k = 10 # (L/mol)^2/s
+X = 0.9
+
+# 3. Stoichiometry
+Fa = Fa0 * (1 - X)
+Fb = Fb0 - 0.5 * Fa0 * X
+Fc = 0.5 * Fa0 * X
+
+v = v0 * (Fa + Fb + Fc) / (Fa0 + Fb0)
+Ca = Fa / v
+Cb = Fb / v
+
+# 2. Rate law
+ra = -k * Ca**2 * Cb
+
+# 1. Design equation
+V = Fa0 * X / -ra
+
+print('The volume required is {:1.2f} L'.format(V))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+The volume required is 1701.56 L
+:END:
