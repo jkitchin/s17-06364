@@ -14,7 +14,81 @@
         "solutions/thinking-1.ipynb",
         "solutions/unsteady-cstr.ipynb"
     ],
-    "announcements": "<div id=\"outline-container-orgf9b9f6a\" class=\"outline-2\">\n<h2 id=\"orgf9b9f6a\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.7.3 is available. Install it with this command. Recommended update. It adds some keywords to the lectures to they are easier to figure out which one you want to open.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
+    "assignments": {
+        "assignments/pfr-profit.ipynb": {
+            "duedate": "2017-02-23 23:59:59",
+            "grader": "David"
+        },
+        "assignments/pbr-pressure-drop.ipynb": {
+            "duedate": "2017-02-16 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "duedate": "2017-02-01 23:59:59",
+            "grader": "David"
+        },
+        "assignments/levenspiel-2.ipynb": {
+            "duedate": "2017-02-08 23:59:59",
+            "grader": "David"
+        },
+        "assignments/levenspiel-1.ipynb": {
+            "duedate": "2017-02-02 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/muddy-waters.ipynb": {
+            "duedate": "2017-02-21 23:59:59",
+            "grader": "John"
+        },
+        "assignments/cstr-multiple-reactions-2.ipynb": {
+            "duedate": "2017-03-01 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/scaling-chemistry.ipynb": {
+            "duedate": "2017-03-01 23:59:59",
+            "grader": "Jake"
+        },
+        "assignments/cstr-multiple-1.ipynb": {
+            "duedate": "2017-02-21 23:59:59",
+            "grader": "Elif"
+        },
+        "assignments/semibatch-1.ipynb": {
+            "duedate": "2017-02-16 23:59:59",
+            "grader": "David"
+        },
+        "assignments/cstr-mss.ipynb": {
+            "duedate": "2017-02-09 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/p-1.ipynb": {
+            "duedate": "2017-01-31 23:59:59",
+            "grader": "Elif"
+        },
+        "assignments/batch-1.ipynb": {
+            "duedate": "<2017-01-26 Thu>",
+            "grader": "jkitchin"
+        },
+        "assignments/thinking-1.ipynb": {
+            "duedate": "2017-02-07 23:59:59",
+            "grader": "Elif"
+        },
+        "assignments/ethylene-epoxidation-pbr.ipynb": {
+            "duedate": "2017-03-02 23:59:59",
+            "grader": "David"
+        },
+        "assignments/batch-2.ipynb": {
+            "duedate": "<2017-01-27 Fri>",
+            "grader": "jkitchin"
+        },
+        "assignments/pfr-inerts.ipynb": {
+            "duedate": "2017-02-23 23:59:59",
+            "grader": "Daniel"
+        },
+        "assignments/pfr-equilibrium-1.ipynb": {
+            "duedate": "2017-02-14 23:59:59",
+            "grader": "Elif"
+        }
+    },
     "lectures": [
         "lectures/introduction.ipynb",
         "lectures/lecture-00.ipynb",
@@ -30,8 +104,6 @@
         "lectures/lecture-11.ipynb",
         "lectures/supplement-1.ipynb"
     ],
-    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
     "lecture_keywords": [
         "",
         "Introduction",
@@ -47,78 +119,6 @@
         "",
         "quad, odeint"
     ],
-    "assignments": {
-        "assignments/ethylene-epoxidation-pbr.ipynb": {
-            "duedate": "2017-03-02 23:59:59",
-            "grader": "David"
-        },
-        "assignments/cstr-multiple-1.ipynb": {
-            "duedate": "2017-02-21 23:59:59",
-            "grader": "Elif"
-        },
-        "assignments/cstr-multiple-reactions-2.ipynb": {
-            "duedate": "2017-03-01 23:59:59",
-            "grader": "Daniel"
-        },
-        "assignments/levenspiel-2.ipynb": {
-            "duedate": "2017-02-08 23:59:59",
-            "grader": "David"
-        },
-        "assignments/batch-1.ipynb": {
-            "duedate": "<2017-01-26 Thu>",
-            "grader": "jkitchin"
-        },
-        "assignments/p-1.ipynb": {
-            "duedate": "2017-01-31 23:59:59",
-            "grader": "Elif"
-        },
-        "assignments/pfr-inerts.ipynb": {
-            "duedate": "2017-02-23 23:59:59",
-            "grader": "Daniel"
-        },
-        "assignments/semibatch-1.ipynb": {
-            "duedate": "2017-02-16 23:59:59",
-            "grader": "David"
-        },
-        "assignments/scaling-chemistry.ipynb": {
-            "duedate": "2017-02-28 23:59:59",
-            "grader": "Jake"
-        },
-        "assignments/pfr-equilibrium-1.ipynb": {
-            "duedate": "2017-02-14 23:59:59",
-            "grader": "Elif"
-        },
-        "assignments/thinking-1.ipynb": {
-            "duedate": "2017-02-07 23:59:59",
-            "grader": "Elif"
-        },
-        "assignments/pbr-pressure-drop.ipynb": {
-            "duedate": "2017-02-16 23:59:59",
-            "grader": "Daniel"
-        },
-        "assignments/unsteady-cstr.ipynb": {
-            "duedate": "2017-02-01 23:59:59",
-            "grader": "David"
-        },
-        "assignments/batch-2.ipynb": {
-            "duedate": "<2017-01-27 Fri>",
-            "grader": "jkitchin"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "duedate": "2017-02-02 23:59:59",
-            "grader": "Daniel"
-        },
-        "assignments/pfr-profit.ipynb": {
-            "duedate": "2017-02-23 23:59:59",
-            "grader": "David"
-        },
-        "assignments/muddy-waters.ipynb": {
-            "duedate": "2017-02-21 23:59:59",
-            "grader": "John"
-        },
-        "assignments/cstr-mss.ipynb": {
-            "duedate": "2017-02-09 23:59:59",
-            "grader": "Daniel"
-        }
-    }
+    "announcements": "<div id=\"outline-container-orgf9b9f6a\" class=\"outline-2\">\n<h2 id=\"orgf9b9f6a\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.7.3 is available. Install it with this command. Recommended update. It adds some keywords to the lectures to they are easier to figure out which one you want to open.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
+    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com"
 }
