@@ -255,6 +255,8 @@ $F_C = F_{C0} + 0.5 * F_{A0} X$
 
 4. We combine these into a fully formulated problem and then evaluate it.
 
+Let's work this out, nearly from scratch.
+
 #+BEGIN_SRC ipython :session :results output drawer
 # Given data
 Fa0 = Fb0 = 5 # mol / s
@@ -263,33 +265,11 @@ P0 = 16.4  # atm
 T0 = 500 # K
 R = 0.082 # atm L / mol / K
 
-
-# initial concentration and volumetric flow
-Ca0 =  ya0 * P0 / R / T0  # mol / L
 v0  = Fa0 / Ca0
 
 k = 10 # (L/mol)^2/s
 X = 0.9
-
-# 3. Stoichiometry
-Fa = Fa0 * (1 - X)
-Fb = Fb0 - 0.5 * Fa0 * X
-Fc = 0.5 * Fa0 * X
-
-v = v0 * (Fa + Fb + Fc) / (Fa0 + Fb0)
-Ca = Fa / v
-Cb = Fb / v
-
-# 2. Rate law
-ra = -k * Ca**2 * Cb
-
-# 1. Design equation
-V = Fa0 * X / -ra
-
-print('The volume required is {:1.2f} L'.format(V))
 #+END_SRC
 
-#+RESULTS:
-:RESULTS:
-The volume required is 1701.56 L
-:END:
+
+
