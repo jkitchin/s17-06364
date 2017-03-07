@@ -790,20 +790,16 @@ def return_one(andrewid, label):
     with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
         data = json.loads(f.read())
         adata = {}
-        for k, v in data.items():
+        for k, v in data['assignments'].items():
             adata[v['label']] = v
 
 
     for label, v in grades:
-        afile = os.path.join(assignment_dir, '{}.ipynb'.format(label))
-        with open(afile) as f:
-            j = json.loads(f.read())
-
         p = v['path'] # path to student file
         dd = adata[label]['duedate']
         category = adata[label]['category']
         g = v.get('overall', 0.0)  # student grade
-        points = adata[label]['points']
+        points = str(adata[label]['points'])
 
         if "<" in dd:
             d = datetime.strptime(dd, "<%Y-%m-%d %a>")
@@ -818,10 +814,10 @@ def return_one(andrewid, label):
         if POSTDUE and os.path.exists(p) and g is not None:
             gstring += '\n{0:35s} {1:15.3f} {4:^8s} {2:15s} {3}'.format(label, g, category, dd, points)
         elif POSTDUE and os.path.exists(p) and g is None:
-            gstring += '\n{0:35s} {1:15s} {4:^8s} {2:15s} {3}'.format(label, 'not-graded', category, dd,
+            gstring += '\n{0:35s} {1:>15s} {4:^8s} {2:15s} {3}'.format(label, 'not-graded', category, dd,
                                                                       points)
         elif POSTDUE:
-            gstring += '\n{0:35s} {1:15s} {4:^8s} {2:15s} {3}'.format(label, 'missing', category, dd,
+            gstring += '\n{0:35s} {1:>15s} {4:^8s} {2:15s} {3}'.format(label, 'missing', category, dd,
                                                                       points)
 
 
@@ -847,8 +843,6 @@ def return_one(andrewid, label):
     msg.attach(MIMEText(body, 'plain'))
 
     print(msg)
-
-    return ('', 204)
 
     with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
         s.send_message(msg)

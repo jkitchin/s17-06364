@@ -1,7 +1,7 @@
 #+OPTIONS: toc:nil
 * Announcements
 
-- techela 0.7.3 is available. Install it with this command. Recommended update. It adds some keywords to the lectures to they are easier to figure out which one you want to open.
+- techela 0.7.4 is available. Install it with this command. Optional update. Most changes were related to grading.
 
 #+BEGIN_SRC sh
 pip install -U techela
