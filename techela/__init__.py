@@ -758,8 +758,75 @@ def return_one(andrewid, label):
             i += 1
 
     if comments:
-        body += '\nComments:\n'
-        body += comments.join('\n')
+        body += '\n\nComments:\n'
+        body += '\n'.join(comments)
+
+    # Let's put a grade report in too.
+    grades = get_grades(andrewid)
+    # grades is a dictionary by label.
+
+    grades = [(k, v) for k, v in grades.items()]
+    import operator
+    def mydate(el):
+        k, v = el
+        dd = v['duedate']
+
+        if "<" in dd:
+            d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+        else:
+            d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+        return d
+
+    grades = sorted(grades, key=lambda v: mydate(v), reverse=True)
+
+    today = datetime.utcnow()
+    gstring = '{0:35s} {1:15s} {2:8s} {3:10s} {4}'.format('label',
+                                                          'grade',
+                                                          'points',
+                                                          'category',
+                                                          'duedate')
+    gstring += '\n' + "-" * len(gstring)
+
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
+        data = json.loads(f.read())
+        adata = {}
+        for k, v in data.items():
+            adata[v['label']] = v
+
+
+    for label, v in grades:
+        afile = os.path.join(assignment_dir, '{}.ipynb'.format(label))
+        with open(afile) as f:
+            j = json.loads(f.read())
+
+        p = v['path'] # path to student file
+        dd = adata[label]['duedate']
+        category = adata[label]['category']
+        g = v.get('overall', 0.0)  # student grade
+        points = adata[label]['points']
+
+        if "<" in dd:
+            d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+        else:
+            d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+
+        if (today - d).days >= 0:
+            POSTDUE = True
+        else:
+            POSTDUE = False
+
+        if POSTDUE and os.path.exists(p) and g is not None:
+            gstring += '\n{0:35s} {1:15.3f} {4:^8s} {2:15s} {3}'.format(label, g, category, dd, points)
+        elif POSTDUE and os.path.exists(p) and g is None:
+            gstring += '\n{0:35s} {1:15s} {4:^8s} {2:15s} {3}'.format(label, 'not-graded', category, dd,
+                                                                      points)
+        elif POSTDUE:
+            gstring += '\n{0:35s} {1:15s} {4:^8s} {2:15s} {3}'.format(label, 'missing', category, dd,
+                                                                      points)
+
+
+    body += '\n\nGrades\n======\n'
+    body += gstring
 
     dt = datetime.now()
     j['metadata']['RETURNED'] = dt.isoformat(" ")
@@ -780,6 +847,9 @@ def return_one(andrewid, label):
     msg.attach(MIMEText(body, 'plain'))
 
     print(msg)
+
+    return ('', 204)
+
     with smtplib.SMTP_SSL('relay.andrew.cmu.edu', port=465) as s:
         s.send_message(msg)
         s.quit()
@@ -807,10 +877,8 @@ def return_all(label):
     return redirect(url_for('grade_assignment', label=label))
 
 
-@app.route('/gradebook_one/<andrewid>')
-def gradebook_one(andrewid):
-    'Gather grades for andrewid.'
-
+def get_grades(andrewid):
+    """Return a dictionary of grades"""
     with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
         data = json.loads(f.read())
 
@@ -830,24 +898,33 @@ def gradebook_one(andrewid):
     for label in assignment_labels:
         sfile = '{assignment_dir}/{label}/{andrewid}-{label}.ipynb'.format(**locals())
 
-        # Start with this default.
-        grades[label] = {'label': label,
-                         'technical': None,
-                         'presentation': None,
-                         'overall': None,
-                         'category': None,
-                         'points': None}
-
         if os.path.exists(sfile):
             with open(sfile, encoding='utf-8') as f:
                 j = json.loads(f.read())
                 if j['metadata'].get('grade', None):
-                    grades[label] = {'andrewid': andrewid,                                     
+                    grades[label] = {'andrewid': andrewid,
+                                     'path': sfile,
                                      'technical': j['metadata']['grade']['technical'],
                                      'presentation': j['metadata']['grade']['presentation'],
                                      'overall': j['metadata']['grade']['overall'],
                                      'category': j['metadata']['org']['CATEGORY'],
-                                     'points': j['metadata']['org']['POINTS']}
+                                     'points': j['metadata']['org']['POINTS'],
+                                     'duedate': assignments['assignments/{}.ipynb'.format(label)]['duedate']}
+        else:
+            grades[label] = {'andrewid': andrewid,
+                             'technical': None,
+                             'presentation': None,
+                             'overall': None,
+                             'category': None,
+                             'points': None,
+                             'path': sfile,
+                             'duedate': assignments['assignments/{}.ipynb'.format(label)]['duedate']}
+    return grades
+
+    
+@app.route('/gradebook_one/<andrewid>')
+def gradebook_one(andrewid):
+    'Gather grades for andrewid.'
 
     roster = get_roster()
     for d in roster:
@@ -859,4 +936,4 @@ def gradebook_one(andrewid):
     return render_template('gradebook_one.html',
                            name=name,
                            andrewid=andrewid,
-                           grades=grades)
+                           grades=get_grades(andrewid))
