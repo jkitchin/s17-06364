@@ -18,8 +18,11 @@
 </head>
 
 <h1>S17 06-364 - Gradesheet for {{name}} ({{andrewid}})</h1>
+<br>
+<h2>Current overall grade is {{course_overall_grade}}.</h2>
 <a href="/admin">admin</a> <a href="/">Home</a>
 
+<style> .red {background: "red"}</style>
 <table id="gradesheet" border="1" class=tablesorter>
   <thead>
     <th>Label</th>
@@ -30,19 +33,25 @@
     <th>Points</th>
   </thead>
   <tbody>
-  {% for key in grades %}
-  <tr>
-    {% if grades[key]['overall'] %}
+    {% for key in assignment_labels %}
+    {% if grades.get(key, None) %}
+    <tr>
+    {% if grades[key].get('overall') %}
     <td><a href="/grade/{{andrewid}}/{{key}}">{{key}}</a></td>
     {% else %}
     <td>{{key}}</td>
     {% endif %}
     <td>{{grades[key]['technical']}}</td>
-    <td>{{grades[key]['presentation']}}</td>    
-    <td>{{grades[key]['overall']}}</td>
+    <td>{{grades[key]['presentation']}}</td>
+    <td {% if grades[key]['overall'] is none %}
+	style="background: #ff4d4d" {# a reddish color #}
+	{% elif grades[key]['overall'] < 0.65 %}
+	style="background: #ffb84d" {# an orangish color #}
+	{% endif %}>{{grades[key]['overall']}}</td>
     <td>{{grades[key]['category']}}</td>
     <td>{{grades[key]['points']}}</td>    
-    </tr>
+</tr>
+{% endif %}
   {% endfor %}
   </tbody>
 </table>

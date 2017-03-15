@@ -46,10 +46,14 @@ Click on these links to collect and open a grade sheet for each assignment.
     <th>Grader</th>
     <th>Status</th>
   </thead>
-  {% for label, duedate, grader, status, color in assignments4templates %}
+  {% for label, duedate, grader, status, color, solution in assignments4templates %}
   <tr>
     <td><a title="click to collect and grade" href="/grade-assignment/{{ label }}">{{ label }}</a></td>
+    {% if exists(solution) %}
     <td><a href="/admin-solution/{{ label }}">{{ label }}</a></td>
+    {% else %}
+    <td> No solution available yet</td>
+    {% endif %}
     <td><font color="{{color}}">{{duedate}}</font></td>
     <td><font color="{{color}}">{{grader}}</font></td>
     <td><font color="{{color}}">{{status}}</font></td>    

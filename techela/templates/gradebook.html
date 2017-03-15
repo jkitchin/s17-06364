@@ -1,0 +1,45 @@
+<!doctype html>
+<title>S17 06-364 - Techela in a flask Course Gradebook</title>
+<head>
+<script type="text/javascript" src="{{url_for('static', filename='jquery-latest.js')}}/"></script> 
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
+
+<script>
+  $(document).ready(function() 
+    { 
+        $("#gradesheet").tablesorter({widgets:['zebra'], sortList:[[0, 0]]}); 
+    } 
+  );
+</script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='themes/blue/style.css')}}" type="text/css" media="print, projection, screen" />
+
+
+</head>
+
+<a href="/admin">admin</a> <a href="/">Home</a>
+
+<table id="gradesheet" border="1" class=tablesorter>
+  <thead>
+    {% for heading in headings %}
+    <th>{{heading}}</th>
+    {% endfor %}
+  </thead>
+  <tbody>
+    {% for row in ROWS %}
+    <tr>
+      <td>{{row[0]}}</td> {# firstname #}
+      <td>{{row[1]}}</td> {# lastname #}
+      <td><a href="/gradebook_one/{{row[2]}}">{{row[2]}}</td>
+      {% for cell in row[3:] %}
+      <td{% if cell is none %}
+	style="background: #ff4d4d" {# a reddish color #}
+	{% elif isinstance(cell, float) and cell < 0.65 %}
+	style="background: #ffb84d" {# an orangish color #}
+	{% endif %}> {{cell}}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+

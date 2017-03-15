@@ -16,6 +16,8 @@ import sys
 import time
 import urllib
 
+import matplotlib.pyplot as plt
+
 from flask import Flask, render_template, redirect, url_for, request
 
 __version__ = get_distribution('techela').version
@@ -338,6 +340,7 @@ def open_assignment(label):
 
 @app.route("/graded-assignment/<fname>")
 def open_graded_assignment(fname):
+    """Open the assignment FNAME"""
 
     fname = COURSEDIR + 'graded-assignments/{}'.format(fname)
 
@@ -470,6 +473,11 @@ def admin():
     assignment_files = [os.path.split(assignment)[-1]
                         for assignment in assignments]
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
+    # this is where solutions should be
+    solutions = [os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/solutions"),
+                            '{}.ipynb'.format(label))
+               for label in assignment_labels]
+
     duedates = [assignments[f]['duedate'] for f in assignments]
 
     graders = [assignments[f]['grader'] for f in assignments]
@@ -499,6 +507,9 @@ def admin():
         else:
             colors.append('red')
 
+    # Add this function so we can use it in a template
+    app.jinja_env.globals.update(exists=os.path.exists)
+
     return render_template('admin.html',
                            NAME=NAME, ANDREWID=ANDREWID,
                            ONLINE=ONLINE,
@@ -506,7 +517,8 @@ def admin():
                                                           duedates,
                                                           graders,
                                                           statuses,
-                                                          colors)))
+                                                          colors,
+                                                          solutions)))
 
 
 def get_roster():
@@ -648,6 +660,24 @@ def grade_assignment(label):
 
         grade_data.append(d)
 
+    # this puts a figure inline in the page of the grade distribution.
+    numeric_grades = [d['grade'] for d in grade_data if d['grade'] is not None]
+    if numeric_grades:
+        from io import BytesIO
+        import base64
+        plt.hist(numeric_grades, 20)
+        plt.xlabel('Grade')
+        plt.ylabel('Frequency')
+        plt.xlim([0, 1])
+        plt.title('Grade distribution for {}'.format(label))
+        png = BytesIO()
+        plt.savefig(png)
+        plt.close()
+        png.seek(0)
+        histogram = urllib.parse.quote(base64.b64encode(png.read()))
+    else:
+        histogram=""
+
     # Add this function so we can use it in a template
     app.jinja_env.globals.update(exists=os.path.exists)
 
@@ -663,6 +693,7 @@ def grade_assignment(label):
 
     return render_template('grade-assignment.html',
                            label=label,
+                           histogram=histogram,
                            grade_data=grade_data)
 
 
@@ -881,15 +912,33 @@ def get_grades(andrewid):
     # versions.
     assignments = data['assignments']
 
-    assignment_files = [os.path.split(assignment)[-1]
-                        for assignment in assignments]
+    assignment_paths = assignments.keys()
+
+    assignment_files = [os.path.split(path)[-1]
+                        for path in assignment_paths]
+
     assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
 
     assignment_dir = os.path.expanduser('~/Box Sync/s17-06-364/assignments')
 
+    duedates = [assignments[path]['duedate'] for path in assignment_paths]
+
     grades = {}
 
-    for label in assignment_labels:
+    for label, dd in zip(assignment_labels, duedates):
+        today = datetime.utcnow()
+        if "<" in dd:
+            d = datetime.strptime(dd, "<%Y-%m-%d %a>")
+        else:
+            d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
+
+        if (today - d).days >= 0:
+            POSTDUE = True
+        else:
+            POSTDUE = False
+
+
+        # the student file
         sfile = '{assignment_dir}/{label}/{andrewid}-{label}.ipynb'.format(**locals())
 
         if os.path.exists(sfile):
@@ -901,33 +950,139 @@ def get_grades(andrewid):
                                      'technical': j['metadata']['grade']['technical'],
                                      'presentation': j['metadata']['grade']['presentation'],
                                      'overall': j['metadata']['grade']['overall'],
-                                     'category': j['metadata']['org']['CATEGORY'],
-                                     'points': j['metadata']['org']['POINTS'],
+                                     'category': assignments['assignments/{}.ipynb'.format(label)]['category'],
+                                     'points': assignments['assignments/{}.ipynb'.format(label)]['points'],
                                      'duedate': assignments['assignments/{}.ipynb'.format(label)]['duedate']}
         else:
             grades[label] = {'andrewid': andrewid,
                              'technical': None,
                              'presentation': None,
                              'overall': None,
-                             'category': None,
-                             'points': None,
-                             'path': sfile,
-                             'duedate': assignments['assignments/{}.ipynb'.format(label)]['duedate']}
+                             'category': assignments['assignments/{}.ipynb'.format(label)]['category'],
+                             'points': assignments['assignments/{}.ipynb'.format(label)]['points'],
+                             'duedate': assignments['assignments/{}.ipynb'.format(label)]['duedate'],
+                             'path': sfile}
+
+    # add name
+    roster = get_roster()
+    for d in roster:
+        if andrewid == d['Andrew ID']:
+            grades['first-name'] = d['Preferred/First Name']
+            grades['last-name'] = d['Last Name']
+            grades['name'] = '{} {}'.format(d['Preferred/First Name'],
+                                            d['Last Name'])
+            break
+
+    # Compute overall grade
+    categories = {'homework': 0.15,
+                  'exam1': 0.2,
+                  'exam2': 0.3,
+                  'final-exam': 0.35}
+
+    overall_possible_points = 0
+    overall_earned_points = 0
+    for key in grades:
+        if key not in assignment_labels:
+            continue
+        cat = grades[key]['category']
+
+        GRADED = False
+        f = os.path.join(os.path.expanduser("~/Box Sync/s17-06-364/assignments"),
+                         key, "STATUS")
+        if os.path.exists(f):
+            with open(f, encoding='utf-8') as tf:
+                status = tf.read()
+                if status == 'Returned':
+                    GRADED = True
+
+        if POSTDUE and GRADED:
+            possible_points = int(grades[key].get('points', 0) or 0)
+            overall_grade = float(grades[key]['overall'] or 0.0)
+
+            overall_possible_points += possible_points * categories[cat]
+
+            overall_earned_points += overall_grade * possible_points * categories[cat]
+
+    grades['course-overall-grade'] = overall_earned_points / overall_possible_points
     return grades
 
     
 @app.route('/gradebook_one/<andrewid>')
 def gradebook_one(andrewid):
-    'Gather grades for andrewid.'
+    """Gather grades for andrewid."""
 
-    roster = get_roster()
-    for d in roster:
-        if andrewid == d['Andrew ID']:
-            name = '{} {}'.format(d['Preferred/First Name'],
-                                  d['Last Name'])
-            break
+    grades = get_grades(andrewid)
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
+        data = json.loads(f.read())
+
+    # Next get assignments. These are in assignments/label.ipynb For students I
+    # construct assignments/andrewid-label.ipynb to check if they have local
+    # versions.
+    assignments = data['assignments']
+
+    assignment_files = [os.path.split(assignment)[-1]
+                        for assignment in assignments]
+    assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
 
     return render_template('gradebook_one.html',
-                           name=name,
+                           name=grades['name'],
                            andrewid=andrewid,
-                           grades=get_grades(andrewid))
+                           course_overall_grade=round(grades['course-overall-grade'], 3),
+                           assignment_labels=assignment_labels,
+                           grades=grades)
+
+@app.route('/gradebook')
+def gradebook():
+
+    with open('{}/s17-06364.json'.format(COURSEDIR), encoding='utf-8') as f:
+        data = json.loads(f.read())
+
+    # Next get assignments. These are in assignments/label.ipynb For students I
+    # construct assignments/andrewid-label.ipynb to check if they have local
+    # versions.
+    assignments = data['assignments']
+
+    assignment_files = [os.path.split(assignment)[-1]
+                        for assignment in assignments]
+    assignment_labels = [os.path.splitext(f)[0] for f in assignment_files]
+
+
+    headings = ['First name',
+                'Last name',
+                'Andrew ID',
+                'Overall']
+
+    # Add each assignment label
+    headings += assignment_labels
+
+
+    roster = get_roster()
+
+    ROWS = []
+    for d in roster:
+        ROW = []
+        ROW += [d['Preferred/First Name'],
+                d['Last Name'],
+                d['Andrew ID']]
+
+        grades = get_grades(d['Andrew ID'])
+        ROW += [round(grades['course-overall-grade'], 3)]
+
+        for label in assignment_labels:
+            asn = grades.get(label, None)
+            if asn:
+                if asn['overall'] is not None:
+                    ROW += [round(asn['overall'], 2)]
+                else:
+                    ROW += [None]
+            else:
+                ROW += [None]
+
+        ROWS += [ROW]
+
+    app.jinja_env.globals.update(isinstance=isinstance,
+                                 float=float)
+    return render_template('gradebook.html',
+                           headings=headings,
+                           ROWS=ROWS)
+

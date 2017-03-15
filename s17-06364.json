@@ -1,195 +1,4 @@
 {
-    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
-    "lectures": [
-        "lectures/introduction.ipynb",
-        "lectures/lecture-00.ipynb",
-        "lectures/lecture-01.ipynb",
-        "lectures/lecture-02.ipynb",
-        "lectures/lecture-03.ipynb",
-        "lectures/lecture-04.ipynb",
-        "lectures/lecture-05.ipynb",
-        "lectures/lecture-06.ipynb",
-        "lectures/lecture-07.ipynb",
-        "lectures/lecture-08.ipynb",
-        "lectures/lecture-09.ipynb",
-        "lectures/lecture-10.ipynb",
-        "lectures/lecture-11.ipynb",
-        "lectures/supplement-1.ipynb"
-    ],
-    "assignments": {
-        "assignments/pfr-inerts.ipynb": {
-            "grader": "Daniel",
-            "points": "3",
-            "label": "pfr-inerts",
-            "duedate": "2017-02-23 23:59:59",
-            "category": "homework"
-        },
-        "assignments/pfr-profit.ipynb": {
-            "grader": "David",
-            "points": "3",
-            "label": "pfr-profit",
-            "duedate": "2017-02-23 23:59:59",
-            "category": "homework"
-        },
-        "assignments/scaling-chemistry.ipynb": {
-            "grader": "Jake",
-            "points": 3,
-            "label": "scaling-chemistry",
-            "duedate": "2017-03-01 23:59:59",
-            "category": "homework"
-        },
-        "assignments/weight-height.ipynb": {
-            "grader": "Daniel",
-            "points": "3",
-            "label": "weight-height",
-            "duedate": "2017-03-08 23:59:59",
-            "category": "homework"
-        },
-        "assignments/levenspiel-2.ipynb": {
-            "grader": "David",
-            "points": "2",
-            "label": "levenspiel-2",
-            "duedate": "2017-02-08 23:59:59",
-            "category": "homework"
-        },
-        "assignments/semibatch-1.ipynb": {
-            "grader": "David",
-            "points": "3",
-            "label": "semibatch-1",
-            "duedate": "2017-02-16 23:59:59",
-            "category": "homework"
-        },
-        "assignments/pbr-pressure-drop.ipynb": {
-            "grader": "Daniel",
-            "points": "3",
-            "label": "pbr-pressure-drop",
-            "duedate": "2017-02-16 23:59:59",
-            "category": "homework"
-        },
-        "assignments/levenspiel-1.ipynb": {
-            "grader": "Daniel",
-            "points": "3",
-            "label": "levenspiel-1",
-            "duedate": "2017-02-02 23:59:59",
-            "category": "homework"
-        },
-        "assignments/p-1.ipynb": {
-            "grader": "Elif",
-            "points": "3",
-            "label": "p-1",
-            "duedate": "2017-01-31 23:59:59",
-            "category": "homework"
-        },
-        "assignments/cstr-multiple-1.ipynb": {
-            "grader": "Elif",
-            "points": "2",
-            "label": "cstr-multiple-1",
-            "duedate": "2017-02-21 23:59:59",
-            "category": "homework"
-        },
-        "assignments/muddy-waters.ipynb": {
-            "grader": "John",
-            "points": "1",
-            "label": "muddy-waters",
-            "duedate": "2017-02-21 23:59:59",
-            "category": "homework"
-        },
-        "assignments/ethylene-epoxidation-pbr.ipynb": {
-            "grader": "David",
-            "points": "4",
-            "label": "ethylene-epoxidation-pbr",
-            "duedate": "2017-03-02 23:59:59",
-            "category": "homework"
-        },
-        "assignments/pfr-equilibrium-1.ipynb": {
-            "grader": "Elif",
-            "points": "2",
-            "label": "pfr-equilibrium-1",
-            "duedate": "2017-02-14 23:59:59",
-            "category": "homework"
-        },
-        "assignments/unsteady-cstr.ipynb": {
-            "grader": "David",
-            "points": "3",
-            "label": "unsteady-cstr",
-            "duedate": "2017-02-01 23:59:59",
-            "category": "homework"
-        },
-        "assignments/cstr-multiple-reactions-2.ipynb": {
-            "grader": "Daniel",
-            "points": "4",
-            "label": "cstr-multiple-reactions-2",
-            "duedate": "2017-03-01 23:59:59",
-            "category": "homework"
-        },
-        "assignments/cstr-mss.ipynb": {
-            "grader": "Daniel",
-            "points": "3",
-            "label": "cstr-mss",
-            "duedate": "2017-02-09 23:59:59",
-            "category": "homework"
-        },
-        "assignments/enzyme-parameters.ipynb": {
-            "grader": "David",
-            "points": "3",
-            "label": "enzyme-parameters",
-            "duedate": "2017-03-10 23:59:59",
-            "category": "homework"
-        },
-        "assignments/batch-2.ipynb": {
-            "grader": "jkitchin",
-            "points": "2",
-            "label": "batch-2",
-            "duedate": "<2017-01-27 Fri>",
-            "category": "homework"
-        },
-        "assignments/thinking-1.ipynb": {
-            "grader": "Elif",
-            "points": "2",
-            "label": "thinking-1",
-            "duedate": "2017-02-07 23:59:59",
-            "category": "homework"
-        },
-        "assignments/batch-1.ipynb": {
-            "grader": "jkitchin",
-            "points": "2",
-            "label": "batch-1",
-            "duedate": "<2017-01-26 Thu>",
-            "category": "homework"
-        },
-        "assignments/reaction-order-discrimination.ipynb": {
-            "grader": "Elif",
-            "points": "3",
-            "label": "reaction-order-discrimination",
-            "duedate": "2017-03-08 23:59:59",
-            "category": "homework"
-        },
-        "assignments/batch-pressure-regression.ipynb": {
-            "grader": "Daniel",
-            "points": "3",
-            "label": "batch-pressure-regression",
-            "duedate": "2017-03-10 23:59:59",
-            "category": "homework"
-        }
-    },
-    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
-    "lecture_keywords": [
-        "",
-        "Introduction",
-        "mole balance, batch reactor",
-        "CSTR, PFR",
-        "conversion",
-        "Levenspiel, series of reactors",
-        "reversible reactions, stoichiometry, concentration",
-        "semibatch reactor, pressure drop",
-        "engineering applications",
-        "multiple reactions",
-        "review",
-        "linear regression",
-        "nonlinear regression",
-        "quad, odeint"
-    ],
-    "announcements": "<div id=\"outline-container-orgb1971bc\" class=\"outline-2\">\n<h2 id=\"orgb1971bc\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.7.4 is available. Install it with this command. Optional update. Most changes were related to grading.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
     "solutions": [
         "solutions/batch-1.ipynb",
         "solutions/batch-2.ipynb",
@@ -211,5 +20,196 @@
         "solutions/thinking-1.ipynb",
         "solutions/unsteady-cstr.ipynb",
         "solutions/weight-height.ipynb"
+    ],
+    "assignments": {
+        "assignments/ethylene-epoxidation-pbr.ipynb": {
+            "label": "ethylene-epoxidation-pbr",
+            "grader": "David",
+            "points": "4",
+            "duedate": "2017-03-02 23:59:59",
+            "category": "homework"
+        },
+        "assignments/unsteady-cstr.ipynb": {
+            "label": "unsteady-cstr",
+            "grader": "David",
+            "points": "3",
+            "duedate": "2017-02-01 23:59:59",
+            "category": "homework"
+        },
+        "assignments/cstr-mss.ipynb": {
+            "label": "cstr-mss",
+            "grader": "Daniel",
+            "points": "3",
+            "duedate": "2017-02-09 23:59:59",
+            "category": "homework"
+        },
+        "assignments/batch-1.ipynb": {
+            "label": "batch-1",
+            "grader": "jkitchin",
+            "points": "2",
+            "duedate": "<2017-01-26 Thu>",
+            "category": "homework"
+        },
+        "assignments/p-1.ipynb": {
+            "label": "p-1",
+            "grader": "Elif",
+            "points": "3",
+            "duedate": "2017-01-31 23:59:59",
+            "category": "homework"
+        },
+        "assignments/muddy-waters.ipynb": {
+            "label": "muddy-waters",
+            "grader": "John",
+            "points": "1",
+            "duedate": "2017-02-21 23:59:59",
+            "category": "homework"
+        },
+        "assignments/levenspiel-1.ipynb": {
+            "label": "levenspiel-1",
+            "grader": "Daniel",
+            "points": "3",
+            "duedate": "2017-02-02 23:59:59",
+            "category": "homework"
+        },
+        "assignments/scaling-chemistry.ipynb": {
+            "label": "scaling-chemistry",
+            "grader": "Jake",
+            "points": 3,
+            "duedate": "2017-03-01 23:59:59",
+            "category": "homework"
+        },
+        "assignments/pbr-pressure-drop.ipynb": {
+            "label": "pbr-pressure-drop",
+            "grader": "Daniel",
+            "points": "3",
+            "duedate": "2017-02-16 23:59:59",
+            "category": "homework"
+        },
+        "assignments/enzyme-parameters.ipynb": {
+            "label": "enzyme-parameters",
+            "grader": "David",
+            "points": "3",
+            "duedate": "2017-03-10 23:59:59",
+            "category": "homework"
+        },
+        "assignments/cstr-multiple-reactions-2.ipynb": {
+            "label": "cstr-multiple-reactions-2",
+            "grader": "Daniel",
+            "points": "4",
+            "duedate": "2017-03-01 23:59:59",
+            "category": "homework"
+        },
+        "assignments/pfr-profit.ipynb": {
+            "label": "pfr-profit",
+            "grader": "David",
+            "points": "3",
+            "duedate": "2017-02-23 23:59:59",
+            "category": "homework"
+        },
+        "assignments/reaction-order-discrimination.ipynb": {
+            "label": "reaction-order-discrimination",
+            "grader": "Elif",
+            "points": "3",
+            "duedate": "2017-03-08 23:59:59",
+            "category": "homework"
+        },
+        "assignments/thinking-1.ipynb": {
+            "label": "thinking-1",
+            "grader": "Elif",
+            "points": "2",
+            "duedate": "2017-02-07 23:59:59",
+            "category": "homework"
+        },
+        "assignments/cstr-multiple-1.ipynb": {
+            "label": "cstr-multiple-1",
+            "grader": "Elif",
+            "points": "2",
+            "duedate": "2017-02-21 23:59:59",
+            "category": "homework"
+        },
+        "assignments/semibatch-1.ipynb": {
+            "label": "semibatch-1",
+            "grader": "David",
+            "points": "3",
+            "duedate": "2017-02-16 23:59:59",
+            "category": "homework"
+        },
+        "assignments/pfr-equilibrium-1.ipynb": {
+            "label": "pfr-equilibrium-1",
+            "grader": "Elif",
+            "points": "2",
+            "duedate": "2017-02-14 23:59:59",
+            "category": "homework"
+        },
+        "assignments/weight-height.ipynb": {
+            "label": "weight-height",
+            "grader": "Daniel",
+            "points": "3",
+            "duedate": "2017-03-08 23:59:59",
+            "category": "homework"
+        },
+        "assignments/levenspiel-2.ipynb": {
+            "label": "levenspiel-2",
+            "grader": "David",
+            "points": "2",
+            "duedate": "2017-02-08 23:59:59",
+            "category": "homework"
+        },
+        "assignments/pfr-inerts.ipynb": {
+            "label": "pfr-inerts",
+            "grader": "Daniel",
+            "points": "3",
+            "duedate": "2017-02-23 23:59:59",
+            "category": "homework"
+        },
+        "assignments/batch-pressure-regression.ipynb": {
+            "label": "batch-pressure-regression",
+            "grader": "Daniel",
+            "points": "3",
+            "duedate": "2017-03-10 23:59:59",
+            "category": "homework"
+        },
+        "assignments/batch-2.ipynb": {
+            "label": "batch-2",
+            "grader": "jkitchin",
+            "points": "2",
+            "duedate": "<2017-01-27 Fri>",
+            "category": "homework"
+        }
+    },
+    "submit-email": "submiss.uj1v37qz3m0gpzsu@u.box.com",
+    "lectures": [
+        "lectures/introduction.ipynb",
+        "lectures/lecture-00.ipynb",
+        "lectures/lecture-01.ipynb",
+        "lectures/lecture-02.ipynb",
+        "lectures/lecture-03.ipynb",
+        "lectures/lecture-04.ipynb",
+        "lectures/lecture-05.ipynb",
+        "lectures/lecture-06.ipynb",
+        "lectures/lecture-07.ipynb",
+        "lectures/lecture-08.ipynb",
+        "lectures/lecture-09.ipynb",
+        "lectures/lecture-10.ipynb",
+        "lectures/lecture-11.ipynb",
+        "lectures/supplement-1.ipynb"
+    ],
+    "base-url": "https://raw.githubusercontent.com/jkitchin/s17-06364/master/",
+    "announcements": "<div id=\"outline-container-orgb1971bc\" class=\"outline-2\">\n<h2 id=\"orgb1971bc\"><span class=\"section-number-2\">1</span> Announcements</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<ul class=\"org-ul\">\n<li>techela 0.7.4 is available. Install it with this command. Optional update. Most changes were related to grading.</li>\n</ul>\n\n<div class=\"org-src-container\">\n<pre class=\"src src-sh\">pip install -U techela\n</pre>\n</div>\n</div>\n</div>\n",
+    "lecture_keywords": [
+        "",
+        "Introduction",
+        "mole balance, batch reactor",
+        "CSTR, PFR",
+        "conversion",
+        "Levenspiel, series of reactors",
+        "reversible reactions, stoichiometry, concentration",
+        "semibatch reactor, pressure drop",
+        "engineering applications",
+        "multiple reactions",
+        "review",
+        "linear regression",
+        "nonlinear regression",
+        "quad, odeint"
     ]
 }
