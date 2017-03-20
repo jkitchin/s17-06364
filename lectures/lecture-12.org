@@ -1,5 +1,8 @@
 #+TITLE: Parameter estimation from ODEs
 #+KEYWORDS: regression, ode, Monte Carlo
+* Comic relief
+
+https://s-media-cache-ak0.pinimg.com/564x/53/97/9f/53979fcd941669007f59c5cdb1317b27.jpg
 
 * Parameter estimation from differential equation based models
 
