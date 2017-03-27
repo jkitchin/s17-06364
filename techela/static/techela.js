@@ -23,6 +23,30 @@ Jupyter.keyboard_manager.command_shortcuts.add_shortcut('c', {
 		     store_history: false, 
 		     stop_on_error: true})}});
 
+Jupyter.keyboard_manager.command_shortcuts.add_shortcut('k', {
+    help : 'Add comment cell with a checkmark in it.',
+    help_index : 'zz',
+    handler : function (event)
+    {Jupyter.notebook.insert_cell_below();
+     Jupyter.notebook.select_next();
+     Jupyter.notebook.to_markdown();
+     Jupyter.notebook.edit_mode();
+
+     var kernel = Jupyter.notebook.kernel;
+     kernel.execute("import getpass; username=getpass.getuser(); print(username)",
+		    {iopub: {output: function(response) {
+			var resp = response.content.text;
+			console.log(response.content);
+			var text = '<font color="red"> ' + resp + ': ✓ </font>';
+			var cell = Jupyter.notebook.get_selected_cell();
+			cell.set_text(text);
+			cell.metadata.type = "comment";
+			cell.metadata.content = comment;
+			Jupyter.notebook.execute_cell();}}},
+		    {silent: false,
+		     store_history: false,
+		     stop_on_error: true})}});
+
 Jupyter.keyboard_manager.command_shortcuts.add_shortcut('g', {
     help : 'Add grade',
     help_index : 'zz',
