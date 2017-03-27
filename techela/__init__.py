@@ -15,7 +15,7 @@ import subprocess
 import sys
 import time
 import urllib
-
+import numpy as np
 import matplotlib.pyplot as plt
 
 from flask import Flask, render_template, redirect, url_for, request
@@ -669,7 +669,7 @@ def grade_assignment(label):
         plt.xlabel('Grade')
         plt.ylabel('Frequency')
         plt.xlim([0, 1])
-        plt.title('Grade distribution for {}'.format(label))
+        plt.title('Grade distribution for {}\nMean={:1.2f}'.format(label, np.mean(numeric_grades)))
         png = BytesIO()
         plt.savefig(png)
         plt.close()
