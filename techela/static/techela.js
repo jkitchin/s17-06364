@@ -18,10 +18,12 @@ Jupyter.keyboard_manager.command_shortcuts.add_shortcut('c', {
 			cell.set_text(text);
 			cell.metadata.type = "comment";
 			cell.metadata.content = comment;
-			Jupyter.notebook.execute_cell();}}},
+			Jupyter.notebook.execute_cell();
+			Jupyter.notebook.command_mode();}}},
 		    {silent: false, 
 		     store_history: false, 
 		     stop_on_error: true})}});
+
 
 Jupyter.keyboard_manager.command_shortcuts.add_shortcut('k', {
     help : 'Add comment cell with a checkmark in it.',
@@ -37,15 +39,27 @@ Jupyter.keyboard_manager.command_shortcuts.add_shortcut('k', {
 		    {iopub: {output: function(response) {
 			var resp = response.content.text;
 			console.log(response.content);
-			var text = '<font color="red"> ' + resp + ': ✓ </font>';
+			var text = '<font color="red"> ' + resp + ': ✓</font>';
 			var cell = Jupyter.notebook.get_selected_cell();
 			cell.set_text(text);
 			cell.metadata.type = "comment";
-			cell.metadata.content = comment;
+			cell.metadata.content = "Check";
 			Jupyter.notebook.execute_cell();}}},
 		    {silent: false,
 		     store_history: false,
 		     stop_on_error: true})}});
+
+
+Jupyter.keyboard_manager.command_shortcuts.add_shortcut('q', {
+    help : 'Save, delete session and close the tab.',
+    help_index : 'zz',
+    handler : function (event) {
+	Jupyter.notebook.save_notebook();
+	Jupyter.notebook.save_checkpoint();
+        Jupyter.notebook.session.delete();
+	window.close();
+        return false; }});
+
 
 Jupyter.keyboard_manager.command_shortcuts.add_shortcut('g', {
     help : 'Add grade',
@@ -130,7 +144,4 @@ Jupyter.keyboard_manager.command_shortcuts.add_shortcut('g', {
 			Jupyter.notebook.execute_cell();}}},
 		    {silent: false, 
 		     store_history: false, 
-		     stop_on_error: true});
-     Jupyter.notebook.save_notebook();
-     Jupyter.notebook.save_checkpoint();}});
-
+		     stop_on_error: true});}});

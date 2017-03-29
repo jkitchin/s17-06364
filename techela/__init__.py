@@ -794,9 +794,18 @@ def return_one(andrewid, label):
 
     # Let's put a grade report in too.
     grades = get_grades(andrewid)
+    # we need to delete some keys I made for convenience.
+    del grades['course-overall-grade']
+    del grades['name']
+    del grades['first-name']
+    del grades['last-name']
     # grades is a dictionary by label.
 
+    # here we make it a list
     grades = [(k, v) for k, v in grades.items()]
+
+    # Now we sort by the duedate. This function gets the datetime object for an
+    # assignment for sorting.
     import operator
     def mydate(el):
         k, v = el
@@ -808,7 +817,7 @@ def return_one(andrewid, label):
             d = datetime.strptime(dd, "%Y-%m-%d %H:%M:%S")
         return d
 
-    grades = sorted(grades, key=lambda v: mydate(v), reverse=True)
+    grades = sorted(grades, key=lambda el: mydate(el), reverse=True)
 
     today = datetime.utcnow()
     gstring = '{0:35s} {1:15s} {2:8s} {3:10s} {4}'.format('label',
