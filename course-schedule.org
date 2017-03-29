@@ -20,27 +20,37 @@
   CLOSED: [2017-02-17 Fri 12:14]
 * DONE <2017-02-20 Mon> [[./lectures/lecture-07.org]]
   CLOSED: [2017-02-20 Mon 18:01]
-* <2017-02-22 Wed> [[./lectures/lecture-08.org]]
-* <2017-02-27 Mon> recitation
-* <2017-03-01 Wed> [[./lectures/lecture-09.org]]
-* <2017-03-06 Mon> data analysis I [[./lectures/lecture-10.org]]
-* <2017-03-08 Wed> data analysis II[[./lectures/lecture-11.org]]
-* <2017-03-13 Mon> *SPRING BREAK*
-* <2017-03-15 Wed> *SPRING BREAK*
-* <2017-03-20 Mon>
-* <2017-03-22 Wed> *Exam I*
-* <2017-03-27 Mon>
-* <2017-03-29 Wed>
+* DONE <2017-02-22 Wed> [[./lectures/lecture-08.org]]
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-02-27 Mon> recitation
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-03-01 Wed> [[./lectures/lecture-09.org]]
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-03-06 Mon> data analysis I [[./lectures/lecture-10.org]]
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-03-08 Wed> data analysis II[[./lectures/lecture-11.org]]
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-03-13 Mon> *SPRING BREAK*
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-03-15 Wed> *SPRING BREAK*
+  CLOSED: [2017-03-20 Mon 12:48]
+* DONE <2017-03-20 Mon> [[./lectures/lectures-12.org]] Parameter estimation III
+  CLOSED: [2017-03-29 Wed 10:54]
+* DONE <2017-03-22 Wed> *Exam I*
+  CLOSED: [2017-03-29 Wed 10:54]
+* DONE <2017-03-27 Mon> [[./lectures/lectures-13.org]] Mechanisms
+  CLOSED: [2017-03-29 Wed 10:55]
+* <2017-03-29 Wed> [[./lectures/lectures-14.org]] mechanisms
 * <2017-04-03 Mon> *NO CLASS*
-* <2017-04-05 Wed>
-* <2017-04-10 Mon>
-* <2017-04-12 Wed>
-* <2017-04-17 Mon>
-* <2017-04-19 Wed>
-* <2017-04-24 Mon>
+* <2017-04-05 Wed> [[./lectures/lectures-15.org]] eb
+* <2017-04-10 Mon> [[./lectures/lectures-16.org]] eb
+* <2017-04-12 Wed> [[./lectures/lectures-17.org]] eb
+* <2017-04-17 Mon> [[./lectures/lectures-18.org]] eb
+* <2017-04-19 Wed> [[./lectures/lectures-19.org]] eb
+* <2017-04-24 Mon> *Exam II*
 * <2017-04-26 Wed> *NO CLASS*
-* <2017-05-01 Mon>
-* <2017-05-03 Wed>
-* <2017-05-08 Mon>
-* <2017-05-10 Wed>
+* <2017-05-01 Mon> [[./lectures/lectures-20.org]]
+* <2017-05-03 Wed> [[./lectures/lectures-21.org]]
+* <2017-05-08 Mon> [[./lectures/lectures-22.org]] Advanced topics I
+* <2017-05-10 Wed> [[./lectures/lectures-23.org]] Advanced topics II
 * Final exam - Date and time to be determined
