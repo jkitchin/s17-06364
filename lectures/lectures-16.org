@@ -22,6 +22,7 @@ https://usercontent2.hubstatic.com/209665_f520.jpg
 
 - This leads to
 
+
 \(\sum N_j C_{p,j} \frac{dT}{dt} = - \Delta H_{rx} r V + \dot{W}_s + \dot{Q} \)
 
 ** Constant volume, adiabatic batch reactor
