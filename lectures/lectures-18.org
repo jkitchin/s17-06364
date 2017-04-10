@@ -488,9 +488,7 @@ T_{shell}(V=L) &=& T_{shell,inlet}
 
 - We use a simple, iterative shooting method here
 
-# see [[C:\Users\jkitchin\Dropbox\CMU\classes\06-422-Chemical-Reaction-Engineering-F11\lectures\lecture-21\endothermic_counter_current_2.m]]
-
-#+BEGIN_SRC python
+#+BEGIN_SRC ipython :session :results output drawer
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -551,7 +549,7 @@ sol = odeint(pfr, Y0, Vspan)
 Fa = sol[:, 0]
 T = sol[:, 1]
 Tshell = sol[:, 2]
-print Tshell[-1]
+print(Tshell[-1])
 X = ((Fa - Fa0) * (-1) / Fa0)
 
 plt.subplot(1, 2, 1)
@@ -567,14 +565,13 @@ plt.ylabel('Temperature (K)')
 plt.legend(loc='best')
 
 plt.tight_layout()
-plt.savefig('images/adiabatic-pfr-countercurrent-heat.png')
-plt.show()
 #+END_SRC
 
 #+RESULTS:
-: 1100.06504981
-
-[[./images/adiabatic-pfr-countercurrent-heat.png]]
+:RESULTS:
+1100.06504981
+[[file:ipython-inline-images/ob-ipython-d2fd20194f0a54059ddb700eb93f6fa4.png]]
+:END:
 
 - This is a difficult problem to solve
   - There is a steep change in T in the tube at the entrance
@@ -584,48 +581,3 @@ plt.show()
 
 - But you need an initial guess for the solution otherwise
   - The solution does not have an intuitive form so it is hard to guess
-
-
-#+BEGIN_SRC python
-for i, el in enumerate(['a', 'b', 'c']):
-    print i, el
-#+END_SRC
-
-#+RESULTS:
-: 0 a
-: 1 b
-: 2 c
-
-#+BEGIN_SRC python
-i = 0
-L = ['a', 'b', 'c']
-while i < len(L):
-    print i, L[i]
-    i = i + 1
-#+END_SRC
-
-#+RESULTS:
-: 0 a
-: 1 b
-: 2 c
-
-#+BEGIN_SRC python
-for a, b in zip([1, 2, 3], ['a', 'b', 'c']):
-    print a,b
-#+END_SRC
-
-#+RESULTS:
-: 1 a
-: 2 b
-: 3 c
-
-
-#+BEGIN_SRC python
-def f(T):
-    return T**2
-
-print [f(t) for t in [1, 2, 3, 4, 6]]
-#+END_SRC
-
-#+RESULTS:
-: [1, 4, 9, 16, 36]

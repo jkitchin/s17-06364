@@ -40,12 +40,15 @@
   CLOSED: [2017-03-29 Wed 10:54]
 * DONE <2017-03-27 Mon> [[./lectures/lectures-13.org]] Mechanisms
   CLOSED: [2017-03-29 Wed 10:55]
-* <2017-03-29 Wed> [[./lectures/lectures-14.org]] mechanisms
-* <2017-04-03 Mon> *NO CLASS*
-* <2017-04-05 Wed> [[./lectures/lectures-15.org]] eb
-* <2017-04-10 Mon> [[./lectures/lectures-16.org]] eb
-* <2017-04-12 Wed> [[./lectures/lectures-17.org]] eb
-* <2017-04-17 Mon> [[./lectures/lectures-18.org]] eb
+* DONE <2017-03-29 Wed> [[./lectures/lectures-14.org]] mechanisms
+  CLOSED: [2017-04-05 Wed 14:55]
+* DONE <2017-04-03 Mon> *NO CLASS*
+  CLOSED: [2017-04-05 Wed 14:55]
+* DONE <2017-04-05 Wed> [[./lectures/lectures-15.org]] eb
+  CLOSED: [2017-04-09 Sun 19:30]
+* <2017-04-10 Mon> [[./lectures/lectures-16.org]] eb batch
+* <2017-04-12 Wed> [[./lectures/lectures-17.org]] eb cstr
+* <2017-04-17 Mon> [[./lectures/lectures-18.org]] eb pfr
 * <2017-04-19 Wed> [[./lectures/lectures-19.org]] eb
 * <2017-04-24 Mon> *Exam II*
 * <2017-04-26 Wed> *NO CLASS*
