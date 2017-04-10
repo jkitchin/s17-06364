@@ -1,9 +1,19 @@
+#+TITLE: The energy balance and the batch reactor
 #+OX-IPYNB-KEYWORD-METADATA: keywords
 #+KEYWORDS: energy balance, batch
 
-https://usercontent2.hubstatic.com/209665_f520.jpg
+#+BEGIN_SRC ipython :session :results output drawer
+from IPython.core.display import Image, display
+display(Image(url='https://usercontent2.hubstatic.com/209665_f520.jpg', width=300))
+#+END_SRC
 
-* The energy balance and the batch reactor
+#+RESULTS:
+:RESULTS:
+#+BEGIN_EXPORT HTML
+<img src="https://usercontent2.hubstatic.com/209665_f520.jpg" width="300"/>
+#+END_EXPORT
+:END:
+
 
 - There are no flows in the batch reactor
 
@@ -35,13 +45,13 @@ https://usercontent2.hubstatic.com/209665_f520.jpg
 - We consider the reaction $A + B \rightarrow C$
   - Since this is a liquid reaction, we assume constant pressure
 
-- The reaction mixture starts at 27 \degC with initial concentrations of $A$ and $B$ at 2 M, and no C
+- The reaction mixture starts at 27 °C with initial concentrations of $A$ and $B$ at 2 M, and no C
 
 - The heat of reaction is -10 kcal/mol
 
 - The partial molar heat capacities are $\overline{C}_{pA} = \overline{C}_{pB} = 20$ cal/(mol K) and  $\overline{C}_{pC} = 40$ cal/mol/K.
 
-- The rate constant is $k = 0.01725$ L/mol/min at 27 \degC and the activation energy is 1500 cal/mol/K
+- The rate constant is $k = 0.01725$ L/mol/min at 27 °C  and the activation energy is 1500 cal/mol/K
 
 - The reactor volume is 1200 L
 
@@ -77,7 +87,7 @@ cpa = cpb = 20.0  # cal/mol/K
 cpc = 40.0        # cal/mol/K
 
 # rate constants
-k0 = 0.01725      # L / mol / min at 27 degC
+k0 = 0.01725      # L / mol / min at 27 °C
 E = 1500.0        # cal/mol
 R = 1.987         # cal/mol/K
 dH = -10000.0     # cal/mol
@@ -156,7 +166,7 @@ plt.ylabel('Temperature (K)')
   - If $T > T_{coolant}$ there is loss of heat from the reactor
   - We write the heat transfer this way so we can /add/ $\dot{Q}$ in the energy balance
 
-- Let $UA = 5000$ cal/L/min, and the temperature of the coolant be 77 \degC
+- Let $UA = 5000$ cal/L/min, and the temperature of the coolant be 77 °C
 
 - The energy balance becomes
 <div class="alert alert-warning">
@@ -243,3 +253,8 @@ plt.ylabel('Temperature (K)')
   - Using a lower temperature in the coolant would help that
   - Using lower initial concentration would help that
   - Diluting with a high heat capacity solvent would help that
+
+* Summary
+
+- The energy balance adds one additional equation, and many additional data requirements
+  - heat capacities, activation energies, reaction enthalpies, heat transfer coefficients
