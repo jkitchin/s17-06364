@@ -46,7 +46,8 @@
   CLOSED: [2017-04-05 Wed 14:55]
 * DONE <2017-04-05 Wed> [[./lectures/lectures-15.org]] eb
   CLOSED: [2017-04-09 Sun 19:30]
-* <2017-04-10 Mon> [[./lectures/lectures-16.org]] eb batch
+* DONE <2017-04-10 Mon> [[./lectures/lectures-16.org]] eb batch
+  CLOSED: [2017-04-12 Wed 14:28]
 * <2017-04-12 Wed> [[./lectures/lectures-17.org]] eb cstr
 * <2017-04-17 Mon> [[./lectures/lectures-18.org]] eb pfr
 * <2017-04-19 Wed> [[./lectures/lectures-19.org]] eb

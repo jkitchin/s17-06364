@@ -191,8 +191,9 @@ plt.ylabel('$X_{eq}$')
 
 - Let us consider this adiabatic CSTR setup
 
-#+ATTR_ORG: :width 300
-[[./images/adiabatic-cstr-setup.png]]
+#+attr_org: :width 300
+[[ghss:./images/adiabatic-cstr-setup.png]]
+
 
 - We want to see how the solution to this design, i.e. the exit conversion and temperature depends on the parameters
   - Primarily we are interested in the feed temperature in this example
