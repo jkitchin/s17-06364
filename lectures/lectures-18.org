@@ -2,6 +2,8 @@
 #+OX-IPYNB-KEYWORD-METADATA: keywords
 #+KEYWORDS: energy balance, pfr
 
+https://s3.amazonaws.com/lowres.cartoonstock.com/animals-bulltoon-bulls-siamese_twin-bull-farm_animal-jhen145_low.jpg
+
 * The energy balance and the PFR
 - For the plug flow reactor the energy balance we will use for a single reaction is
 
@@ -21,6 +23,8 @@
 - We consider the endothermic reaction $A \rightarrow B + C$ in an adiabatic PFR (\(\dot{Q} = 0\))
 
 # adapted from Fogler page 504
+
+The data for this reaction is provided here:
 
 #+BEGIN_SRC ipython :session :results output drawer
 import numpy as np
@@ -43,6 +47,13 @@ Cpb = 0.083
 Cpc = 0.071
 #+END_SRC
 
+We need a mole and energy balance. One equation for the molar flow of A, and one for the temperature.
+
+Some important points:
+- We need to account for the temperature dependent volumetric flow
+- So we can use it to compute the concentration of A
+- We also need the temperature dependent rate constant
+- For use in the rate law
 
 
 #+BEGIN_SRC ipython :session :results output drawer
@@ -84,6 +95,7 @@ T = sol[:, 1]
 X = ((Fa - Fa0) * (-1) / Fa0)
 #+END_SRC
 
+I find it helpful and more readable to split the code blocks up.
 
 
 #+BEGIN_SRC ipython :session :results output drawer
@@ -106,7 +118,7 @@ plt.tight_layout()
 :END:
 
 
-- Low conversion results because the temperature drops rapidly due to the endothermic reaction
+- Low conversion results because the temperature drops rapidly due to the endothermic reaction.
 
 ** Using inerts to provide heat to an endothermic reaction
 
@@ -116,6 +128,7 @@ plt.tight_layout()
 
 - The inert gas serves as a thermal reservoir to buffer the temperature loss
 
+We use the same data. We redefine it here in case anything was changed in a block above this one.
 #+BEGIN_SRC ipython :session :results output drawer
 Fa0 = 0.0376      # mol/s
 Ca0 = 0.0188      # mol / L
@@ -133,6 +146,7 @@ Cpi = 0.100       # inert
 #+END_SRC
 
 
+The main difference here is the addition of inerts.
 
 #+BEGIN_SRC ipython :session :results output drawer
 def adiabatic_pfr(Y, V, Fi0):
@@ -163,10 +177,9 @@ Vspan = np.linspace(0, 5) # volume in L
 Y0 = [Fa0, T0]
 #+END_SRC
 
+We examine three flow rates of inerts in a loop.
 
 #+BEGIN_SRC ipython :session :results output drawer
-# we examine three flow rates of inerts
-colors = 'rgbk'  # colors to make each solution
 for i, Fi0 in enumerate([1.0, 0.5, 0.1, 0.01, 0.001, 0.0]):
     sol = odeint(adiabatic_pfr, Y0, Vspan, args=(Fi0,))
 
@@ -259,7 +272,7 @@ Ta = 1080.0       # ambient heat exchanger temperature
 Ua = 0.0165       # overall heat transfer coefficient
 #+END_SRC
 
-
+The mole/energy balance is pretty standard, but we add the Qdot term to the energy balance.
 
 #+BEGIN_SRC ipython :session :results output drawer
 def pfr(Y, V):
@@ -383,6 +396,8 @@ Ua = 0.0165         # overall heat transfer coefficient
 mdot = 1.0          # mol/s coolant flow rate
 Cpcoolant = 0.0345  # Heat capacity of coolant
 #+END_SRC
+
+Note the extra variable in the ODE function for the shell temperature. There is also an extra equation on the shell energy balance.
 
 #+BEGIN_SRC ipython :session :results output drawer
 def pfr(Y, V):
