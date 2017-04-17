@@ -1,0 +1,484 @@
+#+OX-IPYNB-KEYWORD-METADATA: keywords
+#+KEYWORDS: energy balance, multiple reactions
+
+https://s3.amazonaws.com/lowres.cartoonstock.com/animals-bulltoon-bulls-siamese_twin-bull-farm_animal-jhen145_low.jpg
+
+* Nonisothermal reactors with reversible reactions
+
+- The equilibrium conversion is usually the best we can hope for in a reactor for reversible reactions
+
+- For endothermic reactions, the equilibrium conversion increases with /increasing/ temperature
+  - But an adiabatic reactor will decrease in temperature with increasing conversion
+
+- For an exothermic reaction the equilibrium conversion increases with /decreasing/ temperature
+  - But an adiabatic reactor will increase in temperature with increasing conversion
+
+- Let us illustrate the issues with a simple example
+
+# Adapted from example 8-6 in Fogler
+- Consider $A \leftrightharpoons B$ with $\Delta H_{rx} = -20$ kcal / mol
+
+- Let the heat capacity of $A$ and $B$ be 50 cal / mol / K
+
+- The equilibrium constant is 100,000 at 298 K
+
+- Pure A is fed to an adiabatic CSTR
+
+- First, we consider the equilibrium conversion that is possible
+
+- From thermodynamics, and assuming ideal behavior we have
+\( K = \frac{a_B}{a_A} = \frac{C_B}{C_A} \)
+
+- We use fractional conversion to define $C_A$ and $C_B$
+\begin{align*}
+C_A = C_{A0}(1 - X_{eq}) \\
+C_B = C_{A0} X_{eq}
+\end{align*}
+
+- Plugging those into the equilibrium equation and solving for $X_{eq}$ leads to:
+\( X_{eq} = \frac{K(T)}{1 + K(T)} \)
+
+  - Where we recall that $K$ is a function of $T$:
+
+$K(T) = K(T_0) \exp \left[\frac{-\Delta H_{rx}(T_0)}{R}\left (\frac{1}{T}-\frac{1}{T_0}\right)\right]$
+
+- Now we can plot the equilibrium conversion as a function of reactor temperature
+
+#+BEGIN_SRC ipython :session :results output drawer
+import numpy as np
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+Hrx = -20000.0  # cal / mol
+R = 1.987
+K_298 = 100000.0
+
+T = np.linspace(300, 600)
+
+K = K_298 * np.exp(-Hrx / R * (1.0 / T - 1.0 / 298.0))
+
+Xeq = K / (1.0 + K)
+
+plt.plot(T, Xeq)
+plt.xlabel('Temperature (K)')
+plt.ylabel('$X_{eq}$')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-dd65bf9ab71583f326eb74678dc9bdbb.png]]
+:END:
+
+
+- Not surprisingly, at low temperature  the possibility for nearly complete conversion exists
+
+- Now, we consider the adiabatic CSTR energy balance
+
+\(0 = \sum F_{j0} C_{p,j} (T_{feed} - T) - \Delta H_{rx}(T) r V\)
+
+- From the mole balance
+
+(\0 = F_{A0} - F_A + \alpha_A r V\)
+
+  - We find that $r V = (F_A - F_{A0}) / \alpha_A = F_{A0} X$
+
+- So we have
+\(X = \frac{C_{pA}(Tfeed - T)}{\Delta H_{rx}}\)
+
+  - Not that if $\Delta H_{rx}$ and $C_{pA}$ do not depend strongly on $T$ this function is linear in $T$
+
+- Let us consider that function in conjunction with the equilibrium conversion
+
+- We have to specify a feed temperature, let us consider 300, 400 and 500 K
+
+#+BEGIN_SRC ipython :session :results output drawer
+Hrx = -20000.0     # J / mol
+R = 1.987
+K_298 = 100000.0
+
+T = np.linspace(300, 600)
+
+K = K_298 * np.exp(-Hrx / R * (1.0 / T - 1.0 / 298.0))
+
+Xeq = K / (1.0 + K)
+
+plt.plot(T, Xeq, label='$X_{eq}$')
+
+Cpa = 50.0
+
+for Tfeed in [300, 400, 500]:
+    X = Cpa*(Tfeed - T) / Hrx
+    plt.plot(T, X, label='Tfeed = {0} K'.format(Tfeed))
+
+plt.xlabel('Temperature (K)')
+plt.ylabel('$X_{eq}$')
+plt.legend(loc='best')
+plt.ylim([0, 1])
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-55fc37a492aa60a17c7b03e3acc370f4.png]]
+:END:
+
+
+- Clearly you want the lowest feed temperature to get the highest conversion
+
+- We cannot say yet what the actual conversion will be
+  - It will be on the energy balance line, and less than the equilibrium conversion
+  - The actual conversion depends on the kinetics and feed conditions
+
+
+- We will calculate the exit temperature and conversion as a function of feed temperature
+
+- At a low feed temperature the possible equilibrium conversion may be high, but the kinetics will be slow limiting actual conversion
+
+- At a high feed temperature the kinetics will be very fast, but the equilibrium conversion will be low
+
+- This suggests an optimal feed temperature that maximizes the exit conversion
+
+- We reconsider the example of $A \leftrightharpoons B$ that we considered before.
+
+- Now, we solve the mole and energy balances simultaneously as a function of feed temperature
+
+#+BEGIN_SRC ipython :session :results output drawer
+Hrx = -20000.0     # cal / mol
+R = 1.987
+K_298 = 100000.0
+
+T_ = np.linspace(300, 600)
+
+K_ = K_298 * np.exp(-Hrx / R * (1.0 / T_ - 1.0 / 298.0))
+Xeq = K_ / (1.0 + K_)
+
+plt.plot(T_, Xeq, label='$X_{eq}$')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-f2fc5947ebebfbba49da688e56f9674d.png]]
+:END:
+
+Now the data:
+
+#+BEGIN_SRC ipython :session :results output drawer
+# mole and energy balances
+k1 = 3.1e-6      # Rate constant at 360 K  1 / min
+T1 = 360.0       # Reference T for the rate constant
+E = 15000.0      # Activation energy
+
+V = 600.0        # reactor volume in L
+
+Cao = 2.0        # initial concentration mol / L
+Fao = 10.0       # mol / min
+Fbo = 0.0
+
+v0 = Fao / Cao
+
+CpA = 50.0       # heat capacity cal / mol / K
+CpB = 50.0
+dCp = CpB - CpA  # change in heat capacity due to reaction
+#+END_SRC
+
+
+To find the exit values, we need to setup an objective function of the mole and energy balances for use with fsolve.
+
+#+BEGIN_SRC ipython :session :results output drawer
+def objective(Y, Tfeed):
+    X, T = Y  # unpack the variables
+    Ca = Cao * (1.0 - X)
+    Cb = Cao * X
+
+    k = k1 * np.exp(-E / R * (1.0 / T - 1.0 / T1))
+    K = K_298 * np.exp(-Hrx / R * (1.0 / T - 1.0 / 298.0))
+
+    r = k * (Ca - Cb / K)
+    ra = -r
+
+    # mole balance
+    Fa = Ca * v0
+    z1 = (Fao - Fa) + ra * V
+
+    # energy balance
+    # Calculate reaction energy at reaction conditions
+    Hrxn = Hrx + dCp * (T - Tfeed)
+    z2 = (Fao * CpA + Fbo * CpB) * (Tfeed - T) / (-Hrxn * r * V)  + 1
+    return [z1, z2]
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results output drawer
+from scipy.optimize import fsolve
+
+Tfeed = np.linspace(350, 600)
+Xe, Te = np.empty(Tfeed.shape), np.empty(Tfeed.shape)
+
+guess = [0.1, 200]
+for i, tfeed in enumerate(Tfeed):
+    sol, infodict, ier, message = fsolve(objective, guess, args=(tfeed), xtol=1e-6, full_output=1)
+    if ier == 1:
+        Xe[i], Te[i] = sol
+        guess = [Xe[i], Te[i]]
+    else:
+        print(message)
+import matplotlib.pyplot as plt
+plt.plot(Tfeed, Xe)
+
+plt.xlabel('Feed temperature')
+plt.ylabel('Conversion')
+plt.legend(['$X_{eq}$','$X_{exit}$'])
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-b5ea5b25778dd1470a39706c845e18af.png]]
+:END:
+
+
+- You can see that the optimal feed temperature is at about 470 K with a maximum conversion of 0.1.
+  - Note: this problem is very sensitive to the values of the rate constant.
+
+- Below that the exit conversion is limited by slow kinetics
+
+- Above that reaction is limited by the equilibrium conversion
+
+- As temperature increases the exit conversion approaches the equilibrium conversion
+
+- To exceed the adiabatic limit you must use a series of reactors with intercooling
+  - The exit of one reactor will be cooled and then feed into the next reactor
+
+* Multiple reactions in nonisothermal reactor design
+
+- The critical point to remember with multiple reactions is we must consider the heat generated from multiple reactions
+
+** Multiple reactions in a nonisothermal CSTR
+
+- For the CSTR the energy balance is
+
+\begin{equation}
+\sum N_i C_{p,i} \frac{dT}{dt} = \sum F_i C_{p,i}(T_0 - T) + \sum (-\Delta H_{rx,j}) r_j V + \dot{Q} + \dot{W}_s
+\end{equation}
+
+
+- We consider a series reaction $A \rightarrow B \rightarrow C$ in a CSTR
+
+
+
+#+attr_org: :width 300
+[[ghss:./images/cstr-multi-reactions-heat-exchange.png]]
+
+- It is unclear from the problem setup how many solutions there could be
+
+- We will use brute force to explore initial guess space and plot a histogram of exit temperatures
+
+#+BEGIN_SRC ipython :session :results output drawer
+V = 10.0 # Liter
+
+v0 = 1000.0 # L / min
+Cafeed = 0.3 # mol / L
+
+# inlet molar flows
+Fa0 = v0 * Cafeed
+Fb0 = Fc0 = 0.0
+
+# Reaction properties
+Hrx1 = -55000.0  # J / mol-A
+Hrx2 = -71500.0  # J / mol-B
+
+k1_300 = 3.3     # 1 / min at 300K
+E1 = 9900.0      # cal / mol
+
+k2_500 = 4.58    # 1 / min at 500K
+E2 = 27000.0     # cal / mol
+R = 1.987        # cal / mol / K
+
+# thermal properties
+Cpa = Cpb = Cpc = 200.0 # J / mol /K
+Tfeed = 283.0 # K
+
+# heat exchanger
+Ta = 330.0   # K heat exchanger
+Ua = 40000.0 # J / min / K
+#+END_SRC
+
+We will loop through many initial guesses and collect the solutions to view them as a histogram.
+
+#+BEGIN_SRC ipython :session :results output drawer
+def objective(Y):
+    Fa, Fb, Fc, T = Y
+    k1 = k1_300 * np.exp(-E1 / R * (1.0 / T - 1.0 / 300.0))
+    k2 = k2_500 * np.exp(-E2 / R * (1.0 / T - 1.0 / 500.0))
+
+    Ca = Fa / v0
+    Cb = Fb / v0
+
+    r1 = k1 * Ca
+    r2 = k2 * Cb
+
+    # net rates
+    ra = -r1
+    rb = r1 - r2
+    rc = r2
+
+    # mole balances
+    z1 = Fa0 - Fa + ra * V
+    z2 = Fb0 - Fb + rb * V
+    z3 = Fc0 - Fc + rc * V
+
+    # energy balance
+    z4 = Ua * (Ta - T) + Fa0 * Cpa * (Tfeed - T) + V * (r1 * -Hrx1 + r2 * -Hrx2)
+    return [z1, z2, z3, z4]
+
+solutions = []
+for Ca in [0.01, 0.1, 0.2, 0.3, 0.4]:
+    for Cb in [0.01, 0.1, 0.2, 0.3, 0.4]:
+        for Cc in [0.01, 0.1, 0.2, 0.3, 0.4]:
+            for Tg in [300, 400, 500, 600, 700]:
+                Yy0 = [v0*Ca, v0*Cb, v0*Cc, Tg]
+                sol = fsolve(objective, Yy0)
+                Texit = sol[-1]
+                solutions += [Texit]
+
+import matplotlib.pyplot as plt
+plt.hist(solutions, 200)
+plt.xlabel('$T_{exit}$')
+plt.ylabel('frequency')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-5613d686d3b4cb7cd9b77ae3a2a7b545.png]]
+:END:
+
+
+- Our analysis suggests up to five possible steady state solutions
+
+- Only three of these are likely to be stable solutions
+
+- If you derive expressions for the heat generated and removed from this reactor you can see why
+  - And that you would expect 5 steady state solutions
+
+- A final note is that \tau in this case is equal to 0.01
+  - That is very short!
+  - A larger \tau would likely result in a single steady state solution
+
+** Multiple reactions in a plug-flow reactor
+
+- The energy balance for multiple reactions changes only in that we have more species to consider, and we have reaction enthalpies from multiple reactions
+
+- For the plug flow reactor this leads to
+
+\(\frac{dT}{dV} = \frac{\dot{Q} +  \sum (-\Delta H_{rxn,i}(T) r_i) }{\sum F_j C_{p,j}} \)
+
+- We consider the parallel reactions
+\begin{align*}
+A \rightarrow B \\
+2A \rightarrow C
+\end{align*}
+
+- The two reactions are both exothermic and have elementary rate laws
+
+- We consider a PFR with an ambient temperature heat exchanger that will cool the reactor
+
+
+
+#+attr_org: :width 300
+[[ghss:./images/pfr-multi-heat-exchanger.png]]
+
+
+
+- We want to know the temperature profile in the reactor, and the exit molar flow of each species
+
+- adapted from page 545 Fogler
+
+Here is the provided data:
+
+#+BEGIN_SRC ipython :session :results output drawer
+Fa0 = 100.0             # mol / s
+Tfeed = 150.0 + 273.15  # feed temperature
+Cafeed = 0.1            # mol / L
+
+Ft0 = Fa0
+
+v0 = Fa0 / Cafeed
+
+# reaction properties
+Hrx1 = -20.0  # kJ / mol A
+Hrx2 = -60.0  # kJ / mol A
+
+Cpa = 0.090
+Cpb = 0.090
+Cpc = 0.180
+
+Ua = 4      # kJ / L / s /K
+Ta = 373.0  # K
+
+E1R = 4000.0  # K at 300 K
+E2R = 9000.0
+#+END_SRC
+
+#+BEGIN_SRC ipython :session :results output drawer
+def pfr(Y, V):
+    Fa, Fb, Fc, T = Y
+    Ft = Fa + Fb + Fc
+
+    k1a = 10.0 * np.exp(-E1R * (1.0 / T - 1.0 / 300.0))
+    k2a = 0.09 * np.exp(-E2R * (1.0 / T - 1.0 / 300.0))
+
+    v = v0 * (Ft / Ft0) * (T / Tfeed)
+    Ca = Fa / v
+
+    r1a = -k1a * Ca
+    r2a = -k2a * Ca**2
+
+    r1 = -r1a
+    r2 = r2a / -2.0
+
+    ra = -r1 - 2 * r2
+    rb = r1
+    rc = r2
+
+    dFadV = ra
+    dFbdV = rb
+    dFcdV = rc
+
+    dTdV = ((r1 * -Hrx1   # heat from rxn 1
+             + 2 * r2 * -Hrx2  # heat from rxn 2
+             + Ua * (Ta - T))  # Qdot
+             / (Fa * Cpa + Fb * Cpb + Fc * Cpc))
+    return [dFadV, dFbdV, dFcdV, dTdV]
+
+Y0 = [Fa0, 0.0, 0.0, Tfeed]
+Vspan = np.linspace(0, 1)
+
+from scipy.integrate import odeint
+sol = odeint(pfr, Y0, Vspan)
+
+Fa, Fb, Fc, T = sol.T
+#+END_SRC
+
+
+
+#+BEGIN_SRC ipython :session :results output drawer
+plt.subplot(1, 2, 1)
+plt.plot(Vspan, Fa, Vspan, Fb, Vspan, Fc)
+plt.xlabel('Volume (L)')
+plt.ylabel('Molar flow (mol/s)')
+plt.legend(['Fa', 'Fb', 'Fc'], loc='best')
+
+plt.subplot(1, 2, 2)
+plt.plot(Vspan, T)
+plt.xlabel('Volume (L)')
+plt.ylabel('Temperature (K)')
+plt.tight_layout()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-2e5593031b96ddfab7bfc1fc800bcba0.png]]
+:END:
+
+- Note that we had to use $2 r_2$ in the energy balance because the heat of reaction was defined for that reaction as /per mole of A/
+
+- You see a very sharp rise in temperature until the reaction is complete
+
+- After that you see a drop in temperature from the cooling by the heat exchanger

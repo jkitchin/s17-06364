@@ -48,7 +48,8 @@
   CLOSED: [2017-04-09 Sun 19:30]
 * DONE <2017-04-10 Mon> [[./lectures/lectures-16.org]] eb batch
   CLOSED: [2017-04-12 Wed 14:28]
-* <2017-04-12 Wed> [[./lectures/lectures-17.org]] eb cstr
+* DONE <2017-04-12 Wed> [[./lectures/lectures-17.org]] eb cstr
+  CLOSED: [2017-04-17 Mon 09:26]
 * <2017-04-17 Mon> [[./lectures/lectures-18.org]] eb pfr
 * <2017-04-19 Wed> [[./lectures/lectures-19.org]] eb
 * <2017-04-24 Mon> *Exam II*
