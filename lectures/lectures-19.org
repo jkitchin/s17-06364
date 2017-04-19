@@ -78,7 +78,7 @@ plt.ylabel('$X_{eq}$')
 
 - From the mole balance
 
-(\0 = F_{A0} - F_A + \alpha_A r V\)
+$0 = F_{A0} - F_A + \alpha_A r V$
 
   - We find that $r V = (F_A - F_{A0}) / \alpha_A = F_{A0} X$
 
@@ -152,14 +152,16 @@ K_ = K_298 * np.exp(-Hrx / R * (1.0 / T_ - 1.0 / 298.0))
 Xeq = K_ / (1.0 + K_)
 
 plt.plot(T_, Xeq, label='$X_{eq}$')
+plt.xlabel('Temperature (K)')
+plt.ylabel('Conversion')
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-[[file:ipython-inline-images/ob-ipython-f2fc5947ebebfbba49da688e56f9674d.png]]
+[[file:ipython-inline-images/ob-ipython-f59d2de76ed2660ac808e6b24a7c8689.png]]
 :END:
 
-Now the data:
+Now the data (this would all be given in a problem statement):
 
 #+BEGIN_SRC ipython :session :results output drawer
 # mole and energy balances
@@ -206,6 +208,8 @@ def objective(Y, Tfeed):
     return [z1, z2]
 #+END_SRC
 
+To solve this we use fsolve.
+
 #+BEGIN_SRC ipython :session :results output drawer
 from scipy.optimize import fsolve
 
@@ -248,7 +252,7 @@ plt.legend(['$X_{eq}$','$X_{exit}$'])
 
 * Multiple reactions in nonisothermal reactor design
 
-- The critical point to remember with multiple reactions is we must consider the heat generated from multiple reactions
+- The critical point to remember with multiple reactions is we must consider the heat generated from each reaction
 
 ** Multiple reactions in a nonisothermal CSTR
 
@@ -270,6 +274,8 @@ plt.legend(['$X_{eq}$','$X_{exit}$'])
 
 - We will use brute force to explore initial guess space and plot a histogram of exit temperatures
 
+Here is the data. Most of this would have to be provided in a problem statement.
+
 #+BEGIN_SRC ipython :session :results output drawer
 V = 10.0 # Liter
 
@@ -277,7 +283,7 @@ v0 = 1000.0 # L / min
 Cafeed = 0.3 # mol / L
 
 # inlet molar flows
-Fa0 = v0 * Cafeed
+Fa0 = v0 * Cafeed  # derived
 Fb0 = Fc0 = 0.0
 
 # Reaction properties
@@ -416,6 +422,8 @@ E1R = 4000.0  # K at 300 K
 E2R = 9000.0
 #+END_SRC
 
+Here we define the differential equations.
+
 #+BEGIN_SRC ipython :session :results output drawer
 def pfr(Y, V):
     Fa, Fb, Fc, T = Y
@@ -456,7 +464,7 @@ sol = odeint(pfr, Y0, Vspan)
 Fa, Fb, Fc, T = sol.T
 #+END_SRC
 
-
+And make the plots.
 
 #+BEGIN_SRC ipython :session :results output drawer
 plt.subplot(1, 2, 1)
@@ -482,3 +490,9 @@ plt.tight_layout()
 - You see a very sharp rise in temperature until the reaction is complete
 
 - After that you see a drop in temperature from the cooling by the heat exchanger
+
+* Reminder
+
+- Exam 2 will be on <2017-04-24 Mon>
+- Same format as before.
+  - The problems will be released Monday morning and they are due Tuesday morning
