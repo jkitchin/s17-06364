@@ -1,0 +1,396 @@
+#+OX-IPYNB-KEYWORD-METADATA: keywords
+#+KEYWORDS: mass transfer
+
+
+http://techintranslation.com/wp-content/uploads/2010/06/picture-2.png
+
+* Generalize the internal effectiveness factor to different shapes, reaction orders, etc...
+You may find [[http://jbrwww.che.wisc.edu/home/jbraw/chemreacfun/ch7/slides-masswrxn.pdf][these notes]] helpful to augment the discussion here.
+
+** Different particle shapes
+
+In the previous example we derived the effectiveness factor for a spherical particle and first order reaction. These features determined the solution because the way we made the equations dimensionless was determined by a shape factor specific to the sphere, and the dimensionless Thiele modulus implicitly included the reaction rate law.
+
+- For other particle shapes, e.g. slabs or cylinders, we would use different characteristic lengths
+
+- For first order reactions, there are still analytical solutions available
+
+1. Sphere \( \eta = \frac{1}{\Phi}  \left [\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi} \right]\)
+2. Cylinder \( \eta = \frac{1}{\Phi} \frac{I_1(2 \Phi)}{I_0(2\Phi)}   \)
+3. Slab \( \eta = \frac{\tanh \Phi}{\Phi} \)
+
+These solutions look functionally different, but they are actually quite similar:
+
+#+BEGIN_SRC ipython :session :results output drawer
+import numpy as np
+from scipy.special import iv
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+Phi = np.logspace(-2, 2)
+eta_sphere = 1.0 / Phi * (1.0 / np.tanh(3 * Phi) - 1.0 / (3 * Phi))
+eta_cylinder = 1 / Phi * iv(1, 2 * Phi) / iv(0, 2 * Phi)
+eta_slab = np.tanh(Phi) / Phi
+
+plt.loglog(Phi, eta_sphere, label='sphere')
+plt.loglog(Phi, eta_cylinder, label='cylinder')
+plt.loglog(Phi, eta_slab, label='slab')
+
+plt.loglog(Phi, 1.0 / Phi, 'k--', label='1/$\Phi$')
+plt.loglog(Phi,np.ones(shape=Phi.shape), 'b--', label='1')
+plt.legend()
+plt.xlabel('$\Phi$')
+plt.ylabel('$\eta$')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-ca1043535f94de1e9fffefb0d8f39790.png]]
+:END:
+
+See scipy.special.iv http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.iv.html for details on the Modified Bessel function of the first kind of real order.
+
+- The main point is that the main effects are not that sensitive to the particle geometry, with errors less than 20% in the effectiveness factor.
+
+- *So, you should ignore the shape, and use the effectiveness factor for a sphere.*
+
+** Different reaction orders
+
+- Recall that the Thiele modulus contains an implicit reaction order in it, and we derived the solution for a first order reaction.
+
+- Let us consider the effectiveness factor now for reaction orders other than one.
+
+- For a spherical particle we have:
+
+\( D_A \frac{1}{r^2} \frac{d}{dr} \left( r^2 \frac{d C_A}{dr}\right) - kC_A^n = 0 \)
+
+- Let us again make the equation dimensionless.
+
+- This leads to:
+
+\( \frac{1}{\overline{r}^2} \frac{d}{d\overline{r}}\left(\overline{r}^2\frac{d\overline{c}}{d\overline{r}}\right) - \frac{k C_{As}^{n-1}a^2}{D_A} \overline{c}^n = 0 \)
+
+- with the new boundary conditions
+
+\(\overline{c}(\overline{r}=3) = 1 \)
+
+\( \frac{d\overline{c}}{d\overline{r}}=0 \textrm{ at } \overline{r}=0 \)
+
+- Let us for now define  \(\widetilde{\Phi}^2 = \frac{k C_{As}^{n-1}a^2}{D_A}\)
+
+  - $n$ is the reaction order
+
+  - Note this depends on the surface concentration
+
+- We write out the differential equation as:
+
+\(\frac{d^2\overline{c}}{d\overline{r}^2} = -\frac{2}{\overline{r}}\frac{d\overline{c}}{d\overline{r}} + \widetilde{\Phi}^2\overline{c}^n\)
+
+- This is a particularly useful form because there is a function in pycse to solve this kind of BVP.
+
+- The effectiveness factor is defined as:
+
+\(\eta = \frac{1}{9}\int\limits_0^3 \overline{c}\overline{r}^2 dr\)
+
+- or alternatively:
+\(\eta = \frac{1}{\widetilde{\Phi}^2}\frac{d\overline{c}}{d\overline{r}}|_{r=3} = 0 \)
+
+- The integral definition is more accurate to evaluate
+
+- Rather than use the shooting method (which does not work well for this nonlinear equation) we use a finite difference method (BVP_nl) available in =pycse=
+
+- This is a nonlinear BVP, so we have to provide an initial guess for the solution. We will guess the concentration at the origin, and then use a polynomial function with slope=0 at the origin as an initial guess
+
+- See http://jbrwww.che.wisc.edu/home/jbraw/chemreacfun/fig-html/fig-7-9.html for an alternative approach.
+
+Note this takes longer than usual to run.
+
+We consider three reaction orders here. This code takes a while to run (maybe a minute).
+
+#+BEGIN_SRC ipython :session :results output drawer
+from pycse import BVP_nl
+
+n = [1.0, 2.0, 3.0]     # reaction order
+
+R = 3.0
+r1 = 0
+r2 = R
+
+N = 300
+RBAR = np.linspace(r1, r2, N)
+
+THIELE = np.logspace(-2, 1, 20)
+
+for order in n:
+    ETA = []
+
+    c0 = 0.9
+    p = 4
+    init = c0 + (1 - c0) / R**p * RBAR**p
+
+    for thiele in THIELE:
+        def F(rbar, cbar, dcbardrbar):
+            return -2.0 / rbar * dcbardrbar + thiele**2 * cbar**order
+
+        def BCS(rbar, cbar):
+            return [(cbar[1] - cbar[0])/(rbar[1] - rbar[0]),  # dc/dr(r=0) = 0
+                     cbar[-1] - 1]                            # cbar(R) = 1
+
+        CBAR = BVP_nl(F, RBAR, BCS, init)
+        eta2 = 1./9. * np.trapz(CBAR**order * RBAR**2, RBAR)
+        ETA += [eta2]
+
+    plt.loglog(THIELE, ETA, label='n={0}'.format(order))
+
+plt.legend(loc='best')
+plt.xlabel(r'$\widetilde{\Phi}$')
+plt.ylabel(r'$\eta$')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-299936b8243ae9ff54ecc75c70571cab.png]]
+:END:
+
+
+- Note that unlike the case of different pellet shapes with n=1, the effectiveness factor changes a lot for different reaction orders.
+  + and there are different asymptotic limits at high \Phi.
+
+- We can fix that by choosing a different definition of the Thiele modulus
+
+ <div class="alert alert-warning">
+ \( \Phi = \sqrt{\frac{n+1}{2} \frac{k c_{As}^{n-1} a^2}{D_A} } \)
+ </div>
+
+- Then we have to modify the differential equation:
+
+\(\frac{d^2\overline{c}}{d\overline{r}^2} = -\frac{2}{\overline{r}}\frac{d\overline{c}}{d\overline{r}} + \frac{2}{n+1}\Phi^2\overline{c}^n\)
+
+Resolving this equation leads to:
+
+#+BEGIN_SRC ipython :session :results output drawer
+n = [1.0, 2.0, 3.0]     # reaction order
+
+R = 3.0
+r1 = 0
+r2 = R
+
+N = 300
+RBAR = np.linspace(r1, r2, N)
+
+THIELE = np.logspace(-2, 1, 20)
+
+for order in n:
+    ETA = []
+
+    c0 = 0.9
+    p = 4
+    init = c0 + (1 - c0) / R**p * RBAR**p
+
+    for thiele in THIELE:
+        def F(rbar, cbar, dcbardrbar):
+            return (-2.0 / rbar * dcbardrbar
+                    + 2 / (order + 1) * thiele**2 * cbar**order)
+
+        def BCS(rbar, cbar):
+            return [(cbar[1] - cbar[0])/(rbar[1] - rbar[0]),  # dc/dr(r=0) = 0
+                     cbar[-1] - 1]                            # cbar(R) = 1
+
+        CBAR = BVP_nl(F, RBAR, BCS, init)
+        eta2 = 1./9. * np.trapz(CBAR**order * RBAR**2, RBAR)
+        ETA += [eta2]
+
+    plt.loglog(THIELE, ETA, label='n={0}'.format(order))
+
+plt.legend(loc='best')
+plt.xlabel(r'$\widetilde{\Phi}$')
+plt.ylabel('$\eta$')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-65c9676d5aecd74a16774e539afaad33.png]]
+:END:
+
+
+- This scaling may seem arbitrary, but it effectively scales the equation so that it behaves like 1/\Phi for large \Phi.
+
+- It is not necessary, but it greatly simplifies design problems.
+
+  + It is difficult to solve the BVP, and the scaling shows it is not necessary to do that
+
+  + *We use the modified Thiele modulus for n^{th} order kinetics in combination with the analytical solution for 1^{st} order reactions!*
+
+- It is not clear why these equations are so hard to solve for different reaction orders. It may be instability in the method used to solve the BVP.
+
+- For other types of rate laws, there will be other types of Thiele moduli
+
+- The form of these will not be easy to guess and may contain other dimensionless groups
+
+  + They can be derived from asymptotic analysis
+
+** Different rate laws
+
+- So far we have only considered power law kinetics.
+
+- In catalysis we often have rate laws like
+
+\( r = k \overline{c}_m \frac{K_A c_A}{1 + K_A c_A} \)
+
+- If we use this rate law in the diffusion/reaction equation, and make the equation dimensionless, we end up with two dimensionless numbers
+
+  + here is the equation for a slab
+
+\( \frac{d^2\overline{c}}{d\overline{r}^2} - \widetilde{\Phi}^2 \frac{\overline{c}}{1 + \phi \overline{c}} = 0  \)
+
+- where the two dimensionless groups are
+
+\( \widetilde{\Phi} = \sqrt{\frac{k\overline{c}_m K_A a^2}{D_A}}  \)
+
+And the second group is:
+
+\( \phi = K_A C_{As}  \)
+
+- Although one could use these equations to compute effectiveness factors, this is tedious as the result depends on \phi and there is not a common asymptote at high values of \Phi
+
+- Note this script takes quite a while to run.
+
+#+BEGIN_SRC ipython :session :results output drawer
+PHI = [0.1, 1, 2]
+R = 1
+r1 = 0
+r2 = R
+
+N = 300
+RBAR = np.linspace(r1, r2, N)
+
+THIELE = np.logspace(-2, 2, 20)
+
+for phi in PHI:
+    ETA = []
+
+    c0 = 0.9
+    p = 4
+    init = c0 + (1 - c0) / R**p * RBAR**p
+
+    for thiele in THIELE:
+        def F(rbar, cbar, dcbardrbar):
+            return thiele**2 * cbar / (1.0 + phi * cbar)
+
+        def BCS(rbar, cbar):
+            return [(cbar[1] - cbar[0])/(rbar[1] - rbar[0]),  # dc/dr(r=0) = 0
+                     cbar[-1] - 1]                            # cbar(R) = 1
+
+        CBAR = BVP_nl(F, RBAR, BCS, init)
+        eta = ((1.0 + phi) / thiele**2
+               ,* (CBAR[-1] - CBAR[-2])/(RBAR[-1] - RBAR[-2]))
+        ETA += [eta]
+
+    plt.loglog(THIELE, ETA, label='$\phi$={0}'.format(phi))
+
+plt.legend(loc='best')
+plt.xlabel(r'$\widetilde{\Phi}$')
+plt.ylabel(r'$\eta$')
+#+END_SRC
+
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-dc1c01a4a2e1f700f32e7cfa1a7007ea.png]]
+:END:
+
+- You see a similar problem here as we saw with n^{th} order kinetics. There is not a common asymptote.
+
+- While not unusable, it means we have to calculate this for every value of \phi
+
+- Through an asymptotic analysis one arrives at the following scaled Thiele modulus:
+
+\( \Phi = \left(\frac{\phi}{1 + \phi} \right) \frac{1}{\sqrt{2 (\phi - \ln(1+\phi))}} \widetilde{\Phi} \)
+
+So, if we plug this in and re-solve the equations:
+
+#+BEGIN_SRC ipython :session :results output drawer
+PHI = [0.1, 1, 2]
+R = 1
+r1 = 0
+r2 = R
+
+N = 300
+RBAR = np.linspace(r1, r2, N)
+
+THIELE = np.logspace(-2, 2, 20)
+
+for phi in PHI:
+    ETA = []
+
+    c0 = 0.9
+    p = 4
+    init = c0 + (1 - c0) / R**p * RBAR**p
+
+    for thiele_wiggle in THIELE:
+        thiele = ((1.0 + phi)
+                  / phi * np.sqrt(2 * (phi - np.log(1.0 + phi)))
+                  ,* thiele_wiggle)
+
+        def F(rbar, cbar, dcbardrbar):
+            return thiele**2 * cbar / (1.0 + phi * cbar)
+
+        def BCS(rbar, cbar):
+            return [(cbar[1] - cbar[0])/(rbar[1] - rbar[0]),  # dc/dr(r=0) = 0
+                     cbar[-1] - 1]                            # cbar(R) = 1
+
+        CBAR = BVP_nl(F, RBAR, BCS, init)
+        eta = ((1.0 + phi) / thiele**2
+               * (CBAR[-1] - CBAR[-2])/(RBAR[-1] - RBAR[-2]))
+        ETA += [eta]
+
+    plt.loglog(THIELE, ETA, label=r'$\phi$={0}'.format(phi))
+
+plt.legend(loc='best')
+plt.xlabel(r'$\widetilde{\Phi}$')
+plt.ylabel(r'$\eta$')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:ipython-inline-images/ob-ipython-bc29eda9c9f24a0e6f388cf8ed7ce94f.png]]
+:END:
+
+- We find reasonable asymptotic behavior
+
+- The payoff is that now we can readily estimate effectiveness factors by the original approach
+  + the analytical solution to a first order reaction in a spherical particle.
+  + *We just have to use this definition of the Thiele modulus for the Hougen Watson kinetics*
+
+<div class="alert alert-warning">
+\( \Phi = \left(\frac{\phi}{1 + \phi} \right) \sqrt{\frac{k \overline{c}_m K_A a^2}{2 (\phi - \ln(1+\phi)) D_A}} \)
+</div>
+
+- For large and small Thiele modulus the results will be good. For \Phi \approx 1 there will be some error in the effectiveness factor.
+
+* Summary of internal effectiveness factor
+
+- Particle shape effects are relatively small (e.g. a 20% effect)
+
+- The rate law does change things too much either, if you use the right Thiele modulus definition
+
+- We can reasonably estimate \eta by choosing an appropriate Thiele modulus definition for the situation and computing the effectiveness factor from: <div class="alert alert-warning">\( \eta = \frac{1}{\Phi}  \left [\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi} \right]\)</div>
+
+  + for power law kinetics we use <div class="alert alert-warning">\( \Phi = \sqrt{\frac{n+1}{2} \frac{k c_{As}^{n-1} a^2}{D_A} } \)</div>
+
+  + For Hougen-Watson kinetics we use <div class="alert alert-warning">\( \Phi = \left(\frac{\phi}{1 + \phi} \right) \sqrt{\frac{k \overline{c}_m K_A a^2}{2 D_A(\phi - \ln(1+\phi))}} \)</div>
+
+
+https://media3.giphy.com/media/3o7qDEq2bMbcbPRQ2c/200.gif#1-grid1
+
+#+BEGIN_SRC ipython :session :results output drawer
+from IPython.display import HTML
+HTML("<img src=https://media3.giphy.com/media/3o7qDEq2bMbcbPRQ2c/200.gif>")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+BEGIN_EXPORT HTML
+<img src=https://media3.giphy.com/media/3o7qDEq2bMbcbPRQ2c/200.gif>
+#+END_EXPORT
+:END:
