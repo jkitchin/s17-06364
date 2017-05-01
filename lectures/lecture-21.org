@@ -17,7 +17,7 @@ In the previous example we derived the effectiveness factor for a spherical part
 
 1. Sphere \( \eta = \frac{1}{\Phi}  \left [\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi} \right]\)
 2. Cylinder \( \eta = \frac{1}{\Phi} \frac{I_1(2 \Phi)}{I_0(2\Phi)}   \)
-3. Slab \( \frac{\tanh \Phi}{\Phi} \)
+3. Slab \( \eta = \frac{\tanh \Phi}{\Phi} \)
 
 These solutions look functionally different, but they are actually quite similar:
 
@@ -76,11 +76,15 @@ See scipy.special.iv http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/
 
 \( \frac{d\overline{c}}{d\overline{r}}=0 \textrm{ at } \overline{r}=0 \)
 
-- Let us for now define \(\tilde{\Phi}^2 = \frac{k C_{As}^{n-1}a^2}{D_A}\)
+- Let us for now define  \(\widetilde{\Phi}^2 = \frac{k C_{As}^{n-1}a^2}{D_A}\)
+
+  - $n$ is the reaction order
+
+  - Note this depends on the surface concentration
 
 - We write out the differential equation as:
 
-\(\frac{d^2\overline{c}}{d\overline{r}^2} = -\frac{2}{\overline{r}}\frac{d\overline{c}}{d\overline{r}} + \tilde{\Phi}^2\overline{c}^n\)
+\(\frac{d^2\overline{c}}{d\overline{r}^2} = -\frac{2}{\overline{r}}\frac{d\overline{c}}{d\overline{r}} + \widetilde{\Phi}^2\overline{c}^n\)
 
 - This is a particularly useful form because there is a function in pycse to solve this kind of BVP.
 
@@ -89,7 +93,7 @@ See scipy.special.iv http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/
 \(\eta = \frac{1}{9}\int\limits_0^3 \overline{c}\overline{r}^2 dr\)
 
 - or alternatively:
-\(\eta = \frac{1}{\tilde{\Phi}^2}\frac{d\overline{c}}{d\overline{r}}|_{r=3} = 0 \)
+\(\eta = \frac{1}{\widetilde{\Phi}^2}\frac{d\overline{c}}{d\overline{r}}|_{r=3} = 0 \)
 
 - The integral definition is more accurate to evaluate
 
@@ -139,7 +143,7 @@ for order in n:
     plt.loglog(THIELE, ETA, label='n={0}'.format(order))
 
 plt.legend(loc='best')
-plt.xlabel(r'$\tilde{\Phi}$')
+plt.xlabel(r'$\widetilde{\Phi}$')
 plt.ylabel(r'$\eta$')
 #+END_SRC
 
@@ -153,7 +157,10 @@ plt.ylabel(r'$\eta$')
   + and there are different asymptotic limits at high \Phi.
 
 - We can fix that by choosing a different definition of the Thiele modulus
- + \( \Phi = \sqrt{\frac{n+1}{2} \frac{k c_{As}^{n-1} a^2}{D_A} } \)
+
+ <div class="alert alert-warning">
+ \( \Phi = \sqrt{\frac{n+1}{2} \frac{k c_{As}^{n-1} a^2}{D_A} } \)
+ </div>
 
 - Then we have to modify the differential equation:
 
@@ -196,7 +203,7 @@ for order in n:
     plt.loglog(THIELE, ETA, label='n={0}'.format(order))
 
 plt.legend(loc='best')
-plt.xlabel(r'$\tilde{\Phi}$')
+plt.xlabel(r'$\widetilde{\Phi}$')
 plt.ylabel('$\eta$')
 #+END_SRC
 
@@ -234,11 +241,13 @@ plt.ylabel('$\eta$')
 
   + here is the equation for a slab
 
-\( \frac{d^2\overline{c}}{d\overline{r}^2} - \tilde{\Phi}^2 \frac{\overline{c}}{1 + \phi \overline{c}} = 0  \)
+\( \frac{d^2\overline{c}}{d\overline{r}^2} - \widetilde{\Phi}^2 \frac{\overline{c}}{1 + \phi \overline{c}} = 0  \)
 
 - where the two dimensionless groups are
 
-\( \tilde{\Phi} = \sqrt{\frac{k\overline{c}_m K_A a^2}{D_A}}  \)
+\( \widetilde{\Phi} = \sqrt{\frac{k\overline{c}_m K_A a^2}{D_A}}  \)
+
+And the second group is:
 
 \( \phi = K_A C_{As}  \)
 
@@ -280,7 +289,7 @@ for phi in PHI:
     plt.loglog(THIELE, ETA, label='$\phi$={0}'.format(phi))
 
 plt.legend(loc='best')
-plt.xlabel(r'$\tilde{\Phi}$')
+plt.xlabel(r'$\widetilde{\Phi}$')
 plt.ylabel(r'$\eta$')
 #+END_SRC
 
@@ -296,7 +305,7 @@ plt.ylabel(r'$\eta$')
 
 - Through an asymptotic analysis one arrives at the following scaled Thiele modulus:
 
-\( \Phi = \left(\frac{\phi}{1 + \phi} \right) \frac{1}{\sqrt{2 (\phi - \ln(1+\phi))}} \tilde{\Phi} \)
+\( \Phi = \left(\frac{\phi}{1 + \phi} \right) \frac{1}{\sqrt{2 (\phi - \ln(1+\phi))}} \widetilde{\Phi} \)
 
 So, if we plug this in and re-solve the equations:
 
@@ -338,7 +347,7 @@ for phi in PHI:
     plt.loglog(THIELE, ETA, label=r'$\phi$={0}'.format(phi))
 
 plt.legend(loc='best')
-plt.xlabel(r'$\tilde{\Phi}$')
+plt.xlabel(r'$\widetilde{\Phi}$')
 plt.ylabel(r'$\eta$')
 #+END_SRC
 
@@ -351,10 +360,11 @@ plt.ylabel(r'$\eta$')
 
 - The payoff is that now we can readily estimate effectiveness factors by the original approach
   + the analytical solution to a first order reaction in a spherical particle.
-  + *We just have to use this definition of the Thiele modulus*
+  + *We just have to use this definition of the Thiele modulus for the Hougen Watson kinetics*
 
+<div class="alert alert-warning">
 \( \Phi = \left(\frac{\phi}{1 + \phi} \right) \sqrt{\frac{k \overline{c}_m K_A a^2}{2 (\phi - \ln(1+\phi)) D_A}} \)
-
+</div>
 
 - For large and small Thiele modulus the results will be good. For \Phi \approx 1 there will be some error in the effectiveness factor.
 
@@ -364,11 +374,11 @@ plt.ylabel(r'$\eta$')
 
 - The rate law does change things too much either, if you use the right Thiele modulus definition
 
-- We can reasonably estimate \eta by choosing an appropriate Thiele modulus definition for the situation and computing the effectiveness factor from: \( \eta = \frac{1}{\Phi}  \left [\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi} \right]\)
+- We can reasonably estimate \eta by choosing an appropriate Thiele modulus definition for the situation and computing the effectiveness factor from: <div class="alert alert-warning">\( \eta = \frac{1}{\Phi}  \left [\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi} \right]\)</div>
 
-  + for power law kinetics we use \( \Phi = \sqrt{\frac{n+1}{2} \frac{k c_{As}^{n-1} a^2}{D_A} } \)
+  + for power law kinetics we use <div class="alert alert-warning">\( \Phi = \sqrt{\frac{n+1}{2} \frac{k c_{As}^{n-1} a^2}{D_A} } \)</div>
 
-  + For Hougen-Watson kinetics we use \( \Phi = \left(\frac{\phi}{1 + \phi} \right) \sqrt{\frac{k \overline{c}_m K_A a^2}{2 D_A(\phi - \ln(1+\phi))}} \)
+  + For Hougen-Watson kinetics we use <div class="alert alert-warning">\( \Phi = \left(\frac{\phi}{1 + \phi} \right) \sqrt{\frac{k \overline{c}_m K_A a^2}{2 D_A(\phi - \ln(1+\phi))}} \)</div>
 
 
 https://media3.giphy.com/media/3o7qDEq2bMbcbPRQ2c/200.gif#1-grid1
