@@ -33,9 +33,9 @@ https://img-9gag-fun.9cache.com/photo/287396_700b.jpg
 
   + where $D_{AB}$ is the normal gas phase diffusivity
 
-  + \phi_p is the pellet porosity (void volume / total volume)
+  + \phi_{p} is the pellet porosity (void volume / total volume)
 
-  + \sigma_c is the constriction factor, which is ratio of the smallest radius in the pores to the largest radius
+  + \sigma_{c} is the constriction factor, which is ratio of the smallest radius in the pores to the largest radius
 
   + \tau is the tortuosity factor, which is the actual distance traveled by a molecule in the particle divided by the shortest distance it could have traveled.
 
@@ -86,7 +86,7 @@ https://img-9gag-fun.9cache.com/photo/287396_700b.jpg
 
 - This leads to
 
-\( \frac{d^2C_A}{dr^2} + \frac{2}{r}\frac{dC_A}{dr} - \frac{k_n}{D_e}C_A^n   \)
+\( \frac{d^2C_A}{dr^2} + \frac{2}{r}\frac{dC_A}{dr} - \frac{k_n}{D_e}C_A^n  = 0 \)
 
  + You can see that reaction and diffusion are coupled
 
@@ -109,10 +109,10 @@ https://img-9gag-fun.9cache.com/photo/287396_700b.jpg
 - Let $W_A = \frac{dC_A}{dr}$
  + then \( \frac{dW_A}{dr} = \frac{d^2C_A}{dr^2}  \)
 
-Finally, we have these two coupled equations:
+Finally, we have these two coupled equations in the standard form:
 
 \begin{align}
-\frac{dW_A}{dr} + \frac{2}{r}W_A - \frac{k_n}{De}C_A^n\\
+\frac{dW_A}{dr} = -\frac{2}{r}W_A + \frac{k_n}{De}C_A^n\\
 \frac{dC_A}{dr} = W_A
 \end{align}
 
@@ -213,7 +213,7 @@ You can see from the graphical solution that the concentration inside the partic
 
 - Let us recast the equations in dimensionless form.
 
-- Let the characteristic length scale be defined by the volume to surface ratio: for a sphere this $a = R/3$
+- Let the characteristic length scale be defined by the volume to surface ratio: for a sphere this <div class="alert alert-warning"> $a = R/3$ </div>
 
 - Now we define the dimensionless variables: $\overline{r} = r/a$ and $\overline{c} = C_A / C_{As}$.
 
@@ -230,16 +230,16 @@ with boundary conditions:
 \( \frac{d\overline{c}}{d\overline{r}} = 0 \textrm
 { at } \overline{r}=0   \)
 
-where we have defined $\Phi = \sqrt{\frac{k a^2}{D_A,}}$ which is known as the Thiele modulus, and it is a ratio of reaction rate to diffusion rate.
+where we have defined <div class="alert alert-warning"> $\Phi = \sqrt{\frac{k a^2}{D_A}}$ </div> which is known as the Thiele modulus, and it is a ratio of reaction rate to diffusion rate.
 
 - The point of this exercise is that an analytical solution to this problem exists:
 
 \(\overline{c}(\overline{r}) = \frac{3}{\overline{r}} \frac{\sinh \Phi \overline{r}}{\sinh 3 \Phi}  \)
 
 - One can then analytically calculate the effectiveness factor as the actual rate of reaction in the particle divided by the ideal rate, to arrive at:
-
+<div class="alert alert-warning">
 \( \eta = \frac{1}{\Phi}  \left [\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi} \right]\)
-
+</div>
 - This solution is plotted in two different ways below.
 
 #+BEGIN_SRC ipython :session :results output drawer
@@ -272,7 +272,80 @@ plt.tight_layout()
 
 - For $\Phi \ll 1$ the effectiveness factor is practically one. That means the diffusion rate is much faster than reaction, so the concentration in the pellet is practically uniform and equal to the surface concentration.
 
-- For $\Phi \gg 1$ then $\eta \approx 1 \Phi$. Near $\Phi = 1$ you may want to evaluate the actual solution.
+- For $\Phi \gg 1$ then $\eta \approx 1 / \Phi$. Near $\Phi = 1$ you may want to evaluate the actual solution.
+
+
+* The effectiveness factor in action
+
+Find the fixed-bed reactor volume and the catalyst mass needed to convert 97% of A in the reaction $A \rightarrow B$. The feed to the reactor is pure A at 1.5 atm at a rate of 12 mol/s. The 0.3 cm pellets are to be used, which leads to a bed density ρ_{B} = 0.6 g/cm^{3}. Assume the reactor operates isothermally at 450 K and that external mass-transfer limitations are negligible.
+
+The rate constant is known to be 2.6 1/s, and the diffusivity in the particle is $D_e = 0.007$ cm^{2}/s. The pellet density is ρ_{p} = 0.85 g/cm^{3}
+
+We start by computing the effectiveness factor for the particles.
+
+- $\Phi = \sqrt{k (R/3)^2 / D_A}$
+- $\eta = \frac{1}{\Phi}\left[\frac{1}{\tanh 3 \Phi} - \frac{1}{3 \Phi}\right]$
+
+#+BEGIN_SRC ipython :session :results output drawer
+Rp = 0.3 # particle radius cm
+k = 2.6 # 1/s
+De = 0.007 # cm^2/s
+
+a = Rp / 3
+Phi = np.sqrt(k * a**2 / De)
+eta = 1 / Phi * (1 / np.tanh(3 * Phi) - 1 / (3 * Phi))
+print(r'\eta = {}'.format(eta))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+eta = 0.4291407978225767
+:END:
+
+
+Next we setup the mole balance. We have a simple problem:
+
+$\frac{dFa}{dV} = r_A = \eta k C_A$
+
+We can express this as an integral:
+
+$V = \int_{Fa0}^{0.03 F_A} \frac{dFa}{r_A}$
+
+An important question though is /what volume/ are we talking about here? It is the volume /inside/ the pellets.	We can estimate the mass of pellets required by multiplying this volume by the pellet density. Then we can divide that mass by the bed density to
+
+$V_{reactor} = V_{particles} * \rho_p / \rho_b$
+
+#+BEGIN_SRC ipython :session :results output drawer
+T = 450
+R = 82.06 # Gas constant cm^3 atm / mol / K
+Pa = 1.5 # atm
+
+Ca0 = Pa / R / T # mol / cm^3
+Fa0 = 12 # mol / s
+
+v0 = Fa0 / Ca0
+
+rho_b = 0.6 # bed density g / cm^3
+rho_p = 0.85 # particle density g / cm^3
+
+from scipy.integrate import quad
+
+def integrand(Fa):
+    Ca = Fa / v0
+    r = eta * k * Ca
+    ra = -r
+    return 1 / ra
+
+V_pellets, _ = quad(integrand, Fa0, 0.03 * Fa0)
+M_pellets = V_pellets * rho_p
+V_bed = M_pellets / rho_b
+print('The bed volume is {:1.2e} cm^{{3}}'.format(V_bed))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+The bed volume is 1.32e+06 cm^{3}
+:END:
 
 * Summary
 

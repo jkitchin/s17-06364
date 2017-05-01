@@ -58,7 +58,5 @@
 * <2017-04-26 Wed> *NO CLASS*
 * <2017-05-01 Mon> [[./lectures/lecture-20.org]]
 * <2017-05-03 Wed> [[./lectures/lecture-21.org]]
-* <2017-05-08 Mon> [[./lectures/lecture-22.org]] Advanced topics I
-* <2017-05-10 Wed> [[./lectures/lecture-23.org]] Advanced topics II
 * <2017-05-09 Tue 8:30am> Final exam
 I will release the problems on Tue. morning by the exam time. The exam should take about 3 hours to complete. I will collect the exam on <2017-05-10 Wed 08:30>.
